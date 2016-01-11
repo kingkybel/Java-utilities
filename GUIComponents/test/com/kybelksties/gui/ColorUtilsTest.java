@@ -42,7 +42,7 @@ public class ColorUtilsTest
                                 Logger.getLogger(ColorUtilsTest.class.getName());
 
     /**
-     *
+     * Set up class statics.
      */
     @BeforeClass
     public static void setUpClass()
@@ -50,7 +50,7 @@ public class ColorUtilsTest
     }
 
     /**
-     *
+     * Tidy up class statics.
      */
     @AfterClass
     public static void tearDownClass()
@@ -58,14 +58,14 @@ public class ColorUtilsTest
     }
 
     /**
-     *
+     * Default construct.
      */
     public ColorUtilsTest()
     {
     }
 
     /**
-     *
+     * Set-up before any test.
      */
     @Before
     public void setUp()
@@ -73,7 +73,7 @@ public class ColorUtilsTest
     }
 
     /**
-     *
+     * Clean-up after any test.
      */
     @After
     public void tearDown()
