@@ -555,8 +555,12 @@ public class DateUtils
      * @param second    seconds as int [0..59]
      * @return the date
      */
-    public static Date makeDate(int year, int month, int day, int hourOfDay,
-                                int minute, int second)
+    public static Date makeDate(int year,
+                                int month,
+                                int day,
+                                int hourOfDay,
+                                int minute,
+                                int second)
     {
         return makeDate(year, month, day, hourOfDay, minute, 0, 0);
     }
