@@ -937,9 +937,8 @@ public class GradientColorChooserBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final Logger LOG =
-                                Logger.getLogger(
-                                        GradientColorChooserBeanInfo.class.
-                                        getName());
+    private static final String CLASS_NAME =
+                                GradientColorChooserBeanInfo.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 }

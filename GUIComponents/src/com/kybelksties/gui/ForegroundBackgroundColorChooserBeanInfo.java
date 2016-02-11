@@ -942,9 +942,9 @@ public class ForegroundBackgroundColorChooserBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final Logger LOG =
-                                Logger.getLogger(
-                                        ForegroundBackgroundColorChooserBeanInfo.class.
-                                        getName());
+    private static final String CLASS_NAME =
+                                ForegroundBackgroundColorChooserBeanInfo.class.
+                                getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 }

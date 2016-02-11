@@ -183,7 +183,7 @@ public class GradientColorChooser extends javax.swing.JPanel
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JColorChooser colorChooser;
     // End of variables declaration//GEN-END:variables
-    private static final Logger LOG =
-                                Logger.getLogger(GradientColorChooser.class.
-                                        getName());
+    private static final String CLASS_NAME =
+                                GradientColorChooser.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }

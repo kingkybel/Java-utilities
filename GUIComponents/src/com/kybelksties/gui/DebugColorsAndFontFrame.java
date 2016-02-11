@@ -177,7 +177,7 @@ public class DebugColorsAndFontFrame extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
-    private static final Logger LOG =
-                                Logger.getLogger(DebugColorsAndFontFrame.class.
-                                        getName());
+    private static final String CLASS_NAME =
+                                DebugColorsAndFontFrame.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }

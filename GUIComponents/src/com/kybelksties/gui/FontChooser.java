@@ -166,7 +166,7 @@ public class FontChooser extends javax.swing.JPanel
     }
 
     /**
-     *
+     * Default construct.
      */
     public FontChooser()
     {
@@ -188,7 +188,6 @@ public class FontChooser extends javax.swing.JPanel
         int style = boldButton.isSelected() ? Font.BOLD : Font.PLAIN;
         style |= italicButton.isSelected() ? Font.ITALIC : 0;
         int size = Integer.parseInt(sizeComboBox.getSelectedItem().toString());
-        Font oldFont = configuredFont;
         setConfiguredFont(new Font(fontComboBox.getSelectedItem().toString(),
                                    style,
                                    size));
@@ -371,6 +370,6 @@ public class FontChooser extends javax.swing.JPanel
     private javax.swing.JTextField sampleTextField;
     private javax.swing.JComboBox sizeComboBox;
     // End of variables declaration//GEN-END:variables
-    private static final Logger LOG =
-                                Logger.getLogger(FontChooser.class.getName());
+    private static final String CLASS_NAME = FontChooser.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }

@@ -1032,8 +1032,8 @@ public class ShapeComboBoxBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final Logger LOG =
-                                Logger.getLogger(ShapeComboBoxBeanInfo.class.
-                                        getName());
+    private static final String CLASS_NAME =
+                                ShapeComboBoxBeanInfo.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 }

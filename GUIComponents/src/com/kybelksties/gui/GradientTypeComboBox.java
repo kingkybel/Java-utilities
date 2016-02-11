@@ -43,9 +43,9 @@ import javax.swing.ListCellRenderer;
 public class GradientTypeComboBox extends JComboBox
 {
 
-    private static final Logger LOG =
-                                Logger.getLogger(GradientTypeComboBox.class.
-                                        getName());
+    private static final String CLASS_NAME =
+                                GradientTypeComboBox.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     HashMap<String, GradientIcon> name2Icon = new HashMap<>();
 

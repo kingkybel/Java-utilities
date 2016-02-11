@@ -942,8 +942,7 @@ public class FontChooserBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final Logger LOG =
-                                Logger.getLogger(FontChooserBeanInfo.class.
-                                        getName());
+    private static final String CLASS_NAME = FontChooserBeanInfo.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 }

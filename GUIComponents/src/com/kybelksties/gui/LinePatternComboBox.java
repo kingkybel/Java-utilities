@@ -47,9 +47,8 @@ public class LinePatternComboBox extends JComboBox
 {
 
     static LinePatternList defaultPatterns = new LinePatternList();
-    private static final Logger LOG =
-                                Logger.getLogger(LinePatternComboBox.class.
-                                        getName());
+    private static final String CLASS_NAME = LinePatternComboBox.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     HashMap<float[], LineIcon> pattern2Icon = new HashMap<>();
 

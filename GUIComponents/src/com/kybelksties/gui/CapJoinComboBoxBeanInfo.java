@@ -1034,8 +1034,8 @@ public class CapJoinComboBoxBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final Logger LOG =
-                                Logger.getLogger(CapJoinComboBoxBeanInfo.class.
-                                        getName());
+    private static final String CLASS_NAME =
+                                CapJoinComboBoxBeanInfo.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 }

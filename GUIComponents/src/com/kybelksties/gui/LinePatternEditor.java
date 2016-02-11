@@ -49,9 +49,9 @@ public class LinePatternEditor
                    InplaceEditor.Factory
 {
 
-    private static final Logger LOG =
-                                Logger.getLogger(LinePatternEditor.class.
-                                        getName());
+    private static final String CLASS_NAME =
+                                LinePatternEditor.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     private InplaceEditor ed = null;
 
     @Override

@@ -108,9 +108,9 @@ public class LinePatternList extends ArrayList<float[]>
                      1.0f, 1.0f
                  },
     };
-    private static final Logger LOG =
-                                Logger.
-                                getLogger(LinePatternList.class.getName());
+    private static final String CLASS_NAME =
+                                LinePatternList.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**
      * Default construct.

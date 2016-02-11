@@ -617,8 +617,7 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
     private javax.swing.JSpinner shiftSpinner;
     private javax.swing.JButton suitableForegroundButton;
     // End of variables declaration//GEN-END:variables
-    private static final Logger LOG =
-                                Logger.getLogger(
-                                        ForegroundBackgroundColorChooser.class.
-                                        getName());
+    private static final String CLASS_NAME =
+                                ForegroundBackgroundColorChooser.class.getName();
+    Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }

@@ -42,8 +42,8 @@ import javax.swing.ListCellRenderer;
 public class ShapeComboBox extends JComboBox
 {
 
-    private static final Logger LOG =
-                                Logger.getLogger(ShapeComboBox.class.getName());
+    private static final String CLASS_NAME = ShapeComboBox.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     HashMap<String, ShapeIcon> name2Icon = new HashMap<>();
 
