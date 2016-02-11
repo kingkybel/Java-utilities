@@ -37,6 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
+ * Test the public interface of the FileUtilities class.
  *
  * @author kybelksd
  */
@@ -207,8 +208,7 @@ public class FileUtilitiesTest
                     }
                     catch (IOException ex)
                     {
-                        Logger.getLogger(FileUtilitiesTest.class.getName()).
-                                log(Level.SEVERE, null, ex);
+                        LOGGER.log(Level.SEVERE, null, ex);
                     }
                 }
             }

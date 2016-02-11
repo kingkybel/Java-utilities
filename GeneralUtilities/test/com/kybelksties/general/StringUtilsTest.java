@@ -31,6 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
+ * Test the public interface of the StringUtils class.
  *
  * @author kybelksd
  */

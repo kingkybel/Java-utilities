@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 /**
  * Extension of the java.util.ExtRandom class that can get random values within
- lower and upper boundaries.
+ * lower and upper boundaries.
  *
  * @author Dieter J Kybelksties
  */
@@ -119,7 +119,7 @@ public class ExtRandom extends java.util.Random
     }
 
     /**
-     * Retrieve an long value between low and high values. the interval is
+     * Retrieve an long value between low and high values. The interval is
      * always interpreted between the actually lower value to the actually
      * greater value. The order in which these are given in the parameter list
      * is not relevant. The greater value of the two is exclusive of the
@@ -249,7 +249,7 @@ public class ExtRandom extends java.util.Random
     }
 
     /**
-     * Retrieve an float value between low and high values. the interval is
+     * Retrieve a float value between low and high values. The interval is
      * always interpreted between the actually lower value to the actually
      * greater value. The order in which these are given in the parameter list
      * is not relevant. The greater value of the two is exclusive of the

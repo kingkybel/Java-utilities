@@ -107,8 +107,9 @@ public class DateUtilsTest
     }
 
     /**
+     * Test date formats.
      *
-     * @param pref
+     * @param pref either European or American
      */
     public void testMakeDateFormats(DateUtils.Preference pref)
     {

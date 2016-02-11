@@ -44,8 +44,8 @@ import org.junit.Test;
 public class ToStringTest
 {
 
-    private static final Logger LOG =
-                                Logger.getLogger(ToStringTest.class.getName());
+    private static final String CLASS_NAME = ToStringTest.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**
      * Set up class statics.
