@@ -198,6 +198,7 @@ public class DateUtils
      * <td><a href="#iso8601timezone">ISO 8601 time zone</a>
      * <td><code>-08</code>; <code>-0800</code>;  <code>-08:00</code>
      * </table>
+     * </blockquote>
      */
     public static ArrayList<String> CommonDateFormats;
 
