@@ -120,7 +120,8 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
      * object.
      *
      * @param parent           parent object
-     * @param scheduledProcess
+     * @param scheduledProcess the scheduled process we want to manipulate, can
+     *                         be null
      * @return the scheduled process object
      */
     public static ScheduledProcess showDialog(

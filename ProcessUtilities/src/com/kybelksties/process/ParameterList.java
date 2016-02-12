@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * A list of AbstractParameters for a command.
  *
- * @author Dieter
+ * @author: Dieter J Kybelksties
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ParameterList
@@ -88,12 +88,12 @@ public class ParameterList
     Boolean isPositional;
 
     /**
-     * This is needed to send message to non-table Objects that listen to
+     * This is needed to send messages to non-table Objects that listen to
      * changes on this table model.
      */
     protected EventListenerList nonTableListenerList = new EventListenerList();
 
-    ParameterList(ParameterList rhs)
+    public ParameterList(ParameterList rhs)
     {
         this.theModelMode = rhs.theModelMode;
         this.isPositional = rhs.isPositional;
@@ -454,15 +454,15 @@ public class ParameterList
     }
 
     @Override
-    public String getColumnName(int col)
+    public String getColumnName(int column)
     {
         return theModelMode == ModelMode.EDIT ? (isPositional ?
-                                                 theColumnNamesPos[col] :
-                                                 theColumnNamesLet[col]) :
+                                                 theColumnNamesPos[column] :
+                                                 theColumnNamesLet[column]) :
                theModelMode == ModelMode.POSITIONAL_EVALUATED ?
-               thePosEvalColumnNames[col] :
+               thePosEvalColumnNames[column] :
                theModelMode == ModelMode.PARAMLETTER_EVALUATED ?
-               theParamLettEvalColumnNames[col] :
+               theParamLettEvalColumnNames[column] :
                "";
     }
 
@@ -488,18 +488,18 @@ public class ParameterList
     /**
      * Make the parameter-list a positional/non-positional one.
      *
-     * @param postl true: positional, false: non-positional
+     * @param isPositional true: positional, false: non-positional
      */
-    public void makePositional(Boolean postl)
+    public void makePositional(Boolean isPositional)
     {
-        isPositional = postl;
+        this.isPositional = isPositional;
         parameterArray.clear();
         fireTableStructureChanged();
         fireTableUpdatedEvent();
     }
 
     @Override
-    public Object getValueAt(int row, int col)
+    public Object getValueAt(int rowIndex, int columnIndex)
     {
         if (theModelMode == ModelMode.EDIT)
         {
@@ -507,22 +507,22 @@ public class ParameterList
             {
                 PositionalParameter param =
                                     (PositionalParameter) parameterArray.get(
-                                            row);
-                return (col == 0) ? row :
-                       (col == 1) ? param.isMandatory() :
-                       (col == 2) ? param.getValue() :
-                       (col == 3) ? param.getDefault() :
+                                            rowIndex);
+                return (columnIndex == 0) ? rowIndex :
+                       (columnIndex == 1) ? param.isMandatory() :
+                       (columnIndex == 2) ? param.getValue() :
+                       (columnIndex == 3) ? param.getDefault() :
                        new Object();
             }
             else
             {
                 LetterParameter param = (LetterParameter) parameterArray.
-                                get(row);
-                return (col == 0) ? param.getLetter() :
-                       (col == 1) ? param.hasArgument() :
-                       (col == 2) ? param.isMandatory() :
-                       (col == 3) ? param.getValue() :
-                       (col == 4) ? param.getDefault() :
+                                get(rowIndex);
+                return (columnIndex == 0) ? param.getLetter() :
+                       (columnIndex == 1) ? param.hasArgument() :
+                       (columnIndex == 2) ? param.isMandatory() :
+                       (columnIndex == 3) ? param.getValue() :
+                       (columnIndex == 4) ? param.getDefault() :
                        new Object();
             }
         }
@@ -530,23 +530,24 @@ public class ParameterList
         {
             PositionalParameter param = (PositionalParameter) parameterArray.
                                 get(
-                                        row);
-            return (col == 0) ? param.isUsed() :
-                   (col == 1) ? param.getDefaultedValue() :
+                                        rowIndex);
+            return (columnIndex == 0) ? param.isUsed() :
+                   (columnIndex == 1) ? param.getDefaultedValue() :
                    new Object();
         }
         else
         {
-            LetterParameter param = (LetterParameter) parameterArray.get(row);
-            return (col == 0) ? param.isUsed() :
-                   (col == 1) ? param.getLetter() :
-                   (col == 2) ? param.getDefaultedValue() :
+            LetterParameter param = (LetterParameter) parameterArray.get(
+                            rowIndex);
+            return (columnIndex == 0) ? param.isUsed() :
+                   (columnIndex == 1) ? param.getLetter() :
+                   (columnIndex == 2) ? param.getDefaultedValue() :
                    new Object();
         }
     }
 
     @Override
-    public void setValueAt(Object value, int row, int col)
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
     {
         if (theModelMode == ModelMode.EDIT)
         {
@@ -554,77 +555,77 @@ public class ParameterList
             {
                 PositionalParameter param =
                                     (PositionalParameter) parameterArray.get(
-                                            row);
+                                            rowIndex);
                 PositionalParameter newInfo = param; // copy
 
-                switch (col)
+                switch (columnIndex)
                 {
                     case 0:
                         // should be just the row number
                         break;
                     case 1:
-                        newInfo.setMandatory((Boolean) value);
+                        newInfo.setMandatory((Boolean) aValue);
                         break;
                     case 2:
-                        newInfo.setFixedValue((String) value);
+                        newInfo.setFixedValue((String) aValue);
                         break;
                     case 3:
-                        newInfo.setDefault((String) value);
+                        newInfo.setDefault((String) aValue);
                         break;
                 }
-                updateParam(row, newInfo);
+                updateParam(rowIndex, newInfo);
             }
             else
             {
                 LetterParameter param = (LetterParameter) parameterArray.
-                                get(row);
+                                get(rowIndex);
                 LetterParameter newInfo = param; // copy
 
-                switch (col)
+                switch (columnIndex)
                 {
                     case 0:
-                        newInfo.setLetter((Character) value);
+                        newInfo.setLetter((Character) aValue);
                         break;
                     case 1:
                         newInfo.addFixedArgument(null);
                         break;
                     case 2:
-                        newInfo.setMandatory((Boolean) value);
+                        newInfo.setMandatory((Boolean) aValue);
                         break;
                     case 3:
-                        newInfo.setFixedValue((String) value);
+                        newInfo.setFixedValue((String) aValue);
                         break;
                     case 4:
-                        newInfo.setDefault((String) value);
+                        newInfo.setDefault((String) aValue);
                         break;
                 }
-                updateParam(row, newInfo);
+                updateParam(rowIndex, newInfo);
             }
         }
         else if (theModelMode == ModelMode.POSITIONAL_EVALUATED)
         {
             PositionalParameter p = (PositionalParameter) parameterArray.
-                                get(row);
-            switch (col)
+                                get(rowIndex);
+            switch (columnIndex)
             {
                 case 0:
-                    p.selectAsUsed((Boolean) value);
+                    p.selectAsUsed((Boolean) aValue);
                     break;
                 case 1:
-                    p.setCustomValue((String) value);
+                    p.setCustomValue((String) aValue);
                     break;
             }
         }
         else if (theModelMode == ModelMode.PARAMLETTER_EVALUATED)
         {
-            LetterParameter p = (LetterParameter) parameterArray.get(row);
-            switch (col)
+            LetterParameter p = (LetterParameter) parameterArray.get(rowIndex);
+            switch (columnIndex)
             {
                 case 0:
-                    p.selectAsUsed((Boolean) value);
+                    p.selectAsUsed((Boolean) aValue);
                     break;
                 case 2: // only the argument can be changed not the letter
-                    p.setCustomValue((String) value);
+                    p.setCustomValue((String) aValue);
                     break;
             }
         }
@@ -633,13 +634,13 @@ public class ParameterList
     }
 
     @Override
-    public Class<?> getColumnClass(int c)
+    public Class<?> getColumnClass(int columnIndex)
     {
         if (parameterArray.isEmpty())
         {
             return Object.class;
         }
-        Object obj = getValueAt(0, c);
+        Object obj = getValueAt(0, columnIndex);
         if (obj == null)
         {
             return Object.class;

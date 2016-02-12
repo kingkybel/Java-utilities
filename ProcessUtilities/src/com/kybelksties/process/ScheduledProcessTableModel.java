@@ -79,7 +79,7 @@ public class ScheduledProcessTableModel extends AbstractTableModel
     /**
      * Add a scheduled process.
      *
-     * @param schedProc
+     * @param schedProc the new scheduled process to add to the model
      */
     public final void add(ScheduledProcess schedProc)
     {
@@ -108,7 +108,7 @@ public class ScheduledProcessTableModel extends AbstractTableModel
     /**
      * Set the list of scheduled processes.
      *
-     * @param schedProcList
+     * @param schedProcList a list of new scheduled processes
      */
     public void set(List<ScheduledProcess> schedProcList)
     {
@@ -123,9 +123,10 @@ public class ScheduledProcessTableModel extends AbstractTableModel
     }
 
     /**
+     * Set the values of a row of the model.
      *
-     * @param row
-     * @param modifiedDef
+     * @param row         row index
+     * @param modifiedDef new values from the scheduled process
      */
     public void setRow(int row, ScheduledProcess modifiedDef)
     {
@@ -147,7 +148,7 @@ public class ScheduledProcessTableModel extends AbstractTableModel
     /**
      * Remove the scheduled process at a specific row.
      *
-     * @param row
+     * @param row row index
      */
     public void removeRow(int row)
     {

@@ -164,7 +164,7 @@ public class ScheduledProcess
     /**
      * Set the executable definition.
      *
-     * @param exeDefinition
+     * @param exeDefinition the new definition
      */
     public void setExeDefinition(ExeDefinition exeDefinition)
     {

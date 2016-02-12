@@ -176,7 +176,7 @@ public abstract class AbstractParameter
      */
     public void setCustomValue(String value)
     {
-        this.value = value;//(value == null || value.isEmpty()) ? "\"\"" : value;
+        this.value = value;
         this.fixed = false;
     }
 

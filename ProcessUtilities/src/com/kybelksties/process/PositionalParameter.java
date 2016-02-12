@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Parameters that are interpreted according to the position in the argument
  * list as they are for example in shell-scripts.
  *
- * @author kybelksd
+ * @author: Dieter J Kybelksties
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -50,7 +50,7 @@ public class PositionalParameter extends AbstractParameter
     /**
      * Construct with a value.
      *
-     * @param value
+     * @param value if value is not null the the parameter is constant
      */
     public PositionalParameter(String value)
     {
@@ -60,8 +60,9 @@ public class PositionalParameter extends AbstractParameter
     /**
      * Construct with a value and a default-value.
      *
-     * @param value
-     * @param defaultValue
+     * @param value        if value is not null the the parameter is constant
+     * @param defaultValue can be null, if value is null then this value will be
+     *                     as default
      */
     public PositionalParameter(String value, String defaultValue)
     {

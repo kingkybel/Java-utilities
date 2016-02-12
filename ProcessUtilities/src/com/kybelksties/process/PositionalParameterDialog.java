@@ -34,8 +34,8 @@ import javax.swing.event.ChangeListener;
 public class PositionalParameterDialog extends javax.swing.JDialog
 {
 
-    private static final String CLASS_NAME = PositionalParameterDialog.class.
-                                getName();
+    private static final String CLASS_NAME =
+                                PositionalParameterDialog.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     ParameterList theParameters;
@@ -45,8 +45,8 @@ public class PositionalParameterDialog extends javax.swing.JDialog
     /**
      * Creates new form ParameterPositionalDialog.
      *
-     * @param parent
-     * @param modal
+     * @param parent parent dialog
+     * @param modal  modal to the parent if true
      */
     public PositionalParameterDialog(java.awt.Dialog parent, boolean modal)
     {
