@@ -221,9 +221,6 @@ public class ScheduledProcessTableModel extends AbstractTableModel
                 process.addStateChangeEventListener(this);
                 newInfo.setProcess(process);
                 break;
-//            case 1:
-//                newInfo.setExeDefinition((ExeDefinition) value);
-//                break;
             case 1:
                 newInfo.setExecutable((String) value);
                 break;
