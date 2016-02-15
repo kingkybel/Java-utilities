@@ -61,7 +61,7 @@ public class ExeDefinition implements Serializable, Comparable<Object>
     /**
      * Construct with a name (identifier).
      *
-     * @param name
+     * @param name an identifier for the definition
      */
     public ExeDefinition(String name)
     {

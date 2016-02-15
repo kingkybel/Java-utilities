@@ -499,7 +499,12 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
         setVisible(false);
     }//GEN-LAST:event_discardBtnActionPerformed
 
-    ExeDefinitions getDefinitions()
+    /**
+     * Retrieve the list of definitions.
+     *
+     * @return the list
+     */
+    public ExeDefinitions getDefinitions()
     {
         return exeDefinitionList;
     }

@@ -107,7 +107,7 @@ public class ExeDefinitions
     /**
      * Retrieve a definition identified by its name.
      *
-     * @param name
+     * @param name the identifier of the definition
      * @return the definition if one with the name exists, null otherwise
      */
     public ExeDefinition getDefinition(String name)

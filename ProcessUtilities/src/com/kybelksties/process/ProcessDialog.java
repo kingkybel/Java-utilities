@@ -298,8 +298,8 @@ public class ProcessDialog extends javax.swing.JDialog
     /**
      * Creates new form ProcessDialog.
      *
-     * @param parent       frame
-     * @param schedProcess
+     * @param parent       parent frame
+     * @param schedProcess the scheduled process
      * @return the new ProcessDialog
      */
     static public ProcessDialog makeProcessDialog(java.awt.Frame parent,
