@@ -66,7 +66,7 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
      * @param parent           the parent frame
      * @param modal            indicates whether the window is used in modal or
      *                         non-modal mode
-     * @param lastExeDirectory
+     * @param lastExeDirectory the last used directory (to save time)
      */
     private ExeDefinitionsDialog(java.awt.Frame parent,
                                  boolean modal,
@@ -146,9 +146,9 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
     /**
      * Show a dialog and return the customised definitions of executables.
      *
-     * @param parent
+     * @param parent           the parent frame
      * @param lastExeDirectory the last used directory (to save time)
-     * @param exeDefinitions   currently d
+     * @param exeDefinitions   currently defined executable definitions
      *
      * @return the customised definitions of executables
      */
