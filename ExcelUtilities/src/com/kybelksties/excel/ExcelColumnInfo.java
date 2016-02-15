@@ -94,7 +94,8 @@ public class ExcelColumnInfo
         for (int i = 0; i < maxIndex; i++)
         {
             String header = (i > headers.length) ? "" : headers[i].toString();
-            ColumnTypeConstraints type = (i > cellTypes.length) ? null :
+            ColumnTypeConstraints type = (i > cellTypes.length) ?
+                                         null :
                                          cellTypes[i];
             infos.add(new Info(header, type));
         }
