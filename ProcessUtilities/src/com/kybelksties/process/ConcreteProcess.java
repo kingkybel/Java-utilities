@@ -300,7 +300,7 @@ public class ConcreteProcess extends Process
     /**
      * Undefine all environment variables in a category.
      *
-     * @param category
+     * @param category the category for which all values will be reset
      */
     public void undefineAll(String category)
     {
@@ -310,8 +310,9 @@ public class ConcreteProcess extends Process
     /**
      * Switch all boolean values in a category of environment values on or off.
      *
-     * @param category
-     * @param on
+     * @param category the category for which the booleans will be set
+     * @param on       true means that all booleans will be true, false mens
+     *                 they will be set to false
      */
     public void setAllBooleans(String category, Boolean on)
     {
@@ -321,18 +322,18 @@ public class ConcreteProcess extends Process
     /**
      * Copy environment settings from another process.
      *
-     * @param other
+     * @param rhs the right-hand-side concrete process
      */
-    public void copyEnvironmentFrom(ConcreteProcess other)
+    public void copyEnvironmentFrom(ConcreteProcess rhs)
     {
         getEnvironmentMap().clear();
-        cloneEnvironment(other.environmentVarSets);
+        cloneEnvironment(rhs.environmentVarSets);
     }
 
     /**
      * Updates the environment variables maintained in the category.
      *
-     * @param category
+     * @param category the category for which the values will be updated
      */
     public void updateEnvironment(String category)
     {
