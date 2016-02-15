@@ -742,30 +742,12 @@ public class ColorUtils
      */
     public static Color makeColor(int r, int g, int b)
     {
-        if (r < 0)
-        {
-            r = 0;
-        }
-        if (r > 255)
-        {
-            r = 255;
-        }
-        if (g < 0)
-        {
-            g = 0;
-        }
-        if (g > 255)
-        {
-            g = 255;
-        }
-        if (b < 0)
-        {
-            b = 0;
-        }
-        if (b > 255)
-        {
-            b = 255;
-        }
+        r = (r < 0) ? 0 : r;
+        r = (r > 255) ? 255 : r;
+        g = (g < 0) ? 0 : g;
+        g = (g > 255) ? 255 : g;
+        b = (b < 0) ? 0 : b;
+        b = (b > 255) ? 255 : b;
         return new Color(r, g, b);
     }
 
@@ -905,8 +887,8 @@ public class ColorUtils
      * it brighter or darker) so that if used as foreground/background they are
      * different enough to be readable.
      *
-     * @param color
-     * @param shift
+     * @param color the color we want to create a contrast for
+     * @param shift the shift value
      * @return the contrast color
      */
     public static Color contrastColorByShift(Color color, int shift)
@@ -983,7 +965,6 @@ public class ColorUtils
         {
             int intensityToDistribute = MINCONTRAST - colIntensDiff;
 
-            int c1Intens = colorIntensity(color);
             int r1 = color.getRed();
             int g1 = color.getGreen();
             int b1 = color.getBlue();
@@ -1735,7 +1716,10 @@ public class ColorUtils
         }
     }
 
-    class RoundGradientPaint implements Paint
+    /**
+     * A circular gradient class.
+     */
+    public class RoundGradientPaint implements Paint
     {
 
         protected Point2D point;
@@ -1781,40 +1765,43 @@ public class ColorUtils
     }
 
     /**
-     *
+     * A circular gradient context class.
      */
     public class RoundGradientContext implements PaintContext
     {
 
         /**
-         *
+         * Center point.
          */
         protected Point2D point;
 
         /**
-         *
+         * Radius at which the gradient is color2.
          */
         protected Point2D radius;
 
         /**
-         *
+         * Color at the center.
          */
         protected Color color1;
 
         /**
-         *
+         * The color at the radius.
          */
         protected Color color2;
 
         /**
+         * Construct a circular gradient.
          *
-         * @param point
-         * @param color1
-         * @param radius
-         * @param color2
+         * @param point  center point
+         * @param color1 color at the center
+         * @param radius radius at which the gradient is color2
+         * @param color2 the color at the radius
          */
-        public RoundGradientContext(Point2D point, Color color1,
-                                    Point2D radius, Color color2)
+        public RoundGradientContext(Point2D point,
+                                    Color color1,
+                                    Point2D radius,
+                                    Color color2)
         {
             this.point = point;
             this.color1 = color1;
@@ -1845,8 +1832,8 @@ public class ColorUtils
                 for (int i = 0; i < w; i++)
                 {
                     double distance = point.distance(x + i, y + j);
-                    double radius = this.radius.distance(0, 0);
-                    double ratio = distance / radius;
+                    double loc_radius = this.radius.distance(0, 0);
+                    double ratio = distance / loc_radius;
                     if (ratio > 1.0)
                     {
                         ratio = 1.0;
