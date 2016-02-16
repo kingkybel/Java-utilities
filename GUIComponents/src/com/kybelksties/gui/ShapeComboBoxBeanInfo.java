@@ -32,6 +32,7 @@ import java.beans.SimpleBeanInfo;
 import java.util.logging.Logger;
 
 /**
+ * Bean information for combo-box to chose basic geometric shapes.
  *
  * @author kybelksd
  */

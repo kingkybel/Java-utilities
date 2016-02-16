@@ -31,6 +31,7 @@ import java.beans.SimpleBeanInfo;
 import java.util.logging.Logger;
 
 /**
+ * Bean information for the combo-box to chose gradient-types.
  *
  * @author kybelksd
  */
