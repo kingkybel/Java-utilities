@@ -37,6 +37,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 /**
+ * A combo-box extension specialised for gradient types.
  *
  * @author kybelksd
  */
@@ -82,7 +83,7 @@ public class GradientTypeComboBox extends JComboBox
     /**
      * Add an item to the drop-down.
      *
-     * @param gradientType
+     * @param gradientType the new gradient type
      */
     public final void addGradientItem(GradientType gradientType)
     {

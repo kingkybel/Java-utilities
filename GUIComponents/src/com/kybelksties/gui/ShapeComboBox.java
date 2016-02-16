@@ -36,6 +36,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 /**
+ * A combo-box extension specialised for some basic geometric shapes.
  *
  * @author kybelksd
  */

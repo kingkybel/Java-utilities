@@ -40,6 +40,7 @@ import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
 
 /**
+ * Dialog to chose colors for gradients.
  *
  * @author kybelksd
  */
@@ -89,7 +90,7 @@ public class GradientColorChooser extends javax.swing.JPanel
     /**
      * Show a dialog with this component.
      *
-     * @param window parent
+     * @param window parent window
      * @param color1 first color of the gradient
      * @param color2 second color of the gradient
      * @return a gradient paint

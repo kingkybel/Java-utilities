@@ -40,6 +40,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 /**
+ * A combo-box extension specialised for line patterns.
  *
  * @author kybelksd
  */

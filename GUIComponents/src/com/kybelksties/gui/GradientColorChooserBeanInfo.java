@@ -32,6 +32,7 @@ import java.beans.SimpleBeanInfo;
 import java.util.logging.Logger;
 
 /**
+ * Bean information for dialog to chose colors for gradients.
  *
  * @author kybelksd
  */

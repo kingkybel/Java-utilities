@@ -54,18 +54,18 @@ public class GenericPopup extends JPopupMenu
     /**
      * Construct with one initial item/action.
      *
-     * @param menuItem
-     * @param action
+     * @param menuItemName item in the menu
+     * @param action       action to be performed when item is selected
      */
-    public GenericPopup(String menuItem, Action action)
+    public GenericPopup(String menuItemName, Action action)
     {
-        actionListener = new GenericActionListener(menuItem, action);
+        actionListener = new GenericActionListener(menuItemName, action);
     }
 
     /**
      * Construct with a map of item/action - pairs.
      *
-     * @param map
+     * @param map a map between items and associated actions
      */
     public GenericPopup(Map<? extends String, ? extends Action> map)
     {
@@ -75,22 +75,23 @@ public class GenericPopup extends JPopupMenu
     /**
      * Generic way to pass back information to the action of a menu item.
      *
-     * @param object
+     * @param objects an array of objects that can modify the menu-item
+     *                associated action
      */
-    public void updateMenu(Object... object)
+    public void updateMenu(Object... objects)
     {
         for (String menuItemName : actionListener.actions.keySet())
         {
             Action action = actionListener.actions.get(menuItemName);
-            action.updateActionParameters(object);
+            action.updateActionParameters(objects);
         }
     }
 
     /**
      * Append a menu item/action pair.
      *
-     * @param menuItemName
-     * @param action
+     * @param menuItemName item in the menu
+     * @param action       action to be performed when item is selected
      */
     public final void add(String menuItemName, Action action)
     {
@@ -103,7 +104,7 @@ public class GenericPopup extends JPopupMenu
     /**
      * Append all menu item/action pairs from a map.
      *
-     * @param map
+     * @param map a map between items and associated actions
      */
     public final void addAll(Map<? extends String, ? extends Action> map)
     {
@@ -119,7 +120,7 @@ public class GenericPopup extends JPopupMenu
     /**
      * Retrieve the action handler of an item.
      *
-     * @param menuItemName
+     * @param menuItemName item in the menu
      * @return the specific handler associated with the menu item
      */
     public Action getActionHandler(String menuItemName)
@@ -139,14 +140,14 @@ public class GenericPopup extends JPopupMenu
     /**
      * Remove one action listeners and menu item.
      *
-     * @param menuItem
+     * @param menuItemName item in the menu
      */
-    public void remove(String menuItem)
+    public void remove(String menuItemName)
     {
-        actionListener.remove(menuItem);
+        actionListener.remove(menuItemName);
         for (Component c : super.getComponents())
         {
-            if (c.getName().equals(menuItem))
+            if (c.getName().equals(menuItemName))
             {
                 super.remove(c);
             }
@@ -194,18 +195,18 @@ public class GenericPopup extends JPopupMenu
         /**
          * Constructs with one item/action pair.
          *
-         * @param menuItem
-         * @param action
+         * @param menuItemName item in the menu
+         * @param action       action to be performed when item is selected
          */
-        public GenericActionListener(String menuItem, Action action)
+        public GenericActionListener(String menuItemName, Action action)
         {
-            add(menuItem, action);
+            add(menuItemName, action);
         }
 
         /**
          * Constructs with a map of item/action pairs.
          *
-         * @param map
+         * @param map a map between items and associated actions
          */
         public GenericActionListener(Map<? extends String, ? extends Action> map)
         {
@@ -215,8 +216,8 @@ public class GenericPopup extends JPopupMenu
         /**
          * Append an item/action pair.
          *
-         * @param menuItemName
-         * @param action
+         * @param menuItemName item in the menu
+         * @param action       action to be performed when item is selected
          */
         public final void add(String menuItemName, Action action)
         {
@@ -226,7 +227,7 @@ public class GenericPopup extends JPopupMenu
         /**
          * Append all item/action pairs in a map.
          *
-         * @param map
+         * @param map a map between items and associated actions
          */
         public final void addAll(Map<? extends String, ? extends Action> map)
         {
@@ -244,11 +245,11 @@ public class GenericPopup extends JPopupMenu
         /**
          * Remove one action from the action map.
          *
-         * @param menuItem
+         * @param menuItemName item in the menu
          */
-        public void remove(String menuItem)
+        public void remove(String menuItemName)
         {
-            actions.remove(menuItem);
+            actions.remove(menuItemName);
         }
 
         @Override
