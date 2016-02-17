@@ -108,14 +108,14 @@ public abstract class AbstractParameter
      *
      * @return true if so, false otherwise
      */
-    public abstract Boolean hasArgument();
+    public abstract boolean hasArgument();
 
     /**
      * Check whether the parameter argument is fixed (or can be changed).
      *
      * @return true if so, false otherwise
      */
-    public final Boolean hasFixedValue()
+    public final boolean hasFixedValue()
     {
         return value != null && !value.isEmpty() && fixed;
     }
@@ -125,7 +125,7 @@ public abstract class AbstractParameter
      *
      * @return true if so, false otherwise
      */
-    public final Boolean multipleInstances()
+    public final boolean multipleInstances()
     {
         return multipleInstances;
     }
@@ -151,7 +151,7 @@ public abstract class AbstractParameter
      *
      * @return true if so, false otherwise
      */
-    public final Boolean hasDefaultedValue()
+    public final boolean hasDefaultedValue()
     {
         return defaultValue != null || !defaultValue.isEmpty();
     }
@@ -224,7 +224,7 @@ public abstract class AbstractParameter
      *
      * @param mandatory
      */
-    public final void setMandatory(Boolean mandatory)
+    public final void setMandatory(boolean mandatory)
     {
         this.mandatory = mandatory;
     }
@@ -250,17 +250,17 @@ public abstract class AbstractParameter
                defaultValue == null ? "" : defaultValue;
     }
 
-    Boolean isOptionallySelected()
+    boolean isOptionallySelected()
     {
         return optionallySelected;
     }
 
-    void selectAsUsed(Boolean isSelected)
+    void selectAsUsed(boolean isSelected)
     {
         optionallySelected = isSelected;
     }
 
-    Boolean isUsed()
+    boolean isUsed()
     {
         return isMandatory() || isOptionallySelected();
     }

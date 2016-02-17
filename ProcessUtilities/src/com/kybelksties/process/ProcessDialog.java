@@ -317,7 +317,7 @@ public class ProcessDialog extends javax.swing.JDialog
                           Color bgColor,
                           String fontFamily,
                           Integer fontSize,
-                          Boolean bold)
+                          boolean bold)
     {
         String stylename = fgColor + "_" +
                            bgColor + "_" +

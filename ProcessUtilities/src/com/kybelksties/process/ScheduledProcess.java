@@ -310,7 +310,7 @@ public class ScheduledProcess
      *
      * @return true if so, false otherwise
      */
-    public Boolean allParametetersDefined()
+    public boolean allParametetersDefined()
     {
         return exeDefinition.allParametersDefined();
     }

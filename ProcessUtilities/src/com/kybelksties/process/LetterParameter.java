@@ -40,7 +40,7 @@ public class LetterParameter extends AbstractParameter
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private Character letter;
-    private Boolean hasArg;
+    private boolean hasArg;
 
     /**
      * Default constructor.
@@ -117,7 +117,7 @@ public class LetterParameter extends AbstractParameter
      * @return true if argument is needed, false otherwise.
      */
     @Override
-    public Boolean hasArgument()
+    public boolean hasArgument()
     {
         return hasArg;
     }

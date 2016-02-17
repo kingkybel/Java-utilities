@@ -85,7 +85,7 @@ public class PositionalParameter extends AbstractParameter
     }
 
     @Override
-    public Boolean hasArgument()
+    public boolean hasArgument()
     {
         return true;
     }

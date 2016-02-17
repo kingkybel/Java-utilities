@@ -43,7 +43,7 @@ public class ExeDefinition implements Serializable, Comparable<Object>
     private String executable;
     private String path;
     private ParameterList parameters;
-    private Boolean active;
+    private boolean active;
 
     /**
      * Default construct.
@@ -271,7 +271,7 @@ public class ExeDefinition implements Serializable, Comparable<Object>
         this.parameters = parameters;
     }
 
-    Boolean allParametersDefined()
+    boolean allParametersDefined()
     {
         for (AbstractParameter p : parameters)
         {

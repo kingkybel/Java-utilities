@@ -85,7 +85,7 @@ public class ParameterList
     @XmlElementWrapper(name = "specifiedParameters")
     ArrayList<AbstractParameter> parameterArray = new ArrayList<>();
 
-    Boolean isPositional;
+    boolean isPositional;
 
     /**
      * This is needed to send messages to non-table Objects that listen to
@@ -147,18 +147,18 @@ public class ParameterList
         return reval;
     }
 
-    Boolean requiresValue(int row)
+    boolean requiresValue(int row)
     {
         return parameterArray.get(row).isMandatory() ||
                (isPositional && row <= getLastMandatoryPosition());
     }
 
-    Boolean allowsValue(int row)
+    boolean allowsValue(int row)
     {
         return !parameterArray.get(row).hasFixedValue();
     }
 
-    Boolean hasArgument(int row)
+    boolean hasArgument(int row)
     {
         return parameterArray.get(row).hasArgument();
     }
@@ -433,7 +433,7 @@ public class ParameterList
     /**
      * Add all parameters by scanning the string.
      *
-     * @param paramString
+     * @param paramString a string containing white-space separated parameters
      */
     public void fromString(String paramString)
     {
@@ -490,7 +490,7 @@ public class ParameterList
      *
      * @param isPositional true: positional, false: non-positional
      */
-    public void makePositional(Boolean isPositional)
+    public void makePositional(boolean isPositional)
     {
         this.isPositional = isPositional;
         parameterArray.clear();
@@ -564,7 +564,7 @@ public class ParameterList
                         // should be just the row number
                         break;
                     case 1:
-                        newInfo.setMandatory((Boolean) aValue);
+                        newInfo.setMandatory((boolean) aValue);
                         break;
                     case 2:
                         newInfo.setFixedValue((String) aValue);
@@ -590,7 +590,7 @@ public class ParameterList
                         newInfo.addFixedArgument(null);
                         break;
                     case 2:
-                        newInfo.setMandatory((Boolean) aValue);
+                        newInfo.setMandatory((boolean) aValue);
                         break;
                     case 3:
                         newInfo.setFixedValue((String) aValue);
@@ -609,7 +609,7 @@ public class ParameterList
             switch (columnIndex)
             {
                 case 0:
-                    p.selectAsUsed((Boolean) aValue);
+                    p.selectAsUsed((boolean) aValue);
                     break;
                 case 1:
                     p.setCustomValue((String) aValue);
@@ -622,7 +622,7 @@ public class ParameterList
             switch (columnIndex)
             {
                 case 0:
-                    p.selectAsUsed((Boolean) aValue);
+                    p.selectAsUsed((boolean) aValue);
                     break;
                 case 2: // only the argument can be changed not the letter
                     p.setCustomValue((String) aValue);

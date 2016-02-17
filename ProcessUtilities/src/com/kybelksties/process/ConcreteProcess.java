@@ -314,7 +314,7 @@ public class ConcreteProcess extends Process
      * @param on       true means that all booleans will be true, false mens
      *                 they will be set to false
      */
-    public void setAllBooleans(String category, Boolean on)
+    public void setAllBooleans(String category, boolean on)
     {
         environmentVarSets.getTableModel(category).setBooleans(on);
     }
