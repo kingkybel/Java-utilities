@@ -242,7 +242,7 @@ public final class EnvironmentVarSets
             {
                 case BOOLEAN:
                 {
-                    Boolean on = definedInSysEnv ?
+                    boolean on = definedInSysEnv ?
                                  Boolean.parseBoolean(valueInSysEnv) :
                                  value.getBooleanValue();
                     addToTableModel(new EnvironmentVar(valueType,
@@ -336,7 +336,7 @@ public final class EnvironmentVarSets
 
     /**
      * Look for environmentVar in the whole set and attempt to retrieve as
-     * Boolean.
+     * boolean.
      *
      * @param environmentVar
      * @return null if unsuccessful

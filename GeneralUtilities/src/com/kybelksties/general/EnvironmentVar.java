@@ -76,7 +76,7 @@ public class EnvironmentVar implements Comparable
     }
 
     private String name = "";
-    private Boolean defined = false;
+    private boolean defined = false;
     private PodVariant value = new PodVariant();
     private String category = "";
 
@@ -96,8 +96,11 @@ public class EnvironmentVar implements Comparable
      * @param defined  flag to indicate whether the variable is defined or not
      * @param val      value of the variable
      */
-    public EnvironmentVar(PodVariant.Type podType, String category, String name,
-                          Boolean defined, PodVariant... val)
+    public EnvironmentVar(PodVariant.Type podType,
+                          String category,
+                          String name,
+                          boolean defined,
+                          PodVariant... val)
     {
         setType(podType);
         setCategory(category);
@@ -238,7 +241,7 @@ public class EnvironmentVar implements Comparable
      *
      * @return true if so, false otherwise
      */
-    public Boolean getDefined()
+    public boolean getDefined()
     {
         return defined;
     }
