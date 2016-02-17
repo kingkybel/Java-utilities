@@ -89,7 +89,12 @@ public class ExeDefinitions
         return defArray.iterator();
     }
 
-    int size()
+    /**
+     * Retrieve the number of definitions.
+     *
+     * @return the number of definitions
+     */
+    public int size()
     {
         return defArray.size();
     }
@@ -282,8 +287,14 @@ public class ExeDefinitions
         fireTableDataChanged();
     }
 
-    boolean contains(ExeDefinition theExeDefinition)
+    /**
+     * Check whether a definition is in the collection or not.
+     *
+     * @param exeDefinition the definition for which we check
+     * @return true, if the definition is contained, false otherwise
+     */
+    public boolean contains(ExeDefinition exeDefinition)
     {
-        return defArray.contains(theExeDefinition);
+        return defArray.contains(exeDefinition);
     }
 }
