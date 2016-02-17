@@ -112,14 +112,14 @@ public class FontChooser extends javax.swing.JPanel
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
-    private Boolean showSample = true;
+    private boolean showSample = true;
 
     /**
      * Get the value of showSample.
      *
      * @return the value of showSample
      */
-    public Boolean getShowSample()
+    public boolean getShowSample()
     {
         return showSample;
     }
@@ -129,7 +129,7 @@ public class FontChooser extends javax.swing.JPanel
      *
      * @param showSample new value of showSample
      */
-    public void setShowSample(Boolean showSample)
+    public void setShowSample(boolean showSample)
     {
         this.showSample = showSample;
         updateComponents();

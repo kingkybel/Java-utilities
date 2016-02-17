@@ -125,10 +125,10 @@ public class LinePatternList extends ArrayList<float[]>
      *
      * @param includeDefaults include the default patterns
      */
-    public LinePatternList(Boolean includeDefaults)
+    public LinePatternList(boolean includeDefaults)
     {
         this();
-        if (includeDefaults == null || !includeDefaults)
+        if (!includeDefaults)
         {
             clear();
         }
@@ -140,7 +140,7 @@ public class LinePatternList extends ArrayList<float[]>
      * @param includeDefaults include the default patterns
      * @param patterns        include the given patterns as well
      */
-    public LinePatternList(Boolean includeDefaults, float[][] patterns)
+    public LinePatternList(boolean includeDefaults, float[][] patterns)
     {
         this(includeDefaults);
         if (patterns != null)
