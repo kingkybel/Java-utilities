@@ -17,7 +17,6 @@
  * @date: 2015-12-29
  * @author: Dieter J Kybelksties
  */
-package com.kybelksties.process;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
