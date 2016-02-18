@@ -46,7 +46,7 @@ public class ExtRandom extends java.util.Random
     /**
      * Construct with a seed.
      *
-     * @param seed seed for the pseudo-random generator.
+     * @param seed seed for the pseudo-random generator
      */
     public ExtRandom(long seed)
     {
@@ -54,7 +54,7 @@ public class ExtRandom extends java.util.Random
     }
 
     /**
-     * Retrieve an integer value between low and high values. the interval is
+     * Retrieve an integer value between low and high values. The interval is
      * always interpreted between the actually lower value to the actually
      * greater value. The order in which these are given in the parameter list
      * is not relevant. The greater value of the two is exclusive of the
@@ -80,18 +80,15 @@ public class ExtRandom extends java.util.Random
             high = low;
             low = tmp;
         }
-        int reval = low.equals(high) ? low :
-                    nextInt(high - low) + low;
+        int reval = low.equals(high) ? low : nextInt(high - low) + low;
 
         return reval;
 
     }
 
     /**
-     * Retrieve a long value between 0 and high value. The interval is always
-     * interpreted between the actually lower value to the actually greater
-     * value. The high value is exclusive of the result-interval, 0 value will
-     * be inclusive.
+     * Retrieve a long value between 0 and high value. The high value is
+     * exclusive of the result-interval, 0 value will be inclusive.
      *
      * @param high the upper bound
      * @return a random value from the interval
@@ -119,10 +116,10 @@ public class ExtRandom extends java.util.Random
     }
 
     /**
-     * Retrieve an long value between low and high values. The interval is
-     * always interpreted between the actually lower value to the actually
-     * greater value. The order in which these are given in the parameter list
-     * is not relevant. The greater value of the two is exclusive of the
+     * Retrieve a long value between low and high values. The interval is always
+     * interpreted between the actually lower value to the actually greater
+     * value. The order in which these are given in the parameter list is not
+     * relevant. The greater value of the two is exclusive of the
      * result-interval, the lower value will be inclusive.
      *
      * @param low  the lower bound
@@ -145,18 +142,15 @@ public class ExtRandom extends java.util.Random
             high = low;
             low = tmp;
         }
-        long reval = low.equals(high) ? low :
-                     nextLong(high - low) + low;
+        long reval = low.equals(high) ? low : nextLong(high - low) + low;
 
         return reval;
 
     }
 
     /**
-     * Retrieve a double value between 0 and high value. The interval is always
-     * interpreted between the actually lower value to the actually greater
-     * value. The high value is exclusive of the result-interval, 0 value will
-     * be inclusive.
+     * Retrieve a double value between 0 and high value. The high value is
+     * exclusive of the result-interval, 0 value will be inclusive.
      *
      * @param high the upper bound
      * @return a random value from the interval
@@ -184,7 +178,7 @@ public class ExtRandom extends java.util.Random
     }
 
     /**
-     * Retrieve an double value between low and high values. the interval is
+     * Retrieve a double value between low and high values. The interval is
      * always interpreted between the actually lower value to the actually
      * greater value. The order in which these are given in the parameter list
      * is not relevant. The greater value of the two is exclusive of the
@@ -210,18 +204,15 @@ public class ExtRandom extends java.util.Random
             high = low;
             low = tmp;
         }
-        double reval = low.equals(high) ? low :
-                       nextDouble(high - low) + low;
+        double reval = low.equals(high) ? low : nextDouble(high - low) + low;
 
         return reval;
 
     }
 
     /**
-     * Retrieve a float value between 0 and high value. The interval is always
-     * interpreted between the actually lower value to the actually greater
-     * value. The high value is exclusive of the result-interval, 0 value will
-     * be inclusive.
+     * Retrieve a float value between 0 and high value. The high value is
+     * exclusive of the result-interval, 0 value will be inclusive.
      *
      * @param high the upper bound
      * @return a random value from the interval
@@ -275,8 +266,7 @@ public class ExtRandom extends java.util.Random
             high = low;
             low = tmp;
         }
-        float reval = low.equals(high) ? low :
-                      nextFloat(high - low) + low;
+        float reval = low.equals(high) ? low : nextFloat(high - low) + low;
 
         return reval;
 
