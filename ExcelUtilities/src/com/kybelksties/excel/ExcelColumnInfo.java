@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
- * Formalise additional information about columns in an Excel sheet.
+ * Formalise additional information about columns in an Excel sheet. This can be
+ * used to add additional type-checking on cell-values.
  *
  * @author kybelksd
  */
@@ -81,7 +82,7 @@ public class ExcelColumnInfo
     }
 
     /**
-     * Set column headers for this object..
+     * Set column headers for this object.
      *
      * @param headers   an array of column headers
      * @param cellTypes type constraints for cell values
