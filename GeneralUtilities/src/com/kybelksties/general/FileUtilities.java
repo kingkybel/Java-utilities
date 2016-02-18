@@ -64,7 +64,7 @@ public class FileUtilities
      */
     public static boolean fileExists(File path)
     {
-        return path.exists() && !path.isDirectory();
+        return path != null && path.exists() && !path.isDirectory();
     }
 
     /**
@@ -75,6 +75,10 @@ public class FileUtilities
      */
     public static boolean fileExists(String pathString)
     {
+        if (pathString == null)
+        {
+            return false;
+        }
         File path = new File(pathString);
         return path.exists() && !path.isDirectory();
     }
@@ -87,7 +91,7 @@ public class FileUtilities
      */
     public static boolean directoryExists(File path)
     {
-        return path.exists() && path.isDirectory();
+        return path != null && path.exists() && path.isDirectory();
     }
 
     /**
@@ -98,6 +102,10 @@ public class FileUtilities
      */
     public static boolean directoryExists(String pathString)
     {
+        if (pathString == null)
+        {
+            return false;
+        }
         File path = new File(pathString);
         return path.exists() && path.isDirectory();
     }
@@ -110,7 +118,7 @@ public class FileUtilities
      */
     public static boolean exists(File path)
     {
-        return path.exists();
+        return path != null && path.exists();
     }
 
     /**
@@ -121,6 +129,10 @@ public class FileUtilities
      */
     public static boolean exists(String pathString)
     {
+        if (pathString == null)
+        {
+            return false;
+        }
         File path = new File(pathString);
         return path.exists();
     }
@@ -135,7 +147,7 @@ public class FileUtilities
     public static boolean deleteRecursive(File path)
     {
         boolean deleteSuccessful = false;
-        if (!path.exists())
+        if (path == null || !path.exists())
         {
             return deleteSuccessful;
         }
@@ -163,7 +175,7 @@ public class FileUtilities
      */
     public static boolean deleteRecursive(String pathString)
     {
-        return deleteRecursive(new File(pathString));
+        return deleteRecursive(new File(pathString == null ? "" : pathString));
     }
 
     /**
@@ -175,7 +187,7 @@ public class FileUtilities
     public static List<File> listRecursive(File path)
     {
         List<File> reval = new ArrayList<>();
-        if (!path.exists())
+        if (path == null || !path.exists())
         {
             return null;
         }
@@ -203,7 +215,7 @@ public class FileUtilities
      */
     public static List<File> listRecursive(String pathString)
     {
-        return listRecursive(new File(pathString));
+        return listRecursive(new File(pathString == null ? "" : pathString));
     }
 
     /**
@@ -222,7 +234,7 @@ public class FileUtilities
                                                    final String startString,
                                                    final String extension)
     {
-        File root = new File(rootPath);
+        File root = new File(rootPath == null ? "" : rootPath);
         List<File> allFiles = listRecursive(root);
         ArrayList<File> reval = new ArrayList<>();
         if (allFiles != null)
@@ -252,7 +264,7 @@ public class FileUtilities
     public static List<File> findFilesNamed(String rootPath,
                                             final String... names)
     {
-        File root = new File(rootPath);
+        File root = new File(rootPath == null ? "" : rootPath);
 
         Set<String> nameSet = new HashSet<>();
         nameSet.addAll(Arrays.asList(names));
@@ -300,6 +312,10 @@ public class FileUtilities
      */
     public static boolean createFolders(String rootPath, Iterable discrim)
     {
+        if (rootPath == null || discrim == null)
+        {
+            return false;
+        }
         Iterator it = discrim.iterator();
         boolean result = true;
         while (it.hasNext())
@@ -339,7 +355,7 @@ public class FileUtilities
             throws IOException
     {
         BufferedWriter out = null;
-        File file = new File(fileName);
+        File file = new File(fileName == null ? "" : fileName);
         File path = new File(file.getParent());
         if (force && !path.exists())
         {
@@ -352,7 +368,7 @@ public class FileUtilities
                 file.delete();
             }
             out = new BufferedWriter(new FileWriter(file));
-            out.write(textToSave);
+            out.write(textToSave == null ? "" : textToSave);
             out.close();
         }
         catch (IOException ex)
@@ -424,11 +440,10 @@ public class FileUtilities
      */
     public static <T> void serialize(String filename, T obj)
     {
-        try (FileOutputStream fileOut = new FileOutputStream(filename))
+        try (FileOutputStream fileOut = new FileOutputStream(filename);
+             ObjectOutputStream out = new ObjectOutputStream(fileOut))
         {
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(obj);
-            out.close();
         }
         catch (IOException ex)
         {
@@ -447,11 +462,10 @@ public class FileUtilities
     public static <T> T deserialize(String filename)
     {
         T reval = null;
-        try (FileInputStream fileIn = new FileInputStream(filename))
+        try (FileInputStream fileIn = new FileInputStream(filename);
+             ObjectInputStream in = new ObjectInputStream(fileIn))
         {
-            ObjectInputStream in = new ObjectInputStream(fileIn);
             reval = (T) in.readObject();
-            in.close();
         }
         catch (IOException | ClassNotFoundException ex)
         {
