@@ -1722,10 +1722,10 @@ public class ColorUtils
     public class RoundGradientPaint implements Paint
     {
 
-        protected Point2D point;
-        protected Point2D radius;
-        protected Color centerColor;
-        protected Color outsideColor;
+        private Point2D point;
+        private Point2D radius;
+        private Color centerColor;
+        private Color outsideColor;
 
         RoundGradientPaint(double x, double y, Color centerColor,
                            Point2D radius, Color outsideColor)
