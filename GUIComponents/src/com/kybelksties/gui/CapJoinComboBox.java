@@ -50,8 +50,7 @@ public final class CapJoinComboBox extends JComboBox
 
     private static final String CLASS_NAME = CapJoinComboBox.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
-
-    HashMap<CapJoinType, CapIcon> cap2Icon = new HashMap<>();
+    private HashMap<CapJoinType, CapIcon> cap2Icon = new HashMap<>();
 
     /**
      * Default construct with list of default choices.
@@ -270,7 +269,7 @@ public final class CapJoinComboBox extends JComboBox
         }
     }
 
-    class ComboBoxRenderer extends JLabel implements ListCellRenderer
+    private class ComboBoxRenderer extends JLabel implements ListCellRenderer
     {
 
         private Font noIconFont;
