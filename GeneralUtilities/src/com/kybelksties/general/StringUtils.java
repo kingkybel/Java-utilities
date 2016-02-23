@@ -473,7 +473,11 @@ public class StringUtils
         /**
          * Pipe brackets: "|", "|".
          */
-        PIPE;
+        PIPE,
+        /**
+         * C/C++/Java comment: "/*", "*\/".
+         */
+        C_COMMENT;
 
         /**
          * Get the left (opening) bracket.
@@ -487,7 +491,8 @@ public class StringUtils
                    this == BRACKET ? "[" :
                    this == CHEFRON ? "<" :
                    this == ROUND ? "(" :
-                   this == PIPE ? "|" : "";
+                   this == PIPE ? "|" :
+                   this == C_COMMENT ? "/*" : "";
         }
 
         /**
@@ -502,7 +507,8 @@ public class StringUtils
                    this == BRACKET ? "]" :
                    this == CHEFRON ? ">" :
                    this == ROUND ? ")" :
-                   this == PIPE ? "|" : "";
+                   this == PIPE ? "|" :
+                   this == C_COMMENT ? "*/" : "";
         }
     }
 
