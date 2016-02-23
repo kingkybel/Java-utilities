@@ -46,7 +46,10 @@ public class FileUtilitiesTest
 
     private static final String CLASS_NAME = FileUtilitiesTest.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
-    final static String testDirectory = "/tmp/fileUtilTest";
+    final static String testDirectory = FileUtilities.FILE_SEPARATOR +
+                                        "tmp" +
+                                        FileUtilities.FILE_SEPARATOR +
+                                        "fileUtilTest";
 
     /**
      * Set up class statics.
@@ -104,20 +107,34 @@ public class FileUtilitiesTest
         LOGGER.log(Level.INFO, "create and delete folders");
         String[] dirs = new String[]
          {
-             "1", "2", "3", "A/a", "A/b", "B/x/y"
+             "1",
+             "2",
+             "3",
+             "A" + FileUtilities.FILE_SEPARATOR + "a",
+             "A" + FileUtilities.FILE_SEPARATOR + "b",
+             "B" +
+             FileUtilities.FILE_SEPARATOR +
+             "x" +
+             FileUtilities.FILE_SEPARATOR +
+             "y"
         };
         String[] resultDirs = new String[]
          {
              testDirectory,
-             testDirectory + "/2",
-             testDirectory + "/3",
-             testDirectory + "/B",
-             testDirectory + "/B/x",
-             testDirectory + "/B/x/y",
-             testDirectory + "/1",
-             testDirectory + "/A",
-             testDirectory + "/A/b",
-             testDirectory + "/A/a"
+             testDirectory + FileUtilities.FILE_SEPARATOR + "2",
+             testDirectory + FileUtilities.FILE_SEPARATOR + "3",
+             testDirectory + FileUtilities.FILE_SEPARATOR + "B",
+             testDirectory + FileUtilities.FILE_SEPARATOR + "B" +
+             FileUtilities.FILE_SEPARATOR + "x",
+             testDirectory + FileUtilities.FILE_SEPARATOR + "B" +
+             FileUtilities.FILE_SEPARATOR + "x" +
+             FileUtilities.FILE_SEPARATOR + "y",
+             testDirectory + FileUtilities.FILE_SEPARATOR + "1",
+             testDirectory + FileUtilities.FILE_SEPARATOR + "A",
+             testDirectory + FileUtilities.FILE_SEPARATOR + "A" +
+             FileUtilities.FILE_SEPARATOR + "b",
+             testDirectory + FileUtilities.FILE_SEPARATOR + "A" +
+             FileUtilities.FILE_SEPARATOR + "a"
         };
 
         boolean expResult = true;
@@ -164,8 +181,8 @@ public class FileUtilitiesTest
 
         String[] resultDirs = new String[]
          {
-             testDirectory + "/1",
-             testDirectory + "/2",
+             testDirectory + FileUtilities.FILE_SEPARATOR + "1",
+             testDirectory + FileUtilities.FILE_SEPARATOR + "2",
         };
 
         String[] fileNames = new String[]
@@ -203,8 +220,12 @@ public class FileUtilitiesTest
                 {
                     try
                     {
-                        FileUtilities.saveText(resultDir + "/" + fileName,
-                                               resultDir + "/" + fileName);
+                        FileUtilities.saveText(resultDir +
+                                               FileUtilities.FILE_SEPARATOR +
+                                               fileName,
+                                               resultDir +
+                                               FileUtilities.FILE_SEPARATOR +
+                                               fileName);
                     }
                     catch (IOException ex)
                     {
@@ -287,7 +308,8 @@ public class FileUtilitiesTest
     public void testSaveAndReadText()
     {
         LOGGER.log(Level.INFO, "save and read text files");
-        String fileName = testDirectory + "/testfile.txt";
+        String fileName = testDirectory +
+                          FileUtilities.FILE_SEPARATOR + "testfile.txt";
 
         try
         {
@@ -323,7 +345,6 @@ public class FileUtilitiesTest
         }
         catch (IOException ex)
         {
-            // expected
             fail("unexpected exception " + ex);
         }
 
@@ -336,7 +357,6 @@ public class FileUtilitiesTest
         }
         catch (IOException ex)
         {
-            // expected
             fail("unexpected exception " + ex);
         }
 
