@@ -415,23 +415,23 @@ public class StringUtils
          */
         NONE,
         /**
-         * A signed integer.
+         * An unsigned integer.
          */
         UINT,
         /**
-         * A floating point number.
+         * A signed integer.
          */
         INT,
         /**
-         * An unsigned integer.
+         * A positive floating point number.
          */
         UFLOAT,
         /**
-         * A boolean value. Not a number.
+         * A floating point number.
          */
         FLOAT,
         /**
-         * A positive floating point number.
+         * A boolean value. Not a number.
          */
         BOOL,
         /**
