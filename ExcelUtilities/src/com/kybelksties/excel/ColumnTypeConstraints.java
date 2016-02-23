@@ -37,19 +37,19 @@ public interface ColumnTypeConstraints
 
     /**
      *
-     * @return true if the type of the column is boolean, false otherwise
+     * @return true if the type of the column is Integer, false otherwise
      */
     public boolean isInteger();
 
     /**
      *
-     * @return true if the type of the column is Integer, false otherwise
+     * @return true if the type of the column is Double, false otherwise
      */
     public boolean isDouble();
 
     /**
      *
-     * @return true if the type of the column is Double, false otherwise
+     * @return true if the type of the column is Date, false otherwise
      */
     public boolean isDate();
 
@@ -82,7 +82,7 @@ public interface ColumnTypeConstraints
     /**
      * Create an object of this class by scanning a string.
      *
-     * @param str
+     * @param str the string to scan
      * @return the value that the String evaluates to
      */
     public ColumnTypeConstraints fromString(String str);
