@@ -55,6 +55,8 @@ public class FileUtilities
 
     private static final String CLASS_NAME = FileUtilities.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    public static final String FILE_SEPARATOR = System.getProperty(
+                               "file.separator");
 
     /**
      * Check whether a file exists.
@@ -296,7 +298,7 @@ public class FileUtilities
         String completePath = "";
         for (String el : pathElements)
         {
-            completePath += el + "/";
+            completePath += el + FileUtilities.FILE_SEPARATOR;
         }
         boolean result = (new File(completePath)).mkdirs();
         return result;
@@ -553,7 +555,8 @@ public class FileUtilities
         {
             if (!path.exists())
             {
-                String msg = "Directory " + path.getParent() +
+                String msg = "Directory " +
+                             path.getParent() +
                              " does not exist so cannot create file." +
                              ex.getMessage();
                 throw new IOException(msg);
