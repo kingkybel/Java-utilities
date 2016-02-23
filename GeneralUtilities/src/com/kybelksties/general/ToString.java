@@ -96,7 +96,9 @@ public class ToString
      * @param inner inner delimiter
      * @param right right bracket
      */
-    public static void setDelimiters(Class clazz, String left, String inner,
+    public static void setDelimiters(Class clazz,
+                                     String left,
+                                     String inner,
                                      String right)
     {
         if (!class2ToString.containsKey(clazz))

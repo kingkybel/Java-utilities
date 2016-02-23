@@ -178,7 +178,10 @@ public class StringUtils
 
     /**
      * Classify an array of strings returning the most restrictive NumberClass
-     * that all can be classified to.
+     * that all can be classified to. If all the objects can be scanned as
+     * boolean values, then the common class is boolean, if some objects can be
+     * scanned as integers but some can only be scanned as Floats then the most
+     * restrictive class would be Float.
      *
      * @param arr the array to find a common class for
      * @return the most restrictive NumberClass
@@ -216,7 +219,7 @@ public class StringUtils
             else
             {
                 // NONE is the smallest value, so if we get a bigger value
-                // then we vahe a number. Set it as reval if we have not already
+                // then we have a number. Set it as reval if we have not already
                 // set to one of the none-number values
                 if (valueClass.ordinal() > reval.ordinal())
                 {
