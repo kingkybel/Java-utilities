@@ -162,7 +162,7 @@ public class ExcelWorkbookTableModel extends AbstractTableModel
     /**
      * Set the POI workbook and add a sheet, if the workbook has none.
      *
-     * @param workbook
+     * @param workbook the workbook to add
      */
     protected final void setWorkbook(Workbook workbook)
     {
