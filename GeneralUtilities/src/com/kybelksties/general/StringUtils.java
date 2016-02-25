@@ -114,17 +114,17 @@ public class StringUtils
      * @param str the stringised value
      * @return the classification
      */
-    public static NumberClass classifyNumberString(String str)
+    public static NumberSpecies findSpecies(String str)
     {
         if (str == null)
         {
-            return NumberClass.NONE;
+            return NumberSpecies.NONE;
         }
 
         String lstr = str.trim();
         if (lstr.isEmpty())
         {
-            return NumberClass.NONE;
+            return NumberSpecies.NONE;
         }
         // if the string ends in ".0" then treat as INT
         if (lstr.endsWith(".0"))
@@ -154,63 +154,63 @@ public class StringUtils
 
         if (!parsesAsFloat && !parsesAsInt)
         {
-            return NumberClass.NONE;
+            return NumberSpecies.NONE;
         }
         boolean isSigned = (str.charAt(0) == '-' || str.charAt(0) == '+');
         if (parsesAsInt && !isSigned)
         {
-            return NumberClass.UINT;
+            return NumberSpecies.UINT;
         }
         if (parsesAsFloat && !isSigned)
         {
-            return NumberClass.UFLOAT;
+            return NumberSpecies.UFLOAT;
         }
         if (parsesAsInt)
         {
-            return NumberClass.INT;
+            return NumberSpecies.INT;
         }
         if (parsesAsFloat)
         {
-            return NumberClass.FLOAT;
+            return NumberSpecies.FLOAT;
         }
-        return NumberClass.NONE;
+        return NumberSpecies.NONE;
     }
 
     /**
-     * Classify an array of strings returning the most restrictive NumberClass
+     * Classify an array of strings returning the most restrictive NumberSpecies
      * that all can be classified to. If all the objects can be scanned as
      * boolean values, then the common class is boolean, if some objects can be
      * scanned as integers but some can only be scanned as Floats then the most
      * restrictive class would be Float.
      *
      * @param arr the array to find a common class for
-     * @return the most restrictive NumberClass
+     * @return the most restrictive NumberSpecies
      */
-    public static NumberClass commonStringClassification(Object[] arr)
+    public static NumberSpecies commonSpecies(Object[] arr)
     {
         return arr == null ?
-               NumberClass.NONE :
-               commonStringClassification(Arrays.asList(arr));
+               NumberSpecies.NONE :
+               commonSpecies(Arrays.asList(arr));
     }
 
     /**
-     * Classify an array of strings returning the most restrictive NumberClass
+     * Classify an array of strings returning the most restrictive NumberSpecies
      * that all can be classified to.
      *
      * @param iterable the iterable to find a common class for
-     * @return the most restrictive NumberClass
+     * @return the most restrictive NumberSpecies
      */
-    public static NumberClass commonStringClassification(Iterable iterable)
+    public static NumberSpecies commonSpecies(Iterable iterable)
     {
         if (iterable == null)
         {
-            return NumberClass.NONE;
+            return NumberSpecies.NONE;
         }
-        NumberClass reval = null;
+        NumberSpecies reval = null;
         for (Object valueObj : iterable)
         {
             String value = valueObj.toString();
-            NumberClass valueClass = classifyNumberString(value);
+            NumberSpecies valueClass = findSpecies(value);
             // first time round the
             if (reval == null)
             {
@@ -226,28 +226,31 @@ public class StringUtils
                     reval = valueClass;
                 }
 
-                if (valueClass == NumberClass.INT && reval == NumberClass.UFLOAT)
+                if (valueClass == NumberSpecies.INT && reval ==
+                                                       NumberSpecies.UFLOAT)
                 {
-                    reval = NumberClass.FLOAT;
+                    reval = NumberSpecies.FLOAT;
                 }
 
-                if (valueClass == NumberClass.NONE)
+                if (valueClass == NumberSpecies.NONE)
                 {
                     // cannot classify as number, but maybe as boolean or
                     // character.
                     Boolean bool = scanBoolString(value);
                     if (bool != null &&
-                        (reval == NumberClass.BOOL || reval == NumberClass.NONE))
+                        (reval == NumberSpecies.BOOL || reval ==
+                                                        NumberSpecies.NONE))
                     {
-                        reval = NumberClass.BOOL;
+                        reval = NumberSpecies.BOOL;
                     }
-                    else if (value.length() == 1 && reval != NumberClass.STRING)
+                    else if (value.length() == 1 && reval !=
+                                                    NumberSpecies.STRING)
                     {
-                        reval = NumberClass.CHAR;
+                        reval = NumberSpecies.CHAR;
                     }
                     else
                     {
-                        reval = NumberClass.STRING;
+                        reval = NumberSpecies.STRING;
                         // here we can actually return as we can no longer have
                         // any other class for the collection
                         return reval;
@@ -256,7 +259,7 @@ public class StringUtils
             }
         }
 
-        return reval == null ? NumberClass.NONE : reval;
+        return reval == null ? NumberSpecies.NONE : reval;
     }
 
     /**
@@ -406,7 +409,7 @@ public class StringUtils
     /**
      * This enumeration is used to classify a String value into number-classes.
      */
-    public static enum NumberClass
+    public static enum NumberSpecies
     {
 
         /**
@@ -442,74 +445,6 @@ public class StringUtils
          * A character string. Not a number.
          */
         STRING
-    }
-
-    /**
-     * Enumeration of common bracket types.
-     */
-    public enum BracketType
-    {
-
-        /**
-         * No brackets.
-         */
-        NONE,
-        /**
-         * Curly brackets: "{", "}".
-         */
-        BRACE,
-        /**
-         * Square brackets: "[", "]".
-         */
-        BRACKET,
-        /**
-         * Chevron brackets: "<", ">".
-         */
-        CHEFRON,
-        /**
-         * Round brackets: "(", ")".
-         */
-        ROUND,
-        /**
-         * Pipe brackets: "|", "|".
-         */
-        PIPE,
-        /**
-         * C/C++/Java comment: "/*", "*\/".
-         */
-        C_COMMENT;
-
-        /**
-         * Get the left (opening) bracket.
-         *
-         * @return the left bracket as String.
-         */
-        public String left()
-        {
-            return this == NONE ? "" :
-                   this == BRACE ? "{" :
-                   this == BRACKET ? "[" :
-                   this == CHEFRON ? "<" :
-                   this == ROUND ? "(" :
-                   this == PIPE ? "|" :
-                   this == C_COMMENT ? "/*" : "";
-        }
-
-        /**
-         * Get the right (closing) bracket.
-         *
-         * @return the right bracket as String.
-         */
-        public String right()
-        {
-            return this == NONE ? "" :
-                   this == BRACE ? "}" :
-                   this == BRACKET ? "]" :
-                   this == CHEFRON ? ">" :
-                   this == ROUND ? ")" :
-                   this == PIPE ? "|" :
-                   this == C_COMMENT ? "*/" : "";
-        }
     }
 
 }

@@ -81,7 +81,7 @@ public class StringUtilsTest
     }
 
     /**
-     * Test of classifyNumberString method, of class StringUtils.
+     * Test of findSpecies method, of class StringUtils.
      */
     @Test
     public void testStripWhitesopace()
@@ -126,7 +126,7 @@ public class StringUtilsTest
     }
 
     /**
-     * Test of classifyNumberString method, of class StringUtils.
+     * Test of findSpecies method, of class StringUtils.
      */
     @Test
     public void testClassifyNumberString()
@@ -136,9 +136,9 @@ public class StringUtilsTest
         {
 
             String s;
-            StringUtils.NumberClass n;
+            StringUtils.NumberSpecies n;
 
-            X(String s, StringUtils.NumberClass n)
+            X(String s, StringUtils.NumberSpecies n)
             {
                 this.s = s;
                 this.n = n;
@@ -148,106 +148,106 @@ public class StringUtilsTest
         X[] tests =
             new X[]
             {
-                new X("", StringUtils.NumberClass.NONE),
-                new X("true", StringUtils.NumberClass.NONE),
-                new X("+0", StringUtils.NumberClass.INT),
-                new X("-0", StringUtils.NumberClass.INT),
-                new X("0", StringUtils.NumberClass.UINT),
-                new X("1", StringUtils.NumberClass.UINT),
-                new X("12", StringUtils.NumberClass.UINT),
-                new X("-1", StringUtils.NumberClass.INT),
-                new X("-12", StringUtils.NumberClass.INT),
-                new X("+0.0", StringUtils.NumberClass.INT),
-                new X("-0.0", StringUtils.NumberClass.INT),
-                new X("0.0", StringUtils.NumberClass.UINT),
-                new X("1.0", StringUtils.NumberClass.UINT),
-                new X("12.0", StringUtils.NumberClass.UINT),
-                new X("-1.0", StringUtils.NumberClass.INT),
-                new X("-12.0", StringUtils.NumberClass.INT),
-                new X("1.123", StringUtils.NumberClass.UFLOAT),
-                new X("-1.123", StringUtils.NumberClass.FLOAT),
-                new X("1e5", StringUtils.NumberClass.UFLOAT),
-                new X("1f", StringUtils.NumberClass.UFLOAT),
+                new X("", StringUtils.NumberSpecies.NONE),
+                new X("true", StringUtils.NumberSpecies.NONE),
+                new X("+0", StringUtils.NumberSpecies.INT),
+                new X("-0", StringUtils.NumberSpecies.INT),
+                new X("0", StringUtils.NumberSpecies.UINT),
+                new X("1", StringUtils.NumberSpecies.UINT),
+                new X("12", StringUtils.NumberSpecies.UINT),
+                new X("-1", StringUtils.NumberSpecies.INT),
+                new X("-12", StringUtils.NumberSpecies.INT),
+                new X("+0.0", StringUtils.NumberSpecies.INT),
+                new X("-0.0", StringUtils.NumberSpecies.INT),
+                new X("0.0", StringUtils.NumberSpecies.UINT),
+                new X("1.0", StringUtils.NumberSpecies.UINT),
+                new X("12.0", StringUtils.NumberSpecies.UINT),
+                new X("-1.0", StringUtils.NumberSpecies.INT),
+                new X("-12.0", StringUtils.NumberSpecies.INT),
+                new X("1.123", StringUtils.NumberSpecies.UFLOAT),
+                new X("-1.123", StringUtils.NumberSpecies.FLOAT),
+                new X("1e5", StringUtils.NumberSpecies.UFLOAT),
+                new X("1f", StringUtils.NumberSpecies.UFLOAT),
             };
 
         for (X test : tests)
         {
             assertEquals("number class of \"" + test.s + "\"",
                          test.n,
-                         StringUtils.classifyNumberString(test.s));
+                         StringUtils.findSpecies(test.s));
         }
-        StringUtils.NumberClass nc =
-                                StringUtils.commonStringClassification(
+        StringUtils.NumberSpecies nc =
+                                StringUtils.commonSpecies(
                                         (String[]) null);
 
         assertEquals("number class of null-list",
-                     StringUtils.NumberClass.NONE,
+                     StringUtils.NumberSpecies.NONE,
                      nc);
-        nc = StringUtils.commonStringClassification(new Object[0]);
+        nc = StringUtils.commonSpecies(new Object[0]);
         assertEquals("number class of empty list",
-                     StringUtils.NumberClass.NONE,
+                     StringUtils.NumberSpecies.NONE,
                      nc);
-        nc = StringUtils.commonStringClassification(StringUtils.FALSE_VALUES);
+        nc = StringUtils.commonSpecies(StringUtils.FALSE_VALUES);
         assertEquals("number class of false-values",
-                     StringUtils.NumberClass.BOOL,
+                     StringUtils.NumberSpecies.BOOL,
                      nc);
-        nc = StringUtils.commonStringClassification(StringUtils.TRUE_VALUES);
+        nc = StringUtils.commonSpecies(StringUtils.TRUE_VALUES);
         assertEquals("number class of true-values",
-                     StringUtils.NumberClass.BOOL,
+                     StringUtils.NumberSpecies.BOOL,
                      nc);
 
         String[] uints = new String[]
          {
              "1", "2", "22", "50", "2000"
         };
-        nc = StringUtils.commonStringClassification(uints);
+        nc = StringUtils.commonSpecies(uints);
         assertEquals("number class of unsigned integer values",
-                     StringUtils.NumberClass.UINT,
+                     StringUtils.NumberSpecies.UINT,
                      nc);
 
         String[] ints = new String[]
          {
              "-1", "2", "22", "50", "2000"
         };
-        nc = StringUtils.commonStringClassification(ints);
+        nc = StringUtils.commonSpecies(ints);
         assertEquals("number class of signed integer values",
-                     StringUtils.NumberClass.INT,
+                     StringUtils.NumberSpecies.INT,
                      nc);
 
         String[] ufloats = new String[]
          {
              "1.0", "2.01", "22", "50", "2000"
         };
-        nc = StringUtils.commonStringClassification(ufloats);
+        nc = StringUtils.commonSpecies(ufloats);
         assertEquals("number class of unsigned floating point values",
-                     StringUtils.NumberClass.UFLOAT,
+                     StringUtils.NumberSpecies.UFLOAT,
                      nc);
 
         String[] floats = new String[]
          {
              "1.0", "2.01", "22", "-50", "2000"
         };
-        nc = StringUtils.commonStringClassification(floats);
+        nc = StringUtils.commonSpecies(floats);
         assertEquals("number class of signed floating point values",
-                     StringUtils.NumberClass.FLOAT,
+                     StringUtils.NumberSpecies.FLOAT,
                      nc);
 
         String[] chars = new String[]
          {
              "0", "1", "0", "a", "0"
         };
-        nc = StringUtils.commonStringClassification(chars);
+        nc = StringUtils.commonSpecies(chars);
         assertEquals("number class of character values",
-                     StringUtils.NumberClass.CHAR,
+                     StringUtils.NumberSpecies.CHAR,
                      nc);
 
         String[] strings = new String[]
          {
              "0", "1", "0", "abc", "0"
         };
-        nc = StringUtils.commonStringClassification(strings);
+        nc = StringUtils.commonSpecies(strings);
         assertEquals("number class of string values",
-                     StringUtils.NumberClass.STRING,
+                     StringUtils.NumberSpecies.STRING,
                      nc);
 
     }
