@@ -562,25 +562,32 @@ public class ToString
         /**
          * No brackets.
          */
-        NONE, /**
+        NONE,
+        /**
          * Curly brackets: "{", "}".
          */
-        BRACE, /**
+        BRACE,
+        /**
          * Square brackets: "[", "]".
          */
-        BRACKET, /**
+        BRACKET,
+        /**
          * Chevron brackets: "<", ">".
          */
-        CHEFRON, /**
+        CHEFRON,
+        /**
          * Round brackets: "(", ")".
          */
-        ROUND, /**
+        ROUND,
+        /**
          * Pipe brackets: "|", "|".
          */
-        PIPE, /**
+        PIPE,
+        /**
          * Slash brackets: "/","/".
          */
-        SLASH, /**
+        SLASH,
+        /**
          * Backslash brackets: "\","\".
          */
         BACKSLASH;

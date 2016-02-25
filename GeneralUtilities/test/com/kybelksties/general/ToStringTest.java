@@ -214,8 +214,6 @@ public class ToStringTest
         set.add("el 2");
         expResult = "{\n\t'el 1',\n\t'el 2'\n}";
         result = ToString.make(set);
-        System.out.println("result =" + result);
-        System.out.println("expResult =" + expResult);
         assertEquals(expResult, result);
 
         // Don't use quotes for empty and whitespace values
@@ -225,8 +223,6 @@ public class ToStringTest
         set.add("");
         expResult = "{\n\t<NULL>,\n\tel 1,\n\tel 2\n}";
         result = ToString.make(set);
-        System.out.println("result =" + result);
-        System.out.println("expResult =" + expResult);
         assertEquals(expResult, result);
     }
 
