@@ -57,6 +57,8 @@ public class FileUtilities
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     public static final String FILE_SEPARATOR = System.getProperty(
                                "file.separator");
+    public static final String PATH_SEPARATOR = System.getProperty(
+                               "path.separator");
 
     /**
      * Check whether a file exists.
@@ -260,7 +262,7 @@ public class FileUtilities
      * Scan a directory recursively for filenames matching a list.
      *
      * @param rootPath configured root path for the TE logs
-     * @param names
+     * @param names    the list of filenames to find in the directory structure
      * @return list of files that match one of the names
      */
     public static List<File> findFilesNamed(String rootPath,
@@ -290,7 +292,8 @@ public class FileUtilities
     /**
      * Create all folders in a path.
      *
-     * @param pathElements
+     * @param pathElements an array of strings that make the un-delimited
+     *                     elements of the path
      * @return true, if successful, false otherwise
      */
     public static boolean createFolders(String... pathElements)
@@ -332,8 +335,8 @@ public class FileUtilities
     /**
      * Save the text in the String to a file.
      *
-     * @param fileName
-     * @param textToSave
+     * @param fileName   the file name, including the path, as a string
+     * @param textToSave the contents of the file as string
      * @throws java.io.IOException
      */
     public static void saveText(String fileName, String textToSave) throws
@@ -507,7 +510,7 @@ public class FileUtilities
      *
      * @param <T>      a serializable type
      * @param filename the file from which the serialization is read
-     * @param reval
+     * @param reval    return value
      * @return the object
      */
     public static <T> T xmlDeserialize(String filename, T reval)
