@@ -104,7 +104,7 @@ public class FontChooser extends javax.swing.JPanel
     /**
      * Remove PropertyChangeListener.
      *
-     * @param listener
+     * @param listener the listener to be removed
      */
     @Override
     public void removePropertyChangeListener(PropertyChangeListener listener)
