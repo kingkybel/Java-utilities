@@ -23,13 +23,14 @@ package com.kybelksties.gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
  *
  * @author kybelksd
  */
-public class DebugColorsAndFontFrame extends javax.swing.JFrame
+public class DebugComponentsFrame extends javax.swing.JFrame
 {
 
     Color foregroundColor4 = Color.RED;
@@ -39,7 +40,7 @@ public class DebugColorsAndFontFrame extends javax.swing.JFrame
     /**
      * Creates new form TestColors
      */
-    public DebugColorsAndFontFrame()
+    public DebugComponentsFrame()
     {
         initComponents();
         //      fontChooser2.setShowSample(false);
@@ -52,53 +53,55 @@ public class DebugColorsAndFontFrame extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         colorButton = new javax.swing.JButton();
         fontButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        dateButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        colorButton.setText(org.openide.util.NbBundle.getMessage(DebugColorsAndFontFrame.class, "DebugColorsAndFontFrame.colorButton.text")); // NOI18N
-        colorButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        colorButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.colorButton.text")); // NOI18N
+        colorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 colorButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(colorButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 190, -1, -1));
+        getContentPane().add(colorButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 190, -1, -1));
 
-        fontButton.setText(org.openide.util.NbBundle.getMessage(DebugColorsAndFontFrame.class, "DebugColorsAndFontFrame.fontButton.text")); // NOI18N
-        fontButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        fontButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.fontButton.text")); // NOI18N
+        fontButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fontButtonActionPerformed(evt);
             }
         });
         getContentPane().add(fontButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, -1, -1));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][]
-            {
+            new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null}
             },
-            new String []
-            {
+            new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 440, 170));
+
+        dateButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.dateButton.text")); // NOI18N
+        dateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dateButtonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(dateButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 190, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -124,6 +127,11 @@ public class DebugColorsAndFontFrame extends javax.swing.JFrame
         Font f = FontChooser.showDialog(this, null);
         System.out.println("Font=" + f.toString());
     }//GEN-LAST:event_fontButtonActionPerformed
+
+    private void dateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dateButtonActionPerformed
+        Date f = DateChooser.showDialog(this, null);
+        System.out.println("Font=" + f.toString());
+    }//GEN-LAST:event_dateButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -151,10 +159,12 @@ public class DebugColorsAndFontFrame extends javax.swing.JFrame
                IllegalAccessException |
                javax.swing.UnsupportedLookAndFeelException ex)
         {
-            java.util.logging.Logger.getLogger(DebugColorsAndFontFrame.class.
+            java.util.logging.Logger.getLogger(DebugComponentsFrame.class.
                     getName()).log(
                             java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
@@ -166,18 +176,19 @@ public class DebugColorsAndFontFrame extends javax.swing.JFrame
             @Override
             public void run()
             {
-                new DebugColorsAndFontFrame().setVisible(true);
+                new DebugComponentsFrame().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton colorButton;
+    private javax.swing.JButton dateButton;
     private javax.swing.JButton fontButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
     private static final String CLASS_NAME =
-                                DebugColorsAndFontFrame.class.getName();
+                                DebugComponentsFrame.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }

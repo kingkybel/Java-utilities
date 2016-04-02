@@ -31,6 +31,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -57,66 +58,30 @@ public class DateChooser extends javax.swing.JPanel
 
     static
     {
-        Map<Integer, String> sorted = new TreeMap<>();
-        Map<String, Integer> calendarMap =
-                             Calendar.getInstance().getDisplayNames(
-                                     Calendar.DAY_OF_WEEK,
-                                     Calendar.LONG,
-                                     Locale.getDefault());
-        for (String s : calendarMap.keySet())
-        {
-            sorted.put(calendarMap.get(s), s);
-        }
-        weekDaysLong = new ArrayList<>();
-        for (Integer i : sorted.keySet())
-        {
-            weekDaysLong.add(sorted.get(i));
-        }
-
-        calendarMap = Calendar.getInstance().getDisplayNames(
-        Calendar.DAY_OF_WEEK,
-        Calendar.SHORT,
-        Locale.getDefault());
-        for (String s : calendarMap.keySet())
-        {
-            sorted.put(calendarMap.get(s), s);
-        }
-        weekDaysShort = new ArrayList<>();
-        for (Integer i : sorted.keySet())
-        {
-            weekDaysShort.add(sorted.get(i));
-        }
-
-        calendarMap = Calendar.getInstance().getDisplayNames(
-        Calendar.MONTH,
-        Calendar.LONG,
-        Locale.getDefault());
-        for (String s : calendarMap.keySet())
-        {
-            sorted.put(calendarMap.get(s), s);
-        }
-        monthsLong = new ArrayList<>();
-        for (Integer i : sorted.keySet())
-        {
-            monthsLong.add(sorted.get(i));
-        }
-
-        calendarMap = Calendar.getInstance().getDisplayNames(
-        Calendar.MONTH,
-        Calendar.SHORT,
-        Locale.getDefault());
-        for (String s : calendarMap.keySet())
-        {
-            sorted.put(calendarMap.get(s), s);
-        }
-        monthsShort = new ArrayList<>();
-        for (Integer i : sorted.keySet())
-        {
-            monthsShort.add(sorted.get(i));
-        }
-
+        weekDaysLong = makeLocalNameArray(Calendar.DAY_OF_WEEK,Calendar.LONG);
+        weekDaysShort = makeLocalNameArray(Calendar.DAY_OF_WEEK,Calendar.SHORT);
+        monthsLong = makeLocalNameArray(Calendar.MONTH,Calendar.LONG);
+        monthsShort = makeLocalNameArray(Calendar.MONTH,Calendar.SHORT);
     }
 
+    private static ArrayList<String> makeLocalNameArray(int type, int style)
+    {
+        Locale locale = Locale.getDefault();
+        ArrayList<String> reval = new ArrayList<>();
+        Map<Integer, String> sorted = new TreeMap<>();
+        Map<String, Integer> calendarMap =
+                Calendar.getInstance().getDisplayNames(type,style,locale);
+        for (String s : calendarMap.keySet())
+        {
+            sorted.put(calendarMap.get(s), s);
+        }
+        for (Integer i : sorted.keySet())
+        {
+            reval.add(sorted.get(i));
+        }
+        return reval;
+    }
+    
     /**
      * Get the value of configuredFont
      *
