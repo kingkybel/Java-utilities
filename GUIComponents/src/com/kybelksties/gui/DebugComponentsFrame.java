@@ -24,6 +24,7 @@ package com.kybelksties.gui;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 /**
@@ -129,7 +130,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     }//GEN-LAST:event_fontButtonActionPerformed
 
     private void dateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dateButtonActionPerformed
-        Date f = DateChooser.showDialog(this, null);
+        Date f = DateChooser.showDialog(this, null, Locale.getDefault());
         System.out.println("Font=" + f.toString());
     }//GEN-LAST:event_dateButtonActionPerformed
 

@@ -28,13 +28,8 @@ import java.awt.Window;
 import static java.awt.image.ImageObserver.WIDTH;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -51,37 +46,8 @@ public class DateChooser extends javax.swing.JPanel
 {
 
     private Date theDate = null;
-    static private ArrayList<String> weekDaysLong;
-    static private ArrayList<String> weekDaysShort;
-    static private ArrayList<String> monthsLong;
-    static private ArrayList<String> monthsShort;
-
-    static
-    {
-        weekDaysLong = makeLocalNameArray(Calendar.DAY_OF_WEEK,Calendar.LONG);
-        weekDaysShort = makeLocalNameArray(Calendar.DAY_OF_WEEK,Calendar.SHORT);
-        monthsLong = makeLocalNameArray(Calendar.MONTH,Calendar.LONG);
-        monthsShort = makeLocalNameArray(Calendar.MONTH,Calendar.SHORT);
-    }
-
-    private static ArrayList<String> makeLocalNameArray(int type, int style)
-    {
-        Locale locale = Locale.getDefault();
-        ArrayList<String> reval = new ArrayList<>();
-        Map<Integer, String> sorted = new TreeMap<>();
-        Map<String, Integer> calendarMap =
-                Calendar.getInstance().getDisplayNames(type,style,locale);
-        for (String s : calendarMap.keySet())
-        {
-            sorted.put(calendarMap.get(s), s);
-        }
-        for (Integer i : sorted.keySet())
-        {
-            reval.add(sorted.get(i));
-        }
-        return reval;
-    }
-    
+    static private CalendarModel calendarModel = new CalendarModel();
+    static private Locale locale = Locale.getDefault();
     /**
      * Get the value of configuredFont
      *
@@ -116,6 +82,10 @@ public class DateChooser extends javax.swing.JPanel
                                                   new PropertyChangeSupport(
                                                           this);
 
+    public void setLocale(Locale locale)
+    {
+        this.locale = locale;
+    }
     /**
      * Add PropertyChangeListener.
      *
@@ -141,7 +111,7 @@ public class DateChooser extends javax.swing.JPanel
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
-    private boolean showSample = true;
+    private boolean showDateLabel = true;
 
     /**
      * Get the value of showSample.
@@ -150,7 +120,7 @@ public class DateChooser extends javax.swing.JPanel
      */
     public boolean getShowSample()
     {
-        return showSample;
+        return showDateLabel;
     }
 
     /**
@@ -160,8 +130,8 @@ public class DateChooser extends javax.swing.JPanel
      */
     public void setShowSample(boolean showSample)
     {
-        this.showSample = showSample;
-        updateComponents();
+        this.showDateLabel = showSample;
+        updateComponents(locale);
     }
 
     /**
@@ -169,7 +139,7 @@ public class DateChooser extends javax.swing.JPanel
      *
      * @param date initial font, if null use default
      */
-    public DateChooser(Date date)
+    public DateChooser(Date date, Locale locale)
     {
         initComponents();
 
@@ -180,7 +150,7 @@ public class DateChooser extends javax.swing.JPanel
             theDate = date;
         }
         this.setSize(WIDTH, WIDTH);
-        updateComponents();
+        updateComponents(locale);
     }
 
     /**
@@ -188,15 +158,19 @@ public class DateChooser extends javax.swing.JPanel
      */
     public DateChooser()
     {
-        this(null);
+        this(null, Locale.getDefault());
     }
 
     /**
      * Update the GUI.
      */
-    public final void updateComponents()
+    public final void updateComponents(Locale locale)
     {
-        selectedDateLabel.setVisible(showSample);
+        selectedDateLabel.setVisible(showDateLabel);
+        if(locale== null)
+            locale = Locale.getDefault();
+        calendarModel.initializeNameLists(locale);
+        monthDayTable.setModel(calendarModel);
         validate();
         repaint();
     }
@@ -212,11 +186,12 @@ public class DateChooser extends javax.swing.JPanel
      *
      * @param window parent
      * @param date   an initial font
+     * @param locale the locale properties
      * @return the newly configured
      */
-    static public Date showDialog(Window window, Date date)
+    static public Date showDialog(Window window, Date date, Locale locale)
     {
-        final DateChooser chsr = new DateChooser(date);
+        final DateChooser chsr = new DateChooser(date, locale);
 
         final JDialog dlg = new JDialog(window,
                                         Dialog.ModalityType.APPLICATION_MODAL);
@@ -236,7 +211,7 @@ public class DateChooser extends javax.swing.JPanel
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                chsr.updateComponents();
+                chsr.updateComponents(chsr.getLocale());
                 dlg.setVisible(false);
             }
         });
@@ -285,8 +260,7 @@ public class DateChooser extends javax.swing.JPanel
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
         monthComboBox = new javax.swing.JComboBox();
@@ -299,7 +273,7 @@ public class DateChooser extends javax.swing.JPanel
         setLayout(new java.awt.BorderLayout());
 
         monthComboBox.setModel(new DefaultComboBoxModel
-            (monthsLong.toArray()));
+            (calendarModel.getMonthsLong().toArray()));
         jPanel1.add(monthComboBox);
 
         yearComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -315,15 +289,13 @@ public class DateChooser extends javax.swing.JPanel
         add(selectedDateLabel, java.awt.BorderLayout.PAGE_END);
 
         monthDayTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][]
-            {
+            new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null}
             },
-            new String []
-            {
+            new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
