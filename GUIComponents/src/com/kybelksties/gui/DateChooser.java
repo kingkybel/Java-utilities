@@ -28,12 +28,15 @@ import java.awt.Window;
 import static java.awt.image.ImageObserver.WIDTH;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JSpinner;
+import javax.swing.table.TableColumnModel;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
 
@@ -131,18 +134,22 @@ public class DateChooser extends javax.swing.JPanel
     public void setShowSample(boolean showSample)
     {
         this.showDateLabel = showSample;
-        updateComponents(locale);
+        updateComponents(locale, theDate);
     }
 
     /**
      * Creates new form FontChooser.
      *
      * @param date initial font, if null use default
+     * @param locale
      */
     public DateChooser(Date date, Locale locale)
     {
         initComponents();
-
+        setColumnWidths();
+        yearSpinner.setEditor(new JSpinner.NumberEditor(yearSpinner,"#"));
+        
+        monthDayTable.setRowSelectionAllowed(false);
         selectedDateLabel.setSize(selectedDateLabel.getHeight(), 70);
 
         if (date != null)
@@ -150,7 +157,7 @@ public class DateChooser extends javax.swing.JPanel
             theDate = date;
         }
         this.setSize(WIDTH, WIDTH);
-        updateComponents(locale);
+        updateComponents(locale,date);
     }
 
     /**
@@ -160,22 +167,39 @@ public class DateChooser extends javax.swing.JPanel
     {
         this(null, Locale.getDefault());
     }
+    
+    final void setColumnWidths()
+    {
+        if (monthDayTable.isVisible())
+        {
+            TableColumnModel colmod = monthDayTable.getColumnModel();
+            for (int col = 0; col<colmod.getColumnCount();col++)
+            {
+                colmod.getColumn(col).setPreferredWidth(25);
+                colmod.getColumn(col).setMinWidth(25);
+            }
+        }
+    }
 
     /**
      * Update the GUI.
+     * @param locale
+     * @param date
      */
-    public final void updateComponents(Locale locale)
+    public final void updateComponents(Locale locale, Date date)
     {
         selectedDateLabel.setVisible(showDateLabel);
         if(locale== null)
             locale = Locale.getDefault();
-        calendarModel.initializeNameLists(locale);
+        theDate = date!= null? date:Calendar.getInstance(locale).getTime();
+        calendarModel = new CalendarModel(locale, date);
         monthDayTable.setModel(calendarModel);
+        monthComboBox.setSelectedItem(calendarModel.getMonth());
         validate();
         repaint();
     }
 
-    private void setDate()
+    public void setDate()
     {
         selectedDateLabel.setText(theDate.toString());
         selectedDateLabel.invalidate();
@@ -189,13 +213,13 @@ public class DateChooser extends javax.swing.JPanel
      * @param locale the locale properties
      * @return the newly configured
      */
-    static public Date showDialog(Window window, Date date, Locale locale)
+    static public Date showDialog(Window window, final Date date, Locale locale)
     {
         final DateChooser chsr = new DateChooser(date, locale);
 
         final JDialog dlg = new JDialog(window,
                                         Dialog.ModalityType.APPLICATION_MODAL);
-        dlg.setTitle("Font Chooser");
+        dlg.setTitle("Date Chooser");
         dlg.getContentPane().setLayout(new AbsoluteLayout());
         Dimension chsrDim = chsr.getPreferredSize();
         dlg.getContentPane().setSize(chsrDim);
@@ -211,7 +235,7 @@ public class DateChooser extends javax.swing.JPanel
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                chsr.updateComponents(chsr.getLocale());
+                chsr.updateComponents(chsr.getLocale(), date);
                 dlg.setVisible(false);
             }
         });
@@ -264,44 +288,49 @@ public class DateChooser extends javax.swing.JPanel
 
         jPanel1 = new javax.swing.JPanel();
         monthComboBox = new javax.swing.JComboBox();
-        yearComboBox = new javax.swing.JComboBox();
+        yearSpinner = new javax.swing.JSpinner();
         selectedDateLabel = new javax.swing.JTextField();
         monthDayScrollPane = new javax.swing.JScrollPane();
         monthDayTable = new javax.swing.JTable();
 
-        setMinimumSize(new java.awt.Dimension(0, 0));
+        setMaximumSize(new java.awt.Dimension(260, 260));
+        setMinimumSize(new java.awt.Dimension(260, 260));
+        setName(""); // NOI18N
+        setPreferredSize(new java.awt.Dimension(260, 260));
         setLayout(new java.awt.BorderLayout());
 
         monthComboBox.setModel(new DefaultComboBoxModel
             (calendarModel.getMonthsLong().toArray()));
         jPanel1.add(monthComboBox);
 
-        yearComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel1.add(yearComboBox);
+        yearSpinner.setModel(new javax.swing.SpinnerNumberModel(2016, 0, 2300, 1));
+        jPanel1.add(yearSpinner);
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         selectedDateLabel.setEditable(false);
-        selectedDateLabel.setText(org.openide.util.NbBundle.getMessage(DateChooser.class, "DateChooser.selectedDateLabel.text")); // NOI18N
-        selectedDateLabel.setMaximumSize(new java.awt.Dimension(2147483647, 24));
-        selectedDateLabel.setMinimumSize(new java.awt.Dimension(4, 24));
+        selectedDateLabel.setText(org.openide.util.NbBundle.getMessage(DateChooser.class, "DateChooser.text")); // NOI18N
+        selectedDateLabel.setMaximumSize(null);
+        selectedDateLabel.setMinimumSize(null);
+        selectedDateLabel.setName(""); // NOI18N
         selectedDateLabel.setPreferredSize(new java.awt.Dimension(46, 24));
         add(selectedDateLabel, java.awt.BorderLayout.PAGE_END);
 
-        monthDayTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        monthDayTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        monthDayTable.setAutoscrolls(false);
+        monthDayScrollPane.setMaximumSize(new java.awt.Dimension(452, 220));
+        monthDayScrollPane.setMinimumSize(new java.awt.Dimension(452, 220));
+        monthDayScrollPane.setPreferredSize(new java.awt.Dimension(452, 220));
+
+        monthDayTable.setModel(calendarModel);
+        monthDayTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        monthDayTable.setColumnSelectionAllowed(false);
+        monthDayTable.setMaximumSize(new java.awt.Dimension(450, 240));
+        monthDayTable.setMinimumSize(new java.awt.Dimension(450, 240));
+        monthDayTable.setPreferredSize(new java.awt.Dimension(450, 240));
         monthDayTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        monthDayTable.setShowHorizontalLines(false);
+        monthDayTable.setShowVerticalLines(false);
+        monthDayTable.getTableHeader().setResizingAllowed(false);
+        monthDayTable.getTableHeader().setReorderingAllowed(false);
         monthDayScrollPane.setViewportView(monthDayTable);
 
         add(monthDayScrollPane, java.awt.BorderLayout.CENTER);
@@ -313,7 +342,7 @@ public class DateChooser extends javax.swing.JPanel
     private javax.swing.JScrollPane monthDayScrollPane;
     private javax.swing.JTable monthDayTable;
     private javax.swing.JTextField selectedDateLabel;
-    private javax.swing.JComboBox yearComboBox;
+    private javax.swing.JSpinner yearSpinner;
     // End of variables declaration//GEN-END:variables
     private static final String CLASS_NAME = DateChooser.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);

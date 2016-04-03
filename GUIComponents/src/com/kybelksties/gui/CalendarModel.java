@@ -18,13 +18,17 @@ public class CalendarModel extends AbstractTableModel {
     private ArrayList<String> weekDaysShort;
     private ArrayList<String> monthsLong;
     private ArrayList<String> monthsShort;
+
+    private Date theDate = Calendar.getInstance().getTime();
     private int dayOffset = 0;
     private int daysInMonth = 31;
     private int daysInPreviousMonth = 31;
     private int rows = 5;
     private int[][] daysTableData;
+    private Locale locale;
 
     final void initializeNameLists(Locale locale) {
+        this.locale = locale;
         weekDaysLong = makeLocalNameArray(Calendar.DAY_OF_WEEK, Calendar.LONG, locale);
         weekDaysShort = makeLocalNameArray(Calendar.DAY_OF_WEEK, Calendar.SHORT, locale);
         monthsLong = makeLocalNameArray(Calendar.MONTH, Calendar.LONG, locale);
@@ -55,29 +59,31 @@ public class CalendarModel extends AbstractTableModel {
         this(locale, Calendar.getInstance().getTime());
     }
 
-    public CalendarModel(Locale locale, Date date) {
+    public CalendarModel(Locale locale, Date newDate) {
         initializeNameLists(locale);
+        if(newDate!=null)
+            theDate = newDate;
         final Calendar calendar = Calendar.getInstance(locale);
-        calendar.setTime(date);
+        calendar.setTime(theDate);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
-        dayOffset = calendar.get(Calendar.DAY_OF_WEEK);
+        dayOffset = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         int monthContainingDate = calendar.get(Calendar.MONTH);
         int previousMonth = monthContainingDate == 1
                 ? 12
                 : monthContainingDate - 1;
         daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        rows = (daysInMonth + dayOffset) / 7;
+        rows = (daysInMonth + dayOffset + 1) / 7;
         calendar.set(Calendar.MONTH, previousMonth);
         daysInPreviousMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         daysTableData = new int[rows][7];
         if (dayOffset > 0) {
-            for (int i = dayOffset - 1; i > 0; i--) {
-                daysTableData[0][dayOffset - i] = daysInPreviousMonth - i;
+            for (int i = dayOffset; i > -1; i--) {
+                daysTableData[0][dayOffset - i] = daysInPreviousMonth - i + 1;
             }
         }
         for (int i = dayOffset; i < rows * 7; i++) {
-            daysTableData[i / 7][i % 7] = i % daysInMonth;
+            daysTableData[i / 7][i % 7] = ((i - dayOffset) % daysInMonth) + 1;
         }
         fireTableDataChanged();
     }
@@ -94,8 +100,9 @@ public class CalendarModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int row, int col) {
-        if(daysTableData != null)
+        if (daysTableData != null) {
             return daysTableData[row][col];
+        }
         return null;
     }
 
@@ -118,6 +125,12 @@ public class CalendarModel extends AbstractTableModel {
 
     public ArrayList<String> getMonthsShort() {
         return monthsShort;
+    }
+
+    String getMonth() {
+        final Calendar calendar = Calendar.getInstance(locale);
+        calendar.setTime(theDate);
+        return calendar.getDisplayName(Calendar.MONTH,Calendar.LONG,locale);
     }
 
 }
