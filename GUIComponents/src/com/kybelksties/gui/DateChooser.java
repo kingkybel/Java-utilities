@@ -51,6 +51,7 @@ public class DateChooser extends javax.swing.JPanel
     private Date theDate = null;
     static private CalendarModel calendarModel = new CalendarModel();
     static private Locale locale = Locale.getDefault();
+
     /**
      * Get the value of configuredFont
      *
@@ -89,6 +90,7 @@ public class DateChooser extends javax.swing.JPanel
     {
         this.locale = locale;
     }
+
     /**
      * Add PropertyChangeListener.
      *
@@ -140,15 +142,15 @@ public class DateChooser extends javax.swing.JPanel
     /**
      * Creates new form FontChooser.
      *
-     * @param date initial font, if null use default
+     * @param date   initial font, if null use default
      * @param locale
      */
     public DateChooser(Date date, Locale locale)
     {
         initComponents();
         setColumnWidths();
-        yearSpinner.setEditor(new JSpinner.NumberEditor(yearSpinner,"#"));
-        
+        yearSpinner.setEditor(new JSpinner.NumberEditor(yearSpinner, "#"));
+
         monthDayTable.setRowSelectionAllowed(false);
         selectedDateLabel.setSize(selectedDateLabel.getHeight(), 70);
 
@@ -157,7 +159,7 @@ public class DateChooser extends javax.swing.JPanel
             theDate = date;
         }
         this.setSize(WIDTH, WIDTH);
-        updateComponents(locale,date);
+        updateComponents(locale, date);
     }
 
     /**
@@ -167,13 +169,13 @@ public class DateChooser extends javax.swing.JPanel
     {
         this(null, Locale.getDefault());
     }
-    
+
     final void setColumnWidths()
     {
         if (monthDayTable.isVisible())
         {
             TableColumnModel colmod = monthDayTable.getColumnModel();
-            for (int col = 0; col<colmod.getColumnCount();col++)
+            for (int col = 0; col < colmod.getColumnCount(); col++)
             {
                 colmod.getColumn(col).setPreferredWidth(25);
                 colmod.getColumn(col).setMinWidth(25);
@@ -183,15 +185,18 @@ public class DateChooser extends javax.swing.JPanel
 
     /**
      * Update the GUI.
+     *
      * @param locale
      * @param date
      */
     public final void updateComponents(Locale locale, Date date)
     {
         selectedDateLabel.setVisible(showDateLabel);
-        if(locale== null)
+        if (locale == null)
+        {
             locale = Locale.getDefault();
-        theDate = date!= null? date:Calendar.getInstance(locale).getTime();
+        }
+        theDate = date != null ? date : Calendar.getInstance(locale).getTime();
         calendarModel = new CalendarModel(locale, date);
         monthDayTable.setModel(calendarModel);
         monthComboBox.setSelectedItem(calendarModel.getMonth());
@@ -284,29 +289,37 @@ public class DateChooser extends javax.swing.JPanel
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
-        jPanel1 = new javax.swing.JPanel();
+        monthYearPanel = new javax.swing.JPanel();
         monthComboBox = new javax.swing.JComboBox();
         yearSpinner = new javax.swing.JSpinner();
         selectedDateLabel = new javax.swing.JTextField();
         monthDayScrollPane = new javax.swing.JScrollPane();
         monthDayTable = new javax.swing.JTable();
 
-        setMaximumSize(new java.awt.Dimension(260, 260));
-        setMinimumSize(new java.awt.Dimension(260, 260));
+        setMaximumSize(new java.awt.Dimension(290, 180));
+        setMinimumSize(new java.awt.Dimension(290, 180));
         setName(""); // NOI18N
-        setPreferredSize(new java.awt.Dimension(260, 260));
+        setPreferredSize(new java.awt.Dimension(290, 180));
         setLayout(new java.awt.BorderLayout());
 
         monthComboBox.setModel(new DefaultComboBoxModel
             (calendarModel.getMonthsLong().toArray()));
-        jPanel1.add(monthComboBox);
+        monthComboBox.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                monthComboBoxActionPerformed(evt);
+            }
+        });
+        monthYearPanel.add(monthComboBox);
 
         yearSpinner.setModel(new javax.swing.SpinnerNumberModel(2016, 0, 2300, 1));
-        jPanel1.add(yearSpinner);
+        monthYearPanel.add(yearSpinner);
 
-        add(jPanel1, java.awt.BorderLayout.PAGE_START);
+        add(monthYearPanel, java.awt.BorderLayout.PAGE_START);
 
         selectedDateLabel.setEditable(false);
         selectedDateLabel.setText(org.openide.util.NbBundle.getMessage(DateChooser.class, "DateChooser.text")); // NOI18N
@@ -322,6 +335,7 @@ public class DateChooser extends javax.swing.JPanel
 
         monthDayTable.setModel(calendarModel);
         monthDayTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        monthDayTable.setAutoscrolls(false);
         monthDayTable.setColumnSelectionAllowed(false);
         monthDayTable.setMaximumSize(new java.awt.Dimension(450, 240));
         monthDayTable.setMinimumSize(new java.awt.Dimension(450, 240));
@@ -336,11 +350,16 @@ public class DateChooser extends javax.swing.JPanel
         add(monthDayScrollPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void monthComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_monthComboBoxActionPerformed
+    {//GEN-HEADEREND:event_monthComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_monthComboBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JComboBox monthComboBox;
     private javax.swing.JScrollPane monthDayScrollPane;
     private javax.swing.JTable monthDayTable;
+    private javax.swing.JPanel monthYearPanel;
     private javax.swing.JTextField selectedDateLabel;
     private javax.swing.JSpinner yearSpinner;
     // End of variables declaration//GEN-END:variables

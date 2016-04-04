@@ -131,7 +131,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
 
     private void dateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dateButtonActionPerformed
         Date f = DateChooser.showDialog(this, null, Locale.getDefault());
-        System.out.println("Font=" + f.toString());
+        System.out.println("Date=" + f.toString());
     }//GEN-LAST:event_dateButtonActionPerformed
 
     /**
