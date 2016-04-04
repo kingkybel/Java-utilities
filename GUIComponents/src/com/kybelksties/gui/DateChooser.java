@@ -86,9 +86,14 @@ public class DateChooser extends javax.swing.JPanel
                                                   new PropertyChangeSupport(
                                                           this);
 
-    public void setLocale(Locale locale)
+    /**
+     *
+     * @param locale
+     */
+    public void setDateLocale(Locale locale)
     {
-        this.locale = locale;
+        DateChooser.locale = locale;
+        updateComponents(locale, theDate);
     }
 
     /**
@@ -352,7 +357,7 @@ public class DateChooser extends javax.swing.JPanel
 
     private void monthComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_monthComboBoxActionPerformed
     {//GEN-HEADEREND:event_monthComboBoxActionPerformed
-        // TODO add your handling code here:
+        calendarModel.setMonth(monthComboBox.getSelectedIndex());
     }//GEN-LAST:event_monthComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
