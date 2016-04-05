@@ -53,6 +53,9 @@
               <SpinnerModel initial="2016" maximum="2300" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="yearSpinnerStateChanged"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -128,6 +131,9 @@
               <TableHeader reorderingAllowed="false" resizingAllowed="false"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="monthDayTableMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
