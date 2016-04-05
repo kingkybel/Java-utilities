@@ -1,5 +1,6 @@
 package com.kybelksties.gui;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -245,6 +246,12 @@ public class CalendarModel extends AbstractTableModel
     public int getDayInMonth()
     {
         return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public String getDateAsString()
+    {
+        Date date = calendar.getTime();
+        return (new SimpleDateFormat()).format(date);
     }
 
 }

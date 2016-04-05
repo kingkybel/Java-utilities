@@ -252,7 +252,7 @@ public class DateChooser extends javax.swing.JPanel
                 Object.class, new MyTableCellRenderer());
         monthComboBox.setSelectedItem(calendarModel.getMonth());
         yearSpinner.setValue(calendarModel.getYear());
-        selectedDateLabel.setText(calendarModel.getDate().toString());
+        selectedDateLabel.setText(calendarModel.getDateAsString());
 
         validate();
         repaint();
