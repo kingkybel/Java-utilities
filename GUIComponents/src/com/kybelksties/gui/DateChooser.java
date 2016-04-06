@@ -52,7 +52,7 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
 public class DateChooser extends javax.swing.JPanel
 {
 
-    static private CalendarModel calendarModel = new CalendarModel();
+    static private DateChooserModel calendarModel = new DateChooserModel();
     static private Locale locale = Locale.getDefault();
 
     /**
@@ -158,7 +158,7 @@ public class DateChooser extends javax.swing.JPanel
                                                        int row,
                                                        int column)
         {
-            CalendarModel model = (CalendarModel) table.getModel();
+            DateChooserModel model = (DateChooserModel) table.getModel();
             Component c = super.getTableCellRendererComponent(table,
                                                               value,
                                                               isSelected,

@@ -49,12 +49,12 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author dieter
  */
-public class CalendarModel
+public class DateChooserModel
         extends AbstractTableModel
         implements SpinnerModel, ComboBoxModel
 {
 
-    private static final String CLASS_NAME = CalendarModel.class.getName();
+    private static final String CLASS_NAME = DateChooserModel.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private static ArrayList<String> makeLocalNameArray(int type, int style,
@@ -96,7 +96,7 @@ public class CalendarModel
     /**
      * Default construct.
      */
-    public CalendarModel()
+    public DateChooserModel()
     {
         this(Locale.getDefault());
     }
@@ -106,7 +106,7 @@ public class CalendarModel
      *
      * @param locale
      */
-    public CalendarModel(Locale locale)
+    public DateChooserModel(Locale locale)
     {
         this(locale, Calendar.getInstance().getTime());
     }
@@ -117,7 +117,7 @@ public class CalendarModel
      * @param locale  the different locale
      * @param newDate the date to create the model for
      */
-    public CalendarModel(Locale locale, Date newDate)
+    public DateChooserModel(Locale locale, Date newDate)
     {
         initializeNameLists(locale);
         yearSpinnerModel = new SpinnerNumberModel(calendar.get(Calendar.YEAR),
