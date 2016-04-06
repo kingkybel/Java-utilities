@@ -38,8 +38,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
-import javax.swing.SpinnerModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
@@ -147,37 +147,6 @@ public class DateChooser extends javax.swing.JPanel
         updateComponents(locale, calendarModel.getDate());
     }
 
-    /**
-     * Creates new form DateChooser.
-     *
-     * @param locale local names and formats etc
-     * @param date   a date for which to display a calendar month
-     */
-    public DateChooser(Locale locale, Date date)
-    {
-        initComponents();
-        setColumnWidths();
-        yearSpinner.setEditor(new JSpinner.NumberEditor(yearSpinner, "#"));
-
-        monthDayTable.setRowSelectionAllowed(false);
-        selectedDateLabel.setSize(selectedDateLabel.getHeight(), 70);
-
-        if (date != null)
-        {
-            date = calendarModel.getDate();
-        }
-        this.setSize(WIDTH, WIDTH);
-        updateComponents(locale, date);
-    }
-
-    /**
-     * Default construct.
-     */
-    public DateChooser()
-    {
-        this(Locale.getDefault(), null);
-    }
-
     static class MyTableCellRenderer extends DefaultTableCellRenderer
     {
 
@@ -202,7 +171,7 @@ public class DateChooser extends javax.swing.JPanel
                 c.setBackground(Color.LIGHT_GRAY);
                 c.setForeground(Color.BLACK);
             }
-            else if ((int) value == model.getDayInMonth())
+            else if ((int) value == model.getDayOfMonth())
             {
                 c.setBackground(Color.CYAN);
                 c.setForeground(Color.YELLOW);
@@ -214,6 +183,41 @@ public class DateChooser extends javax.swing.JPanel
             }
             return c;
         }
+    }
+
+    /**
+     * Creates new form DateChooser.
+     *
+     * @param locale local names and formats etc
+     * @param date   a date for which to display a calendar month
+     */
+    public DateChooser(Locale locale, Date date)
+    {
+        initComponents();
+        setColumnWidths();
+        yearSpinner.setEditor(new JSpinner.NumberEditor(yearSpinner, "#"));
+        yearSpinner.setModel(calendarModel);
+        monthComboBox.setModel(calendarModel);
+        monthDayTable.setModel(calendarModel);
+        monthDayTable.setDefaultRenderer(Object.class,
+                                         new MyTableCellRenderer());
+
+        selectedDateLabel.setSize(selectedDateLabel.getHeight(), 70);
+
+        if (date != null)
+        {
+            date = calendarModel.getDate();
+        }
+        this.setSize(WIDTH, WIDTH);
+        updateComponents(locale, date);
+    }
+
+    /**
+     * Default construct.
+     */
+    public DateChooser()
+    {
+        this(Locale.getDefault(), null);
     }
 
     final void setColumnWidths()
@@ -232,8 +236,8 @@ public class DateChooser extends javax.swing.JPanel
     /**
      * Update the GUI.
      *
-     * @param locale
-     * @param date
+     * @param locale new locale
+     * @param date   new date
      */
     public final void updateComponents(Locale locale, Date date)
     {
@@ -246,10 +250,23 @@ public class DateChooser extends javax.swing.JPanel
         {
             date = calendarModel.getDate();
         }
-        calendarModel = new CalendarModel(locale, date);
-        monthDayTable.setModel(calendarModel);
-        monthDayTable.setDefaultRenderer(
-                Object.class, new MyTableCellRenderer());
+        if (!locale.equals(calendarModel.getLocale()))
+        {
+            calendarModel.setLocale(locale);
+            monthComboBox.setModel(
+                    new DefaultComboBoxModel(
+                            calendarModel.getMonthsLong().toArray()));
+            monthDayTable.setModel(calendarModel);
+
+            for (int i = 0; i < monthDayTable.getColumnCount(); i++)
+            {
+                TableColumn column = monthDayTable.getTableHeader().
+                            getColumnModel().getColumn(i);
+
+                column.setHeaderValue(calendarModel.getShortWeekdayName(i));
+            }
+        }
+        calendarModel.setDate(date);
         monthComboBox.setSelectedItem(calendarModel.getMonth());
         yearSpinner.setValue(calendarModel.getYear());
         selectedDateLabel.setText(calendarModel.getDateAsString());
@@ -343,6 +360,7 @@ public class DateChooser extends javax.swing.JPanel
         monthYearPanel = new javax.swing.JPanel();
         monthComboBox = new javax.swing.JComboBox();
         yearSpinner = new javax.swing.JSpinner();
+        localeComboBox = new javax.swing.JComboBox();
         selectedDateLabel = new javax.swing.JTextField();
         monthDayScrollPane = new javax.swing.JScrollPane();
         monthDayTable = new javax.swing.JTable();
@@ -353,6 +371,8 @@ public class DateChooser extends javax.swing.JPanel
         setPreferredSize(new java.awt.Dimension(290, 180));
         setLayout(new java.awt.BorderLayout());
 
+        monthYearPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         monthComboBox.setModel(new DefaultComboBoxModel
             (calendarModel.getMonthsLong().toArray()));
         monthComboBox.addActionListener(new java.awt.event.ActionListener()
@@ -362,7 +382,7 @@ public class DateChooser extends javax.swing.JPanel
                 monthComboBoxActionPerformed(evt);
             }
         });
-        monthYearPanel.add(monthComboBox);
+        monthYearPanel.add(monthComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 0, 80, -1));
 
         yearSpinner.setModel(new javax.swing.SpinnerNumberModel(2016, 0, 2300, 1));
         yearSpinner.addChangeListener(new javax.swing.event.ChangeListener()
@@ -372,7 +392,19 @@ public class DateChooser extends javax.swing.JPanel
                 yearSpinnerStateChanged(evt);
             }
         });
-        monthYearPanel.add(yearSpinner);
+        monthYearPanel.add(yearSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 20));
+
+        localeComboBox.setModel(new DefaultComboBoxModel
+            (Locale.getAvailableLocales()));
+        localeComboBox.setSelectedItem(Locale.getDefault());
+        localeComboBox.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                localeComboBoxActionPerformed(evt);
+            }
+        });
+        monthYearPanel.add(localeComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 80, -1));
 
         add(monthYearPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -391,7 +423,6 @@ public class DateChooser extends javax.swing.JPanel
         monthDayTable.setModel(calendarModel);
         monthDayTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         monthDayTable.setAutoscrolls(false);
-        monthDayTable.setColumnSelectionAllowed(false);
         monthDayTable.setMaximumSize(new java.awt.Dimension(450, 240));
         monthDayTable.setMinimumSize(new java.awt.Dimension(450, 240));
         monthDayTable.setPreferredSize(new java.awt.Dimension(450, 240));
@@ -414,7 +445,8 @@ public class DateChooser extends javax.swing.JPanel
 
     private void monthComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_monthComboBoxActionPerformed
     {//GEN-HEADEREND:event_monthComboBoxActionPerformed
-        calendarModel.setMonth(monthComboBox.getSelectedIndex());
+        calendarModel.setMonthByIndex(monthComboBox.getSelectedIndex());
+        updateComponents(locale, calendarModel.getDate());
     }//GEN-LAST:event_monthComboBoxActionPerformed
 
     private void monthDayTableMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_monthDayTableMouseClicked
@@ -426,23 +458,31 @@ public class DateChooser extends javax.swing.JPanel
         if (row == 0 && newDay > 7)
         {
             // set prev month
+            calendarModel.setPreviousMonth();
         }
         else if (row == monthDayTable.getRowCount() - 1 && newDay < 28)
         {
             // set next month
+            calendarModel.setNextMonth();
         }
 
-        calendarModel.setDay(newDay);
-
+        calendarModel.setDayOfMonth(newDay);
+        updateComponents(locale, calendarModel.getDate());
     }//GEN-LAST:event_monthDayTableMouseClicked
 
     private void yearSpinnerStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_yearSpinnerStateChanged
     {//GEN-HEADEREND:event_yearSpinnerStateChanged
-        SpinnerModel yearModel = yearSpinner.getModel();
-        calendarModel.setYear((int) yearModel.getValue());
+        updateComponents(locale, calendarModel.getDate());
     }//GEN-LAST:event_yearSpinnerStateChanged
 
+    private void localeComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_localeComboBoxActionPerformed
+    {//GEN-HEADEREND:event_localeComboBoxActionPerformed
+        locale = (Locale) localeComboBox.getSelectedItem();
+        updateComponents(locale, calendarModel.getDate());
+    }//GEN-LAST:event_localeComboBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox localeComboBox;
     private javax.swing.JComboBox monthComboBox;
     private javax.swing.JScrollPane monthDayScrollPane;
     private javax.swing.JTable monthDayTable;
@@ -450,7 +490,6 @@ public class DateChooser extends javax.swing.JPanel
     private javax.swing.JTextField selectedDateLabel;
     private javax.swing.JSpinner yearSpinner;
     // End of variables declaration//GEN-END:variables
-    private static final String CLASS_NAME = DateChooser.class
-                                .getName();
+    private static final String CLASS_NAME = DateChooser.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }
