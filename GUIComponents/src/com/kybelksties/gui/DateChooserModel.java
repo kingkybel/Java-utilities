@@ -391,7 +391,7 @@ public class DateChooserModel
     public String getDateAsString()
     {
         Date date = calendar.getTime();
-        return (new SimpleDateFormat("dd MMMM yyyy")).format(date);
+        return (new SimpleDateFormat("dd MMMM yyyy", locale)).format(date);
     }
 
     /**

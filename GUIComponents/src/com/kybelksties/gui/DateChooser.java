@@ -90,8 +90,9 @@ public class DateChooser extends javax.swing.JPanel
                                                           this);
 
     /**
+     * Set a new locale for this chooser.
      *
-     * @param locale
+     * @param locale the new locale
      */
     public void setDateLocale(Locale locale)
     {
@@ -131,7 +132,7 @@ public class DateChooser extends javax.swing.JPanel
      *
      * @return the value of showSample
      */
-    public boolean getShowSample()
+    public boolean getShowDateLabel()
     {
         return showDateLabel;
     }
@@ -141,10 +142,32 @@ public class DateChooser extends javax.swing.JPanel
      *
      * @param showSample new value of showSample
      */
-    public void setShowSample(boolean showSample)
+    public void setShowDateLabel(boolean showSample)
     {
         this.showDateLabel = showSample;
         updateComponents(locale, calendarModel.getDate());
+    }
+
+    private boolean showLocaleDropDown = true;
+
+    /**
+     * Get the value of showLocaleDropDown
+     *
+     * @return the value of showLocaleDropDown
+     */
+    public boolean isShowLocaleDropDown()
+    {
+        return showLocaleDropDown;
+    }
+
+    /**
+     * Set the value of showLocaleDropDown
+     *
+     * @param showLocaleDropDown new value of showLocaleDropDown
+     */
+    public void setShowLocaleDropDown(boolean showLocaleDropDown)
+    {
+        this.showLocaleDropDown = showLocaleDropDown;
     }
 
     static class MyTableCellRenderer extends DefaultTableCellRenderer
@@ -242,6 +265,7 @@ public class DateChooser extends javax.swing.JPanel
     public final void updateComponents(Locale locale, Date date)
     {
         selectedDateLabel.setVisible(showDateLabel);
+        localeComboBox.setVisible(showLocaleDropDown);
         if (locale == null)
         {
             locale = Locale.getDefault();

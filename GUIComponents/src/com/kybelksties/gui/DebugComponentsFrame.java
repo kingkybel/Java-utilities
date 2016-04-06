@@ -44,7 +44,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     public DebugComponentsFrame()
     {
         initComponents();
-        //      fontChooser2.setShowSample(false);
+        //      fontChooser2.setShowDateLabel(false);
     }
 
     /**
