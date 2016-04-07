@@ -62,6 +62,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         dateButton = new javax.swing.JButton();
         colorButton = new javax.swing.JButton();
         fontButton = new javax.swing.JButton();
+        dateChooser1 = new com.kybelksties.gui.DateChooser();
         tablePanel = new javax.swing.JPanel();
         tableScrollPane = new javax.swing.JScrollPane();
         colorTable = new javax.swing.JTable();
@@ -103,6 +104,9 @@ public class DebugComponentsFrame extends javax.swing.JFrame
             }
         });
         controlPanel.add(fontButton);
+
+        dateChooser1.setDateLocale(null);
+        controlPanel.add(dateChooser1);
 
         mainSplitPane.setBottomComponent(controlPanel);
 
@@ -212,6 +216,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     private javax.swing.JTable colorTable;
     private javax.swing.JPanel controlPanel;
     private javax.swing.JButton dateButton;
+    private com.kybelksties.gui.DateChooser dateChooser1;
     private javax.swing.JButton fontButton;
     private javax.swing.JSplitPane mainSplitPane;
     private javax.swing.JPanel tablePanel;

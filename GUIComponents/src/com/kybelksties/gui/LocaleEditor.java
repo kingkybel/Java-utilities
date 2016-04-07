@@ -34,7 +34,7 @@ import org.openide.explorer.propertysheet.PropertyEnv;
 import org.openide.explorer.propertysheet.PropertyModel;
 
 /**
- * Inplace editor for the selection of (primitive) locales.
+ * Inplace editor for the selection of locales.
  *
  * @author kybelksd
  */
@@ -182,10 +182,10 @@ public class LocaleEditor
         @Override
         public void reset()
         {
-            String mouse = editor.getValue().toString();
-            if (mouse != null)
+            String value = editor.getValue().toString();
+            if (value != null)
             {
-                localeComboBox.setSelectedItem(mouse);
+                localeComboBox.setSelectedItem(value);
             }
         }
 

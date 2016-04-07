@@ -171,6 +171,8 @@ extends SimpleBeanInfo
             properties[PROPERTY_cursorSet] = new PropertyDescriptor ( "cursorSet", com.kybelksties.gui.DateChooser.class, "isCursorSet", null ); // NOI18N
             properties[PROPERTY_date] = new PropertyDescriptor ( "date", com.kybelksties.gui.DateChooser.class, "getDate", "setDate" ); // NOI18N
             properties[PROPERTY_dateLocale] = new PropertyDescriptor ( "dateLocale", com.kybelksties.gui.DateChooser.class, null, "setDateLocale" ); // NOI18N
+            properties[PROPERTY_dateLocale].setPreferred ( true );
+            properties[PROPERTY_dateLocale].setPropertyEditorClass ( com.kybelksties.gui.LocaleEditor.class );
             properties[PROPERTY_debugGraphicsOptions] = new PropertyDescriptor ( "debugGraphicsOptions", com.kybelksties.gui.DateChooser.class, "getDebugGraphicsOptions", "setDebugGraphicsOptions" ); // NOI18N
             properties[PROPERTY_displayable] = new PropertyDescriptor ( "displayable", com.kybelksties.gui.DateChooser.class, "isDisplayable", null ); // NOI18N
             properties[PROPERTY_doubleBuffered] = new PropertyDescriptor ( "doubleBuffered", com.kybelksties.gui.DateChooser.class, "isDoubleBuffered", "setDoubleBuffered" ); // NOI18N

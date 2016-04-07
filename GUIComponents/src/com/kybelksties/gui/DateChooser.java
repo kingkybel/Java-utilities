@@ -101,6 +101,16 @@ public class DateChooser extends javax.swing.JPanel
     }
 
     /**
+     * Retrieve the locale for this chooser.
+     *
+     * @return the set locale
+     */
+    public Locale getDateLocale()
+    {
+        return locale;
+    }
+
+    /**
      * Add PropertyChangeListener.
      *
      * @param listener

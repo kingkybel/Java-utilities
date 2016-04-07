@@ -77,6 +77,11 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fontButtonActionPerformed"/>
               </Events>
             </Component>
+            <Component class="com.kybelksties.gui.DateChooser" name="dateChooser1">
+              <Properties>
+                <Property name="dateLocale" type="java.util.Locale" value="null"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="tablePanel">
