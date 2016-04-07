@@ -56,9 +56,9 @@ public class DateChooser extends javax.swing.JPanel
     static private Locale locale = Locale.getDefault();
 
     /**
-     * Get the value of configuredFont
+     * Get the value of configuredDate
      *
-     * @return the value of configuredFont
+     * @return the value of configuredDate
      */
     public Date getDate()
     {
@@ -66,9 +66,9 @@ public class DateChooser extends javax.swing.JPanel
     }
 
     /**
-     * Set the value of configuredFont.
+     * Set the value of configuredDate.
      *
-     * @param newDate new value of configuredFont
+     * @param newDate new value of configuredDate
      */
     public void setDate(Date newDate)
     {
@@ -76,7 +76,7 @@ public class DateChooser extends javax.swing.JPanel
             !newDate.equals(calendarModel.getDate()))
         {
             propertyChangeSupport.firePropertyChange(
-                    "configuredFont",
+                    "configuredDate",
                     calendarModel.getDate(),
                     newDate);
 
@@ -303,7 +303,7 @@ public class DateChooser extends javax.swing.JPanel
      * Show a dialog with this component.
      *
      * @param window parent
-     * @param date   an initial font
+     * @param date   an initial date
      * @param locale the locale properties
      * @return the chosen date
      */
@@ -417,6 +417,14 @@ public class DateChooser extends javax.swing.JPanel
             }
         });
         monthYearPanel.add(yearSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 20));
+
+        localeComboBox.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                localeComboBoxActionPerformed(evt);
+            }
+        });
         monthYearPanel.add(localeComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 0, 90, -1));
 
         add(monthYearPanel, java.awt.BorderLayout.PAGE_START);
@@ -487,6 +495,13 @@ public class DateChooser extends javax.swing.JPanel
     {//GEN-HEADEREND:event_yearSpinnerStateChanged
         updateComponents(locale, calendarModel.getDate());
     }//GEN-LAST:event_yearSpinnerStateChanged
+
+    private void localeComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_localeComboBoxActionPerformed
+    {//GEN-HEADEREND:event_localeComboBoxActionPerformed
+        locale = (Locale) localeComboBox.getSelectedItem();
+        updateComponents(locale, calendarModel.getDate());
+
+    }//GEN-LAST:event_localeComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.kybelksties.gui.LocaleComboBox localeComboBox;

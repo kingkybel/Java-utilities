@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * @date: 2015-12-16
+ * @date: 2016-04-08
  * @author: Dieter J Kybelksties
  */
 package com.kybelksties.gui;
@@ -45,6 +45,13 @@ public class LocaleComboBox extends JComboBox
     private static final Locale[] allLocales = Locale.getAvailableLocales();
     private final TreeMap<String, Locale> mapString2Locale = new TreeMap<>();
 
+    @Override
+    public final void setSelectedItem(Object o)
+    {
+        String localeString = (String) o;
+        super.setSelectedItem(localeString);
+    }
+
     /**
      * Default construct.
      */
@@ -55,6 +62,7 @@ public class LocaleComboBox extends JComboBox
             addLocaleItem(locale);
         }
         setRenderer(new ComboBoxRenderer());
+        setSelectedItem(Locale.getDefault().getDisplayName());
     }
 
     @Override
@@ -82,8 +90,8 @@ public class LocaleComboBox extends JComboBox
      */
     public final void addLocaleItem(Locale locale)
     {
-        addItem(locale.getDisplayName());
-        mapString2Locale.put(locale.getDisplayName(), locale);
+        addItem(locale.getDisplayName(locale));
+        mapString2Locale.put(locale.getDisplayName(locale), locale);
     }
 
     /**
