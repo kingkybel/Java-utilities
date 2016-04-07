@@ -48,7 +48,8 @@ public class EnvironmentVarDialog extends javax.swing.JDialog
      * @param modal      true: modal
      * @param categories array of categories
      */
-    public EnvironmentVarDialog(javax.swing.JDialog parent, boolean modal,
+    public EnvironmentVarDialog(javax.swing.JDialog parent,
+                                boolean modal,
                                 Object[] categories)
     {
         super(parent, modal);
