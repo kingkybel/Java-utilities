@@ -54,55 +54,80 @@ public class DebugComponentsFrame extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
+        mainSplitPane = new javax.swing.JSplitPane();
+        controlPanel = new javax.swing.JPanel();
+        dateButton = new javax.swing.JButton();
         colorButton = new javax.swing.JButton();
         fontButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        dateButton = new javax.swing.JButton();
+        tablePanel = new javax.swing.JPanel();
+        tableScrollPane = new javax.swing.JScrollPane();
+        colorTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
+
+        mainSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        controlPanel.setMaximumSize(new java.awt.Dimension(213, 35));
+        controlPanel.setPreferredSize(new java.awt.Dimension(213, 35));
+
+        dateButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.dateButton.text")); // NOI18N
+        dateButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                dateButtonActionPerformed(evt);
+            }
+        });
+        controlPanel.add(dateButton);
 
         colorButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.colorButton.text")); // NOI18N
-        colorButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        colorButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 colorButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(colorButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 190, -1, -1));
+        controlPanel.add(colorButton);
 
         fontButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.fontButton.text")); // NOI18N
-        fontButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        fontButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 fontButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(fontButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, -1, -1));
+        controlPanel.add(fontButton);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        mainSplitPane.setBottomComponent(controlPanel);
+
+        tablePanel.setLayout(new javax.swing.BoxLayout(tablePanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        colorTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][]
+            {
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null}
             },
-            new String [] {
+            new String []
+            {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tableScrollPane.setViewportView(colorTable);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 440, 170));
+        tablePanel.add(tableScrollPane);
 
-        dateButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.dateButton.text")); // NOI18N
-        dateButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dateButtonActionPerformed(evt);
-            }
-        });
-        getContentPane().add(dateButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 190, -1, -1));
+        mainSplitPane.setLeftComponent(tablePanel);
+
+        getContentPane().add(mainSplitPane);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -119,7 +144,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
                                             Color.CYAN,
                                             Color.MAGENTA);
 
-        jTable1.setModel(colSet);
+        colorTable.setModel(colSet);
         repaint();
     }//GEN-LAST:event_colorButtonActionPerformed
 
@@ -184,10 +209,13 @@ public class DebugComponentsFrame extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton colorButton;
+    private javax.swing.JTable colorTable;
+    private javax.swing.JPanel controlPanel;
     private javax.swing.JButton dateButton;
     private javax.swing.JButton fontButton;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JSplitPane mainSplitPane;
+    private javax.swing.JPanel tablePanel;
+    private javax.swing.JScrollPane tableScrollPane;
     // End of variables declaration//GEN-END:variables
     private static final String CLASS_NAME =
                                 DebugComponentsFrame.class.getName();

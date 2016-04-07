@@ -234,8 +234,10 @@ extends SimpleBeanInfo
             properties[PROPERTY_requestFocusEnabled] = new PropertyDescriptor ( "requestFocusEnabled", com.kybelksties.gui.DateChooser.class, "isRequestFocusEnabled", "setRequestFocusEnabled" ); // NOI18N
             properties[PROPERTY_rootPane] = new PropertyDescriptor ( "rootPane", com.kybelksties.gui.DateChooser.class, "getRootPane", null ); // NOI18N
             properties[PROPERTY_showDateLabel] = new PropertyDescriptor ( "showDateLabel", com.kybelksties.gui.DateChooser.class, "getShowDateLabel", "setShowDateLabel" ); // NOI18N
+            properties[PROPERTY_showDateLabel].setPreferred ( true );
             properties[PROPERTY_showing] = new PropertyDescriptor ( "showing", com.kybelksties.gui.DateChooser.class, "isShowing", null ); // NOI18N
             properties[PROPERTY_showLocaleDropDown] = new PropertyDescriptor ( "showLocaleDropDown", com.kybelksties.gui.DateChooser.class, "isShowLocaleDropDown", "setShowLocaleDropDown" ); // NOI18N
+            properties[PROPERTY_showLocaleDropDown].setPreferred ( true );
             properties[PROPERTY_size] = new PropertyDescriptor ( "size", com.kybelksties.gui.DateChooser.class, "getSize", "setSize" ); // NOI18N
             properties[PROPERTY_toolkit] = new PropertyDescriptor ( "toolkit", com.kybelksties.gui.DateChooser.class, "getToolkit", null ); // NOI18N
             properties[PROPERTY_toolTipText] = new PropertyDescriptor ( "toolTipText", com.kybelksties.gui.DateChooser.class, "getToolTipText", "setToolTipText" ); // NOI18N
