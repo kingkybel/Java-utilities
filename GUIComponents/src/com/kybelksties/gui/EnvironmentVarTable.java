@@ -23,7 +23,6 @@ package com.kybelksties.gui;
 
 import com.kybelksties.general.EnvironmentVarTableModel;
 import com.kybelksties.general.PodVariant;
-import com.kybelksties.gui.IndividualCellEditor;
 import java.awt.Component;
 import java.util.logging.Logger;
 import javax.swing.JTable;

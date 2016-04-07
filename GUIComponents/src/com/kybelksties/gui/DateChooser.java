@@ -384,7 +384,7 @@ public class DateChooser extends javax.swing.JPanel
         monthYearPanel = new javax.swing.JPanel();
         monthComboBox = new javax.swing.JComboBox();
         yearSpinner = new javax.swing.JSpinner();
-        localeComboBox = new javax.swing.JComboBox();
+        localeComboBox = new com.kybelksties.gui.LocaleComboBox();
         selectedDateLabel = new javax.swing.JTextField();
         monthDayScrollPane = new javax.swing.JScrollPane();
         monthDayTable = new javax.swing.JTable();
@@ -417,18 +417,7 @@ public class DateChooser extends javax.swing.JPanel
             }
         });
         monthYearPanel.add(yearSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 20));
-
-        localeComboBox.setModel(new DefaultComboBoxModel
-            (Locale.getAvailableLocales()));
-        localeComboBox.setSelectedItem(Locale.getDefault());
-        localeComboBox.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                localeComboBoxActionPerformed(evt);
-            }
-        });
-        monthYearPanel.add(localeComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 80, -1));
+        monthYearPanel.add(localeComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 0, 90, -1));
 
         add(monthYearPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -499,14 +488,8 @@ public class DateChooser extends javax.swing.JPanel
         updateComponents(locale, calendarModel.getDate());
     }//GEN-LAST:event_yearSpinnerStateChanged
 
-    private void localeComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_localeComboBoxActionPerformed
-    {//GEN-HEADEREND:event_localeComboBoxActionPerformed
-        locale = (Locale) localeComboBox.getSelectedItem();
-        updateComponents(locale, calendarModel.getDate());
-    }//GEN-LAST:event_localeComboBoxActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox localeComboBox;
+    private com.kybelksties.gui.LocaleComboBox localeComboBox;
     private javax.swing.JComboBox monthComboBox;
     private javax.swing.JScrollPane monthDayScrollPane;
     private javax.swing.JTable monthDayTable;
