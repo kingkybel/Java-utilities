@@ -50,26 +50,26 @@ import javax.swing.table.AbstractTableModel;
  * @author dieter
  */
 public class DateChooserModel
-        extends AbstractTableModel
-        implements SpinnerModel, ComboBoxModel
+        extends AbstractTableModel // for choosing day of month
+        implements SpinnerModel, // for selection of year
+                   ComboBoxModel // for choosin a month
 {
 
     private static final String CLASS_NAME = DateChooserModel.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    private static ArrayList<String> makeLocalNameArray(int type, int style,
-                                                        Locale locale)
+    private static ArrayList<String> nameArray(int type, int style,
+                                               Locale locale)
     {
         ArrayList<String> reval = new ArrayList<>();
         Map<Integer, String> sorted = new TreeMap<>();
-        Map<String, Integer> calendarMap =
-                             Calendar.getInstance().getDisplayNames(
-                                     type,
-                                     style,
-                                     locale);
-        for (String s : calendarMap.keySet())
+        Map<String, Integer> nameMap = Calendar.getInstance().getDisplayNames(
+                             type,
+                             style,
+                             locale);
+        for (String s : nameMap.keySet())
         {
-            sorted.put(calendarMap.get(s), s);
+            sorted.put(nameMap.get(s), s);
         }
         for (Integer i : sorted.keySet())
         {
@@ -104,7 +104,7 @@ public class DateChooserModel
     /**
      * Construct with a locale different from the default.
      *
-     * @param locale
+     * @param locale the different locale
      */
     public DateChooserModel(Locale locale)
     {
@@ -133,14 +133,10 @@ public class DateChooserModel
     final void initializeNameLists(Locale locale)
     {
         this.locale = locale;
-        weekDaysLong = makeLocalNameArray(Calendar.DAY_OF_WEEK,
-                                          Calendar.LONG,
-                                          locale);
-        weekDaysShort = makeLocalNameArray(Calendar.DAY_OF_WEEK,
-                                           Calendar.SHORT,
-                                           locale);
-        monthsLong = makeLocalNameArray(Calendar.MONTH, Calendar.LONG, locale);
-        monthsShort = makeLocalNameArray(Calendar.MONTH, Calendar.SHORT, locale);
+        weekDaysLong = nameArray(Calendar.DAY_OF_WEEK, Calendar.LONG, locale);
+        weekDaysShort = nameArray(Calendar.DAY_OF_WEEK, Calendar.SHORT, locale);
+        monthsLong = nameArray(Calendar.MONTH, Calendar.LONG, locale);
+        monthsShort = nameArray(Calendar.MONTH, Calendar.SHORT, locale);
     }
 
     private void updateModel(Date newDate)
@@ -388,8 +384,9 @@ public class DateChooserModel
     }
 
     /**
+     * Retrieve the selected date as a string fomated using the chosen locale.
      *
-     * @return
+     * @return the date as String
      */
     public String getDateAsString()
     {
