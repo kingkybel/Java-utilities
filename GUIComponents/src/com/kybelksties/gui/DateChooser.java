@@ -239,7 +239,7 @@ public class DateChooser extends javax.swing.JPanel
         monthComboBox.setModel(new DefaultComboBoxModel(dateChooserModel.
                 getMonthsLong().toArray()));
 
-        selectedDateLabel.setSize(selectedDateLabel.getHeight(), 70);
+        previewText.setSize(previewText.getHeight(), 70);
 
         this.setSize(WIDTH, WIDTH);
         updateComponents();
@@ -271,7 +271,7 @@ public class DateChooser extends javax.swing.JPanel
      */
     public final void updateComponents()
     {
-        selectedDateLabel.setVisible(showDateLabel);
+        previewText.setVisible(showDateLabel);
         localeComboBox.setVisible(showLocaleDropDown);
         if (dateChooserModel.getLocale() == null)
         {
@@ -300,7 +300,7 @@ public class DateChooser extends javax.swing.JPanel
 //        dateChooserModel.setDate(date);
         monthComboBox.setSelectedItem(dateChooserModel.getMonth());
         yearSpinner.setValue(dateChooserModel.getYear());
-        selectedDateLabel.setText(dateChooserModel.getDateAsString());
+        previewText.setText(dateChooserModel.getDateAsString());
 
         validate();
         repaint();
@@ -389,12 +389,15 @@ public class DateChooser extends javax.swing.JPanel
     {
 
         monthYearPanel = new javax.swing.JPanel();
+        daySpinner = new javax.swing.JSpinner();
         monthComboBox = new javax.swing.JComboBox();
         yearSpinner = new javax.swing.JSpinner();
-        localeComboBox = new com.kybelksties.gui.LocaleComboBox();
-        selectedDateLabel = new javax.swing.JTextField();
+        showTableButton = new javax.swing.JToggleButton();
         monthDayScrollPane = new javax.swing.JScrollPane();
         monthDayTable = new javax.swing.JTable();
+        customizationPanel = new javax.swing.JPanel();
+        previewText = new javax.swing.JTextField();
+        localeComboBox = new com.kybelksties.gui.LocaleComboBox();
 
         setMaximumSize(new java.awt.Dimension(290, 180));
         setMinimumSize(new java.awt.Dimension(290, 180));
@@ -402,7 +405,7 @@ public class DateChooser extends javax.swing.JPanel
         setPreferredSize(new java.awt.Dimension(290, 180));
         setLayout(new java.awt.BorderLayout());
 
-        monthYearPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        monthYearPanel.add(daySpinner);
 
         monthComboBox.addActionListener(new java.awt.event.ActionListener()
         {
@@ -411,7 +414,7 @@ public class DateChooser extends javax.swing.JPanel
                 monthComboBoxActionPerformed(evt);
             }
         });
-        monthYearPanel.add(monthComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 0, 80, -1));
+        monthYearPanel.add(monthComboBox);
 
         yearSpinner.setModel(new javax.swing.SpinnerNumberModel(2016, 0, 2300, 1));
         yearSpinner.addChangeListener(new javax.swing.event.ChangeListener()
@@ -421,26 +424,19 @@ public class DateChooser extends javax.swing.JPanel
                 yearSpinnerStateChanged(evt);
             }
         });
-        monthYearPanel.add(yearSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 20));
+        monthYearPanel.add(yearSpinner);
 
-        localeComboBox.addActionListener(new java.awt.event.ActionListener()
+        showTableButton.setText(org.openide.util.NbBundle.getMessage(DateChooser.class, "DateChooser.showTableButton.text")); // NOI18N
+        showTableButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                localeComboBoxActionPerformed(evt);
+                showTableButtonActionPerformed(evt);
             }
         });
-        monthYearPanel.add(localeComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 0, 90, -1));
+        monthYearPanel.add(showTableButton);
 
         add(monthYearPanel, java.awt.BorderLayout.PAGE_START);
-
-        selectedDateLabel.setEditable(false);
-        selectedDateLabel.setText(org.openide.util.NbBundle.getMessage(DateChooser.class, "DateChooser.text")); // NOI18N
-        selectedDateLabel.setMaximumSize(null);
-        selectedDateLabel.setMinimumSize(null);
-        selectedDateLabel.setName(""); // NOI18N
-        selectedDateLabel.setPreferredSize(new java.awt.Dimension(46, 24));
-        add(selectedDateLabel, java.awt.BorderLayout.PAGE_END);
 
         monthDayScrollPane.setMaximumSize(new java.awt.Dimension(452, 220));
         monthDayScrollPane.setMinimumSize(new java.awt.Dimension(452, 220));
@@ -466,6 +462,27 @@ public class DateChooser extends javax.swing.JPanel
         monthDayScrollPane.setViewportView(monthDayTable);
 
         add(monthDayScrollPane, java.awt.BorderLayout.CENTER);
+
+        previewText.setEditable(false);
+        previewText.setText(org.openide.util.NbBundle.getMessage(DateChooser.class, "DateChooser.text")); // NOI18N
+        previewText.setMaximumSize(null);
+        previewText.setMinimumSize(null);
+        previewText.setName(""); // NOI18N
+        previewText.setPreferredSize(new java.awt.Dimension(110, 24));
+        customizationPanel.add(previewText);
+
+        localeComboBox.setMinimumSize(new java.awt.Dimension(0, 0));
+        localeComboBox.setPreferredSize(new java.awt.Dimension(160, 22));
+        localeComboBox.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                localeComboBoxActionPerformed(evt);
+            }
+        });
+        customizationPanel.add(localeComboBox);
+
+        add(customizationPanel, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
 
     private void monthComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_monthComboBoxActionPerformed
@@ -507,13 +524,21 @@ public class DateChooser extends javax.swing.JPanel
 
     }//GEN-LAST:event_localeComboBoxActionPerformed
 
+    private void showTableButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_showTableButtonActionPerformed
+    {//GEN-HEADEREND:event_showTableButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_showTableButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel customizationPanel;
+    private javax.swing.JSpinner daySpinner;
     private com.kybelksties.gui.LocaleComboBox localeComboBox;
     private javax.swing.JComboBox monthComboBox;
     private javax.swing.JScrollPane monthDayScrollPane;
     private javax.swing.JTable monthDayTable;
     private javax.swing.JPanel monthYearPanel;
-    private javax.swing.JTextField selectedDateLabel;
+    private javax.swing.JTextField previewText;
+    private javax.swing.JToggleButton showTableButton;
     private javax.swing.JSpinner yearSpinner;
     // End of variables declaration//GEN-END:variables
     private static final String CLASS_NAME = DateChooser.class.getName();
