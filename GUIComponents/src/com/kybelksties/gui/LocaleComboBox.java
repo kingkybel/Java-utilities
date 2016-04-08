@@ -23,7 +23,6 @@ package com.kybelksties.gui;
 
 import java.awt.Component;
 import java.awt.Font;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -33,7 +32,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 /**
- * A combo-box extension specialised for some basic geometric shapes.
+ * A combo-box extension specialised for locales.
  *
  * @author Dieter J Kybelksties
  */
@@ -45,13 +44,6 @@ public class LocaleComboBox extends JComboBox
     private static final Locale[] allLocales = Locale.getAvailableLocales();
     private final TreeMap<String, Locale> mapString2Locale = new TreeMap<>();
 
-    @Override
-    public final void setSelectedItem(Object o)
-    {
-        String localeString = (String) o;
-        super.setSelectedItem(localeString);
-    }
-
     /**
      * Default construct.
      */
@@ -59,10 +51,22 @@ public class LocaleComboBox extends JComboBox
     {
         for (Locale locale : allLocales)
         {
-            addLocaleItem(locale);
+            addLocaleIToMap(locale);
+        }
+        for (String displayName : mapString2Locale.keySet())
+        {
+            addItem(displayName);
         }
         setRenderer(new ComboBoxRenderer());
         setSelectedItem(Locale.getDefault().getDisplayName());
+
+    }
+
+    @Override
+    public final void setSelectedItem(Object o)
+    {
+        String localeString = (String) o;
+        super.setSelectedItem(localeString);
     }
 
     @Override
@@ -84,13 +88,12 @@ public class LocaleComboBox extends JComboBox
     }
 
     /**
-     * Add an item to the drop-down.
+     * Add an item to the sting-locale map.
      *
-     * @param locale
+     * @param locale the locale to add
      */
-    public final void addLocaleItem(Locale locale)
+    private void addLocaleIToMap(Locale locale)
     {
-        addItem(locale.getDisplayName(locale));
         mapString2Locale.put(locale.getDisplayName(locale), locale);
     }
 
@@ -101,12 +104,7 @@ public class LocaleComboBox extends JComboBox
      */
     public String[] getChoicesAsStrings()
     {
-        ArrayList<String> strList = new ArrayList<>();
-        for (int i = 0; i < this.getItemCount(); i++)
-        {
-            strList.add(getItemAt(i).toString());
-        }
-        return (String[]) strList.toArray();
+        return (String[]) mapString2Locale.keySet().toArray();
 
     }
 
