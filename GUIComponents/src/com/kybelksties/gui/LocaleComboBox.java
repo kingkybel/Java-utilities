@@ -51,7 +51,7 @@ public class LocaleComboBox extends JComboBox
     {
         for (Locale locale : allLocales)
         {
-            addLocaleIToMap(locale);
+            addLocaleToMap(locale);
         }
         for (String displayName : mapString2Locale.keySet())
         {
@@ -88,11 +88,11 @@ public class LocaleComboBox extends JComboBox
     }
 
     /**
-     * Add an item to the sting-locale map.
+     * Add an item to the string-locale map.
      *
      * @param locale the locale to add
      */
-    private void addLocaleIToMap(Locale locale)
+    private void addLocaleToMap(Locale locale)
     {
         mapString2Locale.put(locale.getDisplayName(locale), locale);
     }
