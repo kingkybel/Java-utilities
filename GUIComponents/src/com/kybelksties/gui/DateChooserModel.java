@@ -347,9 +347,12 @@ public class DateChooserModel
      */
     public void setLocale(Locale locale)
     {
-        this.locale = locale;
-        initializeNameLists(locale);
-        updateModel(calendar.getTime());
+        if (locale != null && this.locale != locale)
+        {
+            this.locale = locale;
+            initializeNameLists(locale);
+            updateModel(calendar.getTime());
+        }
     }
 
     /**
