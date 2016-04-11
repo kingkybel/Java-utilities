@@ -39,6 +39,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -54,7 +55,6 @@ public class DateChooser extends javax.swing.JPanel
 {
 
     private DateChooserModel dateChooserModel;
-//    static private Locale locale = Locale.getDefault();
 
     /**
      * Get the value of configuredDate
@@ -109,6 +109,28 @@ public class DateChooser extends javax.swing.JPanel
     public Locale getDateLocale()
     {
         return dateChooserModel.getLocale();
+    }
+
+    private boolean showTable = false;
+
+    /**
+     * Get the value of showTable
+     *
+     * @return the value of showTable
+     */
+    public boolean isShowTable()
+    {
+        return showTable;
+    }
+
+    /**
+     * Set the value of showTable
+     *
+     * @param showTable new value of showTable
+     */
+    public void setShowTable(boolean showTable)
+    {
+        this.showTable = showTable;
     }
 
     /**
@@ -208,7 +230,7 @@ public class DateChooser extends javax.swing.JPanel
             else if ((int) value == model.getDayOfMonth())
             {
                 c.setBackground(Color.CYAN);
-                c.setForeground(Color.YELLOW);
+                c.setForeground(Color.RED);
             }
             else
             {
@@ -236,8 +258,8 @@ public class DateChooser extends javax.swing.JPanel
         monthDayTable.setModel(dateChooserModel);
         monthDayTable.setDefaultRenderer(Object.class,
                                          new MyTableCellRenderer());
-        monthComboBox.setModel(new DefaultComboBoxModel(dateChooserModel.
-                getMonthsLong().toArray()));
+        monthComboBox.setModel(new DefaultComboBoxModel(
+                dateChooserModel.getMonthsLong().toArray()));
 
         previewText.setSize(previewText.getHeight(), 70);
 
@@ -273,6 +295,9 @@ public class DateChooser extends javax.swing.JPanel
     {
         previewText.setVisible(showDateLabel);
         localeComboBox.setVisible(showLocaleDropDown);
+        monthDayScrollPane.setVisible(showTable);
+        customizationPanel.setVisible(showTable);
+
         if (dateChooserModel.getLocale() == null)
         {
             dateChooserModel.setLocale(Locale.getDefault());
@@ -281,25 +306,28 @@ public class DateChooser extends javax.swing.JPanel
         {
             dateChooserModel.setDate(Calendar.getInstance().getTime());
         }
-//        if (!locale.equals(dateChooserModel.getLocale()))
+        monthComboBox.setModel(
+                new DefaultComboBoxModel(
+                        dateChooserModel.getMonthsLong().toArray()));
+        monthDayTable.setModel(dateChooserModel);
+
+        for (int i = 0; i < monthDayTable.getColumnCount(); i++)
         {
-//            dateChooserModel.setLocale(locale);
-            monthComboBox.setModel(
-                    new DefaultComboBoxModel(
-                            dateChooserModel.getMonthsLong().toArray()));
-            monthDayTable.setModel(dateChooserModel);
+            TableColumn column = monthDayTable.getTableHeader().
+                        getColumnModel().getColumn(i);
 
-            for (int i = 0; i < monthDayTable.getColumnCount(); i++)
-            {
-                TableColumn column = monthDayTable.getTableHeader().
-                            getColumnModel().getColumn(i);
-
-                column.setHeaderValue(dateChooserModel.getShortWeekdayName(i));
-            }
+            column.setHeaderValue(dateChooserModel.getShortWeekdayName(i));
         }
-//        dateChooserModel.setDate(date);
+
         monthComboBox.setSelectedItem(dateChooserModel.getMonth());
         yearSpinner.setValue(dateChooserModel.getYear());
+
+        daySpinner.setModel(
+                new SpinnerNumberModel(dateChooserModel.getDayOfMonth(),
+                                       1,
+                                       dateChooserModel.getMaxDayOfMonth(),
+                                       1));
+
         previewText.setText(dateChooserModel.getDateAsString());
 
         validate();
@@ -392,7 +420,7 @@ public class DateChooser extends javax.swing.JPanel
         daySpinner = new javax.swing.JSpinner();
         monthComboBox = new javax.swing.JComboBox();
         yearSpinner = new javax.swing.JSpinner();
-        showTableButton = new javax.swing.JToggleButton();
+        showTableButton = new javax.swing.JCheckBox();
         monthDayScrollPane = new javax.swing.JScrollPane();
         monthDayTable = new javax.swing.JTable();
         customizationPanel = new javax.swing.JPanel();
@@ -405,6 +433,13 @@ public class DateChooser extends javax.swing.JPanel
         setPreferredSize(new java.awt.Dimension(290, 180));
         setLayout(new java.awt.BorderLayout());
 
+        daySpinner.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                daySpinnerStateChanged(evt);
+            }
+        });
         monthYearPanel.add(daySpinner);
 
         monthComboBox.addActionListener(new java.awt.event.ActionListener()
@@ -524,9 +559,16 @@ public class DateChooser extends javax.swing.JPanel
 
     }//GEN-LAST:event_localeComboBoxActionPerformed
 
+    private void daySpinnerStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_daySpinnerStateChanged
+    {//GEN-HEADEREND:event_daySpinnerStateChanged
+        dateChooserModel.setDayOfMonth((int) daySpinner.getValue());
+        updateComponents();
+    }//GEN-LAST:event_daySpinnerStateChanged
+
     private void showTableButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_showTableButtonActionPerformed
     {//GEN-HEADEREND:event_showTableButtonActionPerformed
-        // TODO add your handling code here:
+        showTable = showTableButton.isSelected();
+        updateComponents();
     }//GEN-LAST:event_showTableButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -538,7 +580,7 @@ public class DateChooser extends javax.swing.JPanel
     private javax.swing.JTable monthDayTable;
     private javax.swing.JPanel monthYearPanel;
     private javax.swing.JTextField previewText;
-    private javax.swing.JToggleButton showTableButton;
+    private javax.swing.JCheckBox showTableButton;
     private javax.swing.JSpinner yearSpinner;
     // End of variables declaration//GEN-END:variables
     private static final String CLASS_NAME = DateChooser.class.getName();

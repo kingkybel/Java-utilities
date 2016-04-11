@@ -374,6 +374,16 @@ public class DateChooserModel
     }
 
     /**
+     * Retrieve the maximal day in the month (28,29,30 or 31).
+     *
+     * @return the maximal day number
+     */
+    public int getMaxDayOfMonth()
+    {
+        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
      * Retrieve the short weekday name for a weekday index.
      *
      * @param dayIndex
