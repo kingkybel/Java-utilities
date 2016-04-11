@@ -462,6 +462,7 @@ public class DateChooser extends javax.swing.JPanel
         monthYearPanel.add(yearSpinner);
 
         showTableButton.setText(org.openide.util.NbBundle.getMessage(DateChooser.class, "DateChooser.showTableButton.text")); // NOI18N
+        showTableButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/down.png"))); // NOI18N
         showTableButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -568,6 +569,17 @@ public class DateChooser extends javax.swing.JPanel
     private void showTableButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_showTableButtonActionPerformed
     {//GEN-HEADEREND:event_showTableButtonActionPerformed
         showTable = showTableButton.isSelected();
+        if (showTable)
+        {
+            showTableButton.setIcon(new javax.swing.ImageIcon(getClass().
+                    getResource("/images/up.png")));
+        }
+        else
+        {
+            showTableButton.setIcon(new javax.swing.ImageIcon(getClass().
+                    getResource("/images/down.png")));
+        }
+
         updateComponents();
     }//GEN-LAST:event_showTableButtonActionPerformed
 
