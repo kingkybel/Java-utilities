@@ -77,7 +77,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fontButtonActionPerformed"/>
               </Events>
             </Component>
-            <Component class="com.kybelksties.gui.DateChooser" name="dateChooser2">
+            <Component class="com.kybelksties.gui.DatePicker" name="datePicker1">
             </Component>
           </SubComponents>
         </Container>

@@ -27,12 +27,15 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import static java.awt.image.ImageObserver.WIDTH;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -40,10 +43,10 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
 
@@ -52,10 +55,11 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
  *
  * @author kybelksd
  */
-public class DateChooser extends javax.swing.JPanel
+public class DatePicker extends javax.swing.JPanel
 {
 
     private DateChooserModel dateChooserModel;
+    private final DateChooser dateChooser;
 
     /**
      * Get the value of configuredDate
@@ -242,28 +246,62 @@ public class DateChooser extends javax.swing.JPanel
         }
     }
 
+    // Define Show Popup ActionListener
+    static class ShowPopupActionListener implements ActionListener
+    {
+
+        private final Component parent;
+        private final Component popupComp;
+
+        ShowPopupActionListener(Component parent, Component popupComp)
+        {
+            this.parent = parent;
+            this.popupComp = popupComp;
+        }
+
+        @Override
+        public synchronized void actionPerformed(ActionEvent actionEvent)
+        {
+            PopupFactory factory = PopupFactory.getSharedInstance();
+            Random random = new Random();
+            int x = random.nextInt(200);
+            int y = random.nextInt(200);
+            final Popup popup = factory.getPopup(parent,
+                                                 popupComp,
+                                                 parent.getLocationOnScreen().x,
+                                                 parent.getLocationOnScreen().y);
+            popup.show();
+            ActionListener hider = new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    popup.hide();
+                }
+            };
+        }
+    }
+
     /**
      * Creates new form DateChooser.
      *
      * @param locale local names and formats etc
      * @param date   a date for which to display a calendar month
      */
-    public DateChooser(Locale locale, Date date)
+    public DatePicker(Locale locale, Date date)
     {
         initComponents();
-        setColumnWidths();
         dateChooserModel = new DateChooserModel(locale, date);
         yearSpinner.setEditor(new JSpinner.NumberEditor(yearSpinner, "#"));
         yearSpinner.setModel(dateChooserModel);
         monthComboBox.setModel(dateChooserModel);
-        monthDayTable.setModel(dateChooserModel);
-        monthDayTable.setDefaultRenderer(Object.class,
-                                         new MyTableCellRenderer());
         monthComboBox.setModel(new DefaultComboBoxModel(
                 dateChooserModel.getMonthsLong().toArray()));
-
-        previewText.setSize(previewText.getHeight(), 70);
-
+        dateChooser = new DateChooser(locale, date);
+        ActionListener actionListener = new ShowPopupActionListener(
+                       showTableButton,
+                       dateChooser);
+        showTableButton.addActionListener(actionListener);
         this.setSize(WIDTH, WIDTH);
         updateComponents();
     }
@@ -271,22 +309,9 @@ public class DateChooser extends javax.swing.JPanel
     /**
      * Default construct.
      */
-    public DateChooser()
+    public DatePicker()
     {
         this(Locale.getDefault(), null);
-    }
-
-    final void setColumnWidths()
-    {
-        if (monthDayTable.isVisible())
-        {
-            TableColumnModel colmod = monthDayTable.getColumnModel();
-            for (int col = 0; col < colmod.getColumnCount(); col++)
-            {
-                colmod.getColumn(col).setPreferredWidth(25);
-                colmod.getColumn(col).setMinWidth(25);
-            }
-        }
     }
 
     /**
@@ -294,10 +319,6 @@ public class DateChooser extends javax.swing.JPanel
      */
     public final void updateComponents()
     {
-        previewText.setVisible(showDateLabel);
-        localeComboBox.setVisible(showLocaleDropDown);
-        monthDayScrollPane.setVisible(showTable);
-        customizationPanel.setVisible(showTable);
 
         if (dateChooserModel.getLocale() == null)
         {
@@ -310,15 +331,6 @@ public class DateChooser extends javax.swing.JPanel
         monthComboBox.setModel(
                 new DefaultComboBoxModel(
                         dateChooserModel.getMonthsLong().toArray()));
-        monthDayTable.setModel(dateChooserModel);
-
-        for (int i = 0; i < monthDayTable.getColumnCount(); i++)
-        {
-            TableColumn column = monthDayTable.getTableHeader().
-                        getColumnModel().getColumn(i);
-
-            column.setHeaderValue(dateChooserModel.getShortWeekdayName(i));
-        }
 
         monthComboBox.setSelectedItem(dateChooserModel.getMonth());
         yearSpinner.setValue(dateChooserModel.getYear());
@@ -328,8 +340,6 @@ public class DateChooser extends javax.swing.JPanel
                                        1,
                                        dateChooserModel.getMaxDayOfMonth(),
                                        1));
-
-        previewText.setText(dateChooserModel.getDateAsString());
 
         validate();
         repaint();
@@ -345,7 +355,7 @@ public class DateChooser extends javax.swing.JPanel
      */
     static public Date showDialog(Window window, final Date date, Locale locale)
     {
-        final DateChooser chsr = new DateChooser(locale, date);
+        final DatePicker chsr = new DatePicker(locale, date);
 
         final JDialog dlg = new JDialog(window,
                                         Dialog.ModalityType.APPLICATION_MODAL);
@@ -422,18 +432,10 @@ public class DateChooser extends javax.swing.JPanel
         monthComboBox = new javax.swing.JComboBox();
         yearSpinner = new javax.swing.JSpinner();
         showTableButton = new javax.swing.JCheckBox();
-        monthDayScrollPane = new javax.swing.JScrollPane();
-        monthDayTable = new javax.swing.JTable();
-        customizationPanel = new javax.swing.JPanel();
-        previewText = new javax.swing.JTextField();
-        localeComboBox = new com.kybelksties.gui.LocaleComboBox();
 
         setName(""); // NOI18N
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new java.awt.CardLayout());
 
-        monthYearPanel.setMaximumSize(new java.awt.Dimension(300, 34));
-        monthYearPanel.setMinimumSize(new java.awt.Dimension(300, 34));
-        monthYearPanel.setPreferredSize(new java.awt.Dimension(300, 34));
         monthYearPanel.setLayout(new javax.swing.BoxLayout(monthYearPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         daySpinner.setMaximumSize(new java.awt.Dimension(55, 20));
@@ -471,7 +473,7 @@ public class DateChooser extends javax.swing.JPanel
         });
         monthYearPanel.add(yearSpinner);
 
-        showTableButton.setText(org.openide.util.NbBundle.getMessage(DateChooser.class, "DateChooser.showTableButton.text")); // NOI18N
+        showTableButton.setText(org.openide.util.NbBundle.getMessage(DatePicker.class, "DatePicker.showTableButton.text")); // NOI18N
         showTableButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/down.png"))); // NOI18N
         showTableButton.addActionListener(new java.awt.event.ActionListener()
         {
@@ -482,53 +484,7 @@ public class DateChooser extends javax.swing.JPanel
         });
         monthYearPanel.add(showTableButton);
 
-        add(monthYearPanel, java.awt.BorderLayout.PAGE_START);
-
-        monthDayScrollPane.setMaximumSize(new java.awt.Dimension(452, 220));
-        monthDayScrollPane.setMinimumSize(new java.awt.Dimension(452, 220));
-        monthDayScrollPane.setPreferredSize(new java.awt.Dimension(452, 220));
-
-        monthDayTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-        monthDayTable.setAutoscrolls(false);
-        monthDayTable.setMaximumSize(new java.awt.Dimension(450, 240));
-        monthDayTable.setMinimumSize(new java.awt.Dimension(450, 240));
-        monthDayTable.setPreferredSize(new java.awt.Dimension(450, 240));
-        monthDayTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        monthDayTable.setShowHorizontalLines(false);
-        monthDayTable.setShowVerticalLines(false);
-        monthDayTable.getTableHeader().setResizingAllowed(false);
-        monthDayTable.getTableHeader().setReorderingAllowed(false);
-        monthDayTable.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
-                monthDayTableMouseClicked(evt);
-            }
-        });
-        monthDayScrollPane.setViewportView(monthDayTable);
-
-        add(monthDayScrollPane, java.awt.BorderLayout.CENTER);
-
-        previewText.setEditable(false);
-        previewText.setText(org.openide.util.NbBundle.getMessage(DateChooser.class, "DateChooser.text")); // NOI18N
-        previewText.setMaximumSize(null);
-        previewText.setMinimumSize(null);
-        previewText.setName(""); // NOI18N
-        previewText.setPreferredSize(new java.awt.Dimension(110, 24));
-        customizationPanel.add(previewText);
-
-        localeComboBox.setMinimumSize(new java.awt.Dimension(0, 0));
-        localeComboBox.setPreferredSize(new java.awt.Dimension(160, 22));
-        localeComboBox.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                localeComboBoxActionPerformed(evt);
-            }
-        });
-        customizationPanel.add(localeComboBox);
-
-        add(customizationPanel, java.awt.BorderLayout.PAGE_END);
+        add(monthYearPanel, "card2");
     }// </editor-fold>//GEN-END:initComponents
 
     private void monthComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_monthComboBoxActionPerformed
@@ -537,38 +493,10 @@ public class DateChooser extends javax.swing.JPanel
         updateComponents();
     }//GEN-LAST:event_monthComboBoxActionPerformed
 
-    private void monthDayTableMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_monthDayTableMouseClicked
-    {//GEN-HEADEREND:event_monthDayTableMouseClicked
-        int col = monthDayTable.getSelectedColumn();
-        int row = monthDayTable.getSelectedRow();
-
-        int newDay = (int) monthDayTable.getValueAt(row, col);
-        if (row == 0 && newDay > 7)
-        {
-            // set prev month
-            dateChooserModel.setPreviousMonth();
-        }
-        else if (row == monthDayTable.getRowCount() - 1 && newDay < 28)
-        {
-            // set next month
-            dateChooserModel.setNextMonth();
-        }
-
-        dateChooserModel.setDayOfMonth(newDay);
-        updateComponents();
-    }//GEN-LAST:event_monthDayTableMouseClicked
-
     private void yearSpinnerStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_yearSpinnerStateChanged
     {//GEN-HEADEREND:event_yearSpinnerStateChanged
         updateComponents();
     }//GEN-LAST:event_yearSpinnerStateChanged
-
-    private void localeComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_localeComboBoxActionPerformed
-    {//GEN-HEADEREND:event_localeComboBoxActionPerformed
-        dateChooserModel.setLocale((Locale) localeComboBox.getSelectedItem());
-        updateComponents();
-
-    }//GEN-LAST:event_localeComboBoxActionPerformed
 
     private void daySpinnerStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_daySpinnerStateChanged
     {//GEN-HEADEREND:event_daySpinnerStateChanged
@@ -594,17 +522,12 @@ public class DateChooser extends javax.swing.JPanel
     }//GEN-LAST:event_showTableButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel customizationPanel;
     private javax.swing.JSpinner daySpinner;
-    private com.kybelksties.gui.LocaleComboBox localeComboBox;
     private javax.swing.JComboBox monthComboBox;
-    private javax.swing.JScrollPane monthDayScrollPane;
-    private javax.swing.JTable monthDayTable;
     private javax.swing.JPanel monthYearPanel;
-    private javax.swing.JTextField previewText;
     private javax.swing.JCheckBox showTableButton;
     private javax.swing.JSpinner yearSpinner;
     // End of variables declaration//GEN-END:variables
-    private static final String CLASS_NAME = DateChooser.class.getName();
+    private static final String CLASS_NAME = DatePicker.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }
