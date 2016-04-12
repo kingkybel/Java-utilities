@@ -29,7 +29,6 @@ import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import static java.awt.image.ImageObserver.WIDTH;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Calendar;
@@ -299,10 +298,9 @@ public class DatePicker extends javax.swing.JPanel
                 dateChooserModel.getMonthsLong().toArray()));
         dateChooser = new DateChooser(locale, date);
         ActionListener actionListener = new ShowPopupActionListener(
-                       showTableButton,
+                       this,
                        dateChooser);
         showTableButton.addActionListener(actionListener);
-        this.setSize(WIDTH, WIDTH);
         updateComponents();
     }
 
