@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
@@ -200,6 +201,16 @@ public class DateChooser extends javax.swing.JPanel
     public void setShowLocaleDropDown(boolean showLocaleDropDown)
     {
         this.showLocaleDropDown = showLocaleDropDown;
+    }
+
+    JCheckBox getOkButton()
+    {
+        return okButton;
+    }
+
+    JCheckBox getCancelButton()
+    {
+        return cancelButton;
     }
 
     static class MyTableCellRenderer extends DefaultTableCellRenderer
@@ -578,12 +589,12 @@ public class DateChooser extends javax.swing.JPanel
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_okButtonActionPerformed
     {//GEN-HEADEREND:event_okButtonActionPerformed
-        setVisible(false);
+        // setVisible(false);
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_cancelButtonActionPerformed
     {//GEN-HEADEREND:event_cancelButtonActionPerformed
-        setVisible(false);
+        // setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

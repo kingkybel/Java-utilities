@@ -45,6 +45,10 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     {
         initComponents();
         //      fontChooser2.setShowDateLabel(false);
+        outputPanel1.writelnHighlight("HIGHLITE");
+        outputPanel2.writelnError("ERROR");
+        outputPanel1.write("Normal");
+        outputPanel1.writeHighlight("!!!");
     }
 
     /**
@@ -63,6 +67,8 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         colorButton = new javax.swing.JButton();
         fontButton = new javax.swing.JButton();
         datePicker1 = new com.kybelksties.gui.DatePicker();
+        outputPanel1 = new com.kybelksties.gui.OutputPanel();
+        outputPanel2 = new com.kybelksties.gui.OutputPanel();
         tablePanel = new javax.swing.JPanel();
         tableScrollPane = new javax.swing.JScrollPane();
         colorTable = new javax.swing.JTable();
@@ -74,6 +80,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
 
         controlPanel.setMaximumSize(new java.awt.Dimension(213, 35));
         controlPanel.setPreferredSize(new java.awt.Dimension(213, 35));
+        controlPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         dateButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.dateButton.text")); // NOI18N
         dateButton.addActionListener(new java.awt.event.ActionListener()
@@ -83,7 +90,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
                 dateButtonActionPerformed(evt);
             }
         });
-        controlPanel.add(dateButton);
+        controlPanel.add(dateButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(3, 5, -1, -1));
 
         colorButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.colorButton.text")); // NOI18N
         colorButton.addActionListener(new java.awt.event.ActionListener()
@@ -93,7 +100,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
                 colorButtonActionPerformed(evt);
             }
         });
-        controlPanel.add(colorButton);
+        controlPanel.add(colorButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 5, -1, -1));
 
         fontButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.fontButton.text")); // NOI18N
         fontButton.addActionListener(new java.awt.event.ActionListener()
@@ -103,8 +110,16 @@ public class DebugComponentsFrame extends javax.swing.JFrame
                 fontButtonActionPerformed(evt);
             }
         });
-        controlPanel.add(fontButton);
-        controlPanel.add(datePicker1);
+        controlPanel.add(fontButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 5, -1, -1));
+        controlPanel.add(datePicker1, new org.netbeans.lib.awtextra.AbsoluteConstraints(211, 7, -1, -1));
+
+        outputPanel1.setDefaultBackground(new java.awt.Color(255, 51, 51));
+        outputPanel1.setDefaultForeground(new java.awt.Color(0, 153, 153));
+        controlPanel.add(outputPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 130, 90));
+
+        outputPanel2.setDefaultBackground(new java.awt.Color(255, 255, 0));
+        outputPanel2.setDefaultForeground(new java.awt.Color(51, 51, 255));
+        controlPanel.add(outputPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 80, 190, 90));
 
         mainSplitPane.setBottomComponent(controlPanel);
 
@@ -217,6 +232,8 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     private com.kybelksties.gui.DatePicker datePicker1;
     private javax.swing.JButton fontButton;
     private javax.swing.JSplitPane mainSplitPane;
+    private com.kybelksties.gui.OutputPanel outputPanel1;
+    private com.kybelksties.gui.OutputPanel outputPanel2;
     private javax.swing.JPanel tablePanel;
     private javax.swing.JScrollPane tableScrollPane;
     // End of variables declaration//GEN-END:variables

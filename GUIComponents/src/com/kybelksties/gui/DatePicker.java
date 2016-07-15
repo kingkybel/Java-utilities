@@ -34,7 +34,6 @@ import java.beans.PropertyChangeSupport;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Random;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -59,6 +58,8 @@ public class DatePicker extends javax.swing.JPanel
 
     private DateChooserModel dateChooserModel;
     private final DateChooser dateChooser;
+    PopupFactory factory = PopupFactory.getSharedInstance();
+    Popup popup;
 
     /**
      * Get the value of configuredDate
@@ -115,26 +116,26 @@ public class DatePicker extends javax.swing.JPanel
         return dateChooserModel.getLocale();
     }
 
-    private boolean showTable = false;
+    private boolean showPopup = false;
 
     /**
-     * Get the value of showTable
+     * Get the value of showPopup
      *
-     * @return the value of showTable
+     * @return the value of showPopup
      */
-    public boolean isShowTable()
+    public boolean isShowPopup()
     {
-        return showTable;
+        return showPopup;
     }
 
     /**
-     * Set the value of showTable
+     * Set the value of showPopup
      *
-     * @param showTable new value of showTable
+     * @param showPopup new value of showPopup
      */
-    public void setShowTable(boolean showTable)
+    public void setShowPopup(boolean showPopup)
     {
-        this.showTable = showTable;
+        this.showPopup = showPopup;
     }
 
     /**
@@ -245,39 +246,37 @@ public class DatePicker extends javax.swing.JPanel
         }
     }
 
-    // Define Show Popup ActionListener
     static class ShowPopupActionListener implements ActionListener
     {
 
-        private final Component parent;
-        private final Component popupComp;
+        private final Popup popup;
 
-        ShowPopupActionListener(Component parent, Component popupComp)
+        ShowPopupActionListener(Popup popup)
         {
-            this.parent = parent;
-            this.popupComp = popupComp;
+            this.popup = popup;
         }
 
         @Override
         public synchronized void actionPerformed(ActionEvent actionEvent)
         {
-            PopupFactory factory = PopupFactory.getSharedInstance();
-            Random random = new Random();
-            int x = random.nextInt(200);
-            int y = random.nextInt(200);
-            final Popup popup = factory.getPopup(parent,
-                                                 popupComp,
-                                                 parent.getLocationOnScreen().x,
-                                                 parent.getLocationOnScreen().y);
             popup.show();
-            ActionListener hider = new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    popup.hide();
-                }
-            };
+        }
+    }
+
+    static class HidePopupActionListener implements ActionListener
+    {
+
+        private final Popup popup;
+
+        HidePopupActionListener(Popup popup)
+        {
+            this.popup = popup;
+        }
+
+        @Override
+        public synchronized void actionPerformed(ActionEvent actionEvent)
+        {
+            popup.hide();
         }
     }
 
@@ -297,10 +296,12 @@ public class DatePicker extends javax.swing.JPanel
         monthComboBox.setModel(new DefaultComboBoxModel(
                 dateChooserModel.getMonthsLong().toArray()));
         dateChooser = new DateChooser(locale, date);
-        ActionListener actionListener = new ShowPopupActionListener(
-                       this,
-                       dateChooser);
-        showTableButton.addActionListener(actionListener);
+//        popup = factory.getPopup(monthComboBox, dateChooser, getX(), getY());
+//        ActionListener showListener = new ShowPopupActionListener(popup);
+//        ActionListener hideListener = new HidePopupActionListener(popup);
+//        showPopupButton.addActionListener(showListener);
+//        dateChooser.getOkButton().addActionListener(showListener);
+//        dateChooser.getCancelButton().addActionListener(hideListener);
         updateComponents();
     }
 
@@ -310,6 +311,62 @@ public class DatePicker extends javax.swing.JPanel
     public DatePicker()
     {
         this(Locale.getDefault(), null);
+    }
+
+    /**
+     * Creates a popup for the given content next to the cursor. Tries to keep
+     * the popup on screen and shows a vertical scrollbar, if the screen is too
+     * small.
+     *
+     * @param content
+     * @param source
+     * @return popup
+     */
+    private Popup createPopup(Component content, Component source)
+    {
+//        Point compPos = source.getLocation();
+//        Point mousePos = source.getMousePosition();
+//        if (mousePos == null)
+//        {
+//            mousePos = new Point(0, 0);
+//        }
+//        Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+//
+//        // Create a JScrollPane around the content, in case there's not
+//        // enough space
+//        JScrollPane scrollPane = new JScrollPane(content);
+//        scrollPane.setHorizontalScrollBarPolicy(
+//                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//        scrollPane.setBorder(BorderFactory.createRaisedBevelBorder());
+//        // Implement max-size content-independent
+//        Dimension prefsize = scrollPane.getPreferredSize();
+//        int w = Math.min(prefsize.width,
+//                         Math.min(800, (screenDim.width / 2) - 16));
+//        int h = Math.min(prefsize.height, screenDim.height - 10);
+//        scrollPane.setPreferredSize(new Dimension(w, h));
+//
+//        int xPos = compPos.x + mousePos.x + 16;
+//        // Display the popup to the left of the cursor if it would be cut
+//        // off on its right, but only if more space is available
+//        if (xPos + w > screenDim.width && xPos > screenDim.width / 2)
+//        {
+//            xPos = compPos.x + mousePos.x - 4 - w;
+//        }
+//        int yPos = compPos.y + mousePos.y + 16;
+//        // Move the popup up if it would be cut off at its bottom but do not
+//        // move it off screen on the top
+//        if (yPos + h > screenDim.height - 5)
+//        {
+//            yPos = Math.max(5, screenDim.height - h - 5);
+//        }
+//
+//        PopupFactory pf = PopupFactory.getSharedInstance();
+//
+//        p.show();
+//        PopupFactory pf = PopupFactory.getSharedInstance();
+        Popup p = new DateChooserPopup(null, 0, 0);
+        p.show();
+        return p;
     }
 
     /**
@@ -429,7 +486,7 @@ public class DatePicker extends javax.swing.JPanel
         daySpinner = new javax.swing.JSpinner();
         monthComboBox = new javax.swing.JComboBox();
         yearSpinner = new javax.swing.JSpinner();
-        showTableButton = new javax.swing.JCheckBox();
+        showPopupButton = new javax.swing.JCheckBox();
 
         setName(""); // NOI18N
         setLayout(new java.awt.CardLayout());
@@ -471,16 +528,16 @@ public class DatePicker extends javax.swing.JPanel
         });
         monthYearPanel.add(yearSpinner);
 
-        showTableButton.setText(org.openide.util.NbBundle.getMessage(DatePicker.class, "DatePicker.showTableButton.text")); // NOI18N
-        showTableButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/down.png"))); // NOI18N
-        showTableButton.addActionListener(new java.awt.event.ActionListener()
+        showPopupButton.setText(org.openide.util.NbBundle.getMessage(DatePicker.class, "DatePicker.showPopupButton.text")); // NOI18N
+        showPopupButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/down.png"))); // NOI18N
+        showPopupButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                showTableButtonActionPerformed(evt);
+                showPopupButtonActionPerformed(evt);
             }
         });
-        monthYearPanel.add(showTableButton);
+        monthYearPanel.add(showPopupButton);
 
         add(monthYearPanel, "card2");
     }// </editor-fold>//GEN-END:initComponents
@@ -502,28 +559,33 @@ public class DatePicker extends javax.swing.JPanel
         updateComponents();
     }//GEN-LAST:event_daySpinnerStateChanged
 
-    private void showTableButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_showTableButtonActionPerformed
-    {//GEN-HEADEREND:event_showTableButtonActionPerformed
-        showTable = showTableButton.isSelected();
-        if (showTable)
+    private void showPopupButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_showPopupButtonActionPerformed
+    {//GEN-HEADEREND:event_showPopupButtonActionPerformed
+        //if (popup == null)
         {
-            showTableButton.setIcon(
+            popup = createPopup(dateChooser, showPopupButton);
+        }
+        showPopup = showPopupButton.isSelected();
+        if (showPopup)
+        {
+            showPopupButton.setIcon(
                     new ImageIcon(getClass().getResource("/images/up.png")));
+            popup.show();
         }
         else
         {
-            showTableButton.setIcon(
+            showPopupButton.setIcon(
                     new ImageIcon(getClass().getResource("/images/down.png")));
+            popup.hide();
         }
-
         updateComponents();
-    }//GEN-LAST:event_showTableButtonActionPerformed
+    }//GEN-LAST:event_showPopupButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner daySpinner;
     private javax.swing.JComboBox monthComboBox;
     private javax.swing.JPanel monthYearPanel;
-    private javax.swing.JCheckBox showTableButton;
+    private javax.swing.JCheckBox showPopupButton;
     private javax.swing.JSpinner yearSpinner;
     // End of variables declaration//GEN-END:variables
     private static final String CLASS_NAME = DatePicker.class.getName();

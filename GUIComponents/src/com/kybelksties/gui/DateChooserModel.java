@@ -45,10 +45,10 @@ import javax.swing.table.AbstractTableModel;
  * </table>
  * </blockquote>
  *
- * Also display lists like long and short month-names and weekday names are
+ * Also display lists like long- and short-month-names and weekday-names are
  * provided according to chosen locale.
  *
- * @author dieter
+ * @author Dieter J Kybelksties
  */
 public class DateChooserModel
         extends AbstractTableModel // for choosing day of month
@@ -395,7 +395,7 @@ public class DateChooserModel
     }
 
     /**
-     * Retrieve the selected date as a string fomated using the chosen locale.
+     * Retrieve the selected date as a string formated using the chosen locale.
      *
      * @return the date as String
      */
