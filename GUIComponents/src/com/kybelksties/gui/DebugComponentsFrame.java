@@ -113,13 +113,14 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         controlPanel.add(fontButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 5, -1, -1));
         controlPanel.add(datePicker1, new org.netbeans.lib.awtextra.AbsoluteConstraints(211, 7, -1, -1));
 
-        outputPanel1.setDefaultBackground(new java.awt.Color(255, 51, 51));
-        outputPanel1.setDefaultForeground(new java.awt.Color(0, 153, 153));
-        controlPanel.add(outputPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 130, 90));
+        outputPanel1.setDefaultBackground(new java.awt.Color(255, 255, 51));
+        outputPanel1.setDefaultFontFamily(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.outputPanel1.defaultFontFamily")); // NOI18N
+        outputPanel1.setDefaultForeground(new java.awt.Color(0, 153, 51));
+        controlPanel.add(outputPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 140, 90));
 
-        outputPanel2.setDefaultBackground(new java.awt.Color(255, 255, 0));
-        outputPanel2.setDefaultForeground(new java.awt.Color(51, 51, 255));
-        controlPanel.add(outputPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 80, 190, 90));
+        outputPanel2.setDefaultBackground(new java.awt.Color(0, 204, 204));
+        outputPanel2.setDefaultForeground(new java.awt.Color(0, 0, 255));
+        controlPanel.add(outputPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 90, 120, 80));
 
         mainSplitPane.setBottomComponent(controlPanel);
 
@@ -206,11 +207,6 @@ public class DebugComponentsFrame extends javax.swing.JFrame
                     getName()).log(
                             java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
         //</editor-fold>
 
         /* Create and display the form */
