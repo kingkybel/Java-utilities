@@ -54,6 +54,7 @@ public class OutputPanel extends javax.swing.JPanel
     {
         initComponents();
         reset();
+        resetDocument();
     }
 
     /**
@@ -135,7 +136,6 @@ public class OutputPanel extends javax.swing.JPanel
         }
         textPane.setBackground(defaultBackground);
         reset();
-        resetDocument();
     }
 
     /**
