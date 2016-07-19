@@ -6,10 +6,10 @@
 package com.kybelksties.gui;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.util.TreeMap;
+import java.awt.GraphicsEnvironment;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.text.BadLocationException;
@@ -34,18 +34,32 @@ public class OutputPanel extends javax.swing.JPanel
     public enum Styles
     {
 
-        NORMAL, HIGHLIGHT, META, ERROR
+        NORMAL, HIGHLIGHT, META, ERROR;
+
+        @Override
+        public String toString()
+        {
+            return this == NORMAL ? "NORMAL" :
+                   this == HIGHLIGHT ? "HIGHLIGHT" :
+                   this == META ? "META" :
+                   this == ERROR ? "ERROR" : "";
+        }
     }
-    StyleContext styleContext = new StyleContext();
-    StyledDocument doc;
-    TreeMap<Comparable, Style> styles = new TreeMap<>();
+    private StyleContext styleContext = new StyleContext();
+    private StyledDocument doc;
+//    private TreeMap<String, Style> styles = new TreeMap<>();
     private boolean verbose = true;
-    private String defaultFontFamily = "courier";
+    private String defaultFontFamily = (String) fontFamilyModel.getElementAt(0);
     private Integer defaultFontSize = 10;
-    private Color defaultForeground = Color.GREEN;
-    private Color defaultBackground = Color.MAGENTA;
+    private Color defaultForeground = Color.BLACK;
+    private Color defaultBackground = Color.WHITE;
     private boolean defaultBold = false;
     private boolean defaultItalic = false;
+
+    static DefaultComboBoxModel fontFamilyModel = new DefaultComboBoxModel(
+                                GraphicsEnvironment.
+                                getLocalGraphicsEnvironment().
+                                getAvailableFontFamilyNames());
 
     /**
      * Creates new form OutputPanel.
@@ -80,6 +94,7 @@ public class OutputPanel extends javax.swing.JPanel
         {
             firePropertyChange("verbose", old, this.verbose);
         }
+        reset();
     }
 
     /**
@@ -162,6 +177,7 @@ public class OutputPanel extends javax.swing.JPanel
         {
             firePropertyChange("defaultFontSize", old, this.defaultFontSize);
         }
+        reset();
     }
 
     /**
@@ -181,7 +197,39 @@ public class OutputPanel extends javax.swing.JPanel
      */
     public void setDefaultFontFamily(String defaultFontFamily)
     {
+        if (fontFamilyModel.getIndexOf(defaultFontFamily) == -1)
+        {
+            LOGGER.log(Level.INFO,
+                       "FontFamily '" + defaultFontFamily + "' not found.");
+            boolean found = false;
+            for (int i = 0; i < fontFamilyModel.getSize() && !found; i++)
+            {
+                String localFF = defaultFontFamily.replaceAll(" ", "").
+                       toLowerCase();
+                String ff_i = ((String) fontFamilyModel.getElementAt(i)).
+                       toLowerCase().replaceAll(" ", "");
+                if (localFF.equals(ff_i))
+                {
+                    defaultFontFamily = (String) fontFamilyModel.getElementAt(i);
+                    LOGGER.log(Level.INFO,
+                               "\nFontFamily set to '" +
+                               defaultFontFamily +
+                               "'.");
+                    found = true;
+                }
+            }
+            if (!found)
+            {
+                defaultFontFamily = (String) fontFamilyModel.getElementAt(0);
+                LOGGER.log(Level.INFO,
+                           "\nFontFamily set to '" +
+                           defaultFontFamily +
+                           "'.");
+            }
+
+        }
         this.defaultFontFamily = defaultFontFamily;
+        reset();
     }
 
     /**
@@ -202,6 +250,7 @@ public class OutputPanel extends javax.swing.JPanel
     public void setDefaultBold(Boolean defaultBold)
     {
         this.defaultBold = defaultBold;
+        reset();
     }
 
     /**
@@ -222,6 +271,7 @@ public class OutputPanel extends javax.swing.JPanel
     public void setDefaultItalic(Boolean defaultItalic)
     {
         this.defaultItalic = defaultItalic;
+        reset();
     }
 
     /**
@@ -284,13 +334,7 @@ public class OutputPanel extends javax.swing.JPanel
         {
             italic = isDefaultItalic();
         }
-        String stylename = key.toString() + "_" +
-                           ColorUtils.xtermColorString(fgColor) + "_" +
-                           ColorUtils.xtermColorString(bgColor) + "_" +
-                           fontFamily + "_" +
-                           fontSize.toString() + "_" +
-                           (bold ? "bold" : "normal") + "_" +
-                           (italic ? "italic" : "roman");
+        String stylename = key.toString();
         Style newStyle = styleContext.addStyle(stylename, null);
         newStyle.addAttribute(StyleConstants.Foreground, fgColor);
         newStyle.addAttribute(StyleConstants.Background, bgColor);
@@ -298,7 +342,6 @@ public class OutputPanel extends javax.swing.JPanel
         newStyle.addAttribute(StyleConstants.FontFamily, fontFamily);
         newStyle.addAttribute(StyleConstants.Bold, bold);
         newStyle.addAttribute(StyleConstants.Italic, italic);
-        styles.put(key, newStyle);
 
         return newStyle;
     }
@@ -319,39 +362,10 @@ public class OutputPanel extends javax.swing.JPanel
     /**
      * Reset the styles of the document using new basic characteristics.
      */
-    public final void reset()
-    {
-        reset(null, null);
-    }
-
-    /**
-     * Reset the styles of the document using new basic characteristics.
-     *
-     * @param fontFamily string describing the font-family, e.g "courier",
-     *                   "arial"
-     */
-    public final void reset(String fontFamily)
-    {
-        reset(fontFamily, null);
-    }
-
-    /**
-     * Reset the styles of the document using new basic characteristics.
-     *
-     * @param fontFamily string describing the font-family, e.g "courier",
-     *                   "arial"
-     * @param fontSize   size of the font in pixels
-     */
-    public void reset(String fontFamily, Integer fontSize)
+    public final void reset(/*String fontFamily, Integer fontSize*/)
     {
         try
         {
-            Font font = getFont();
-            setDefaultFontFamily(font.getFamily());
-            setDefaultFontSize(font.getSize());
-            setDefaultBold(font.isBold());
-            setDefaultItalic(font.isItalic());
-
             doc = textPane.getStyledDocument();
 
             SimpleAttributeSet attrs = new SimpleAttributeSet();
@@ -368,44 +382,34 @@ public class OutputPanel extends javax.swing.JPanel
 
             SwingUtilities.updateComponentTreeUI(this);
             textPane.setDocument(doc);
-            if (fontFamily == null)
-            {
-                fontFamily = defaultFontFamily;
-            }
-            if (fontSize == null)
-            {
-                fontSize = defaultFontSize;
-            }
-
-            styles = new TreeMap<>();
             styleContext = new StyleContext();
 
             addStyle(Styles.NORMAL,
                      getDefaultForeground(),
                      getDefaultBackground(),
-                     fontFamily,
-                     fontSize,
+                     defaultFontFamily,
+                     defaultFontSize,
                      false,
                      false);
             addStyle(Styles.HIGHLIGHT,
                      getDefaultBackground(),
                      getDefaultForeground(),
-                     fontFamily,
-                     fontSize,
+                     defaultFontFamily,
+                     defaultFontSize,
                      true,
                      false);
             addStyle(Styles.META,
                      Color.GRAY,
                      getDefaultBackground(),
-                     fontFamily,
-                     fontSize,
+                     defaultFontFamily,
+                     defaultFontSize,
                      false,
                      true);
             addStyle(Styles.ERROR,
                      Color.YELLOW,
                      Color.RED,
-                     fontFamily,
-                     fontSize,
+                     defaultFontFamily,
+                     defaultFontSize,
                      true,
                      false);
 
@@ -415,6 +419,11 @@ public class OutputPanel extends javax.swing.JPanel
             LOGGER.log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    private void appendToDocument(Styles styleKey, String text)
+    {
+        appendToDocument(styleContext.getStyle(styleKey.toString()), text);
     }
 
     /**
@@ -444,7 +453,7 @@ public class OutputPanel extends javax.swing.JPanel
     {
         if (isVerbose())
         {
-            appendToDocument(styles.get(Styles.META), "// " + text + NEWLINE);
+            appendToDocument(Styles.META, "// " + text + NEWLINE);
         }
     }
 
@@ -464,13 +473,12 @@ public class OutputPanel extends javax.swing.JPanel
      * Append the text to the end of the document using the given style. Do add
      * a line-break at the end.
      *
-     *
      * @param style the text style
      * @param text  the text to append
      */
     public final void writeln(Style style, String text)
     {
-        appendToDocument(styles.get(Styles.NORMAL), text + NEWLINE);
+        appendToDocument(style, text + NEWLINE);
     }
 
     /**
@@ -482,7 +490,7 @@ public class OutputPanel extends javax.swing.JPanel
      */
     public final void write(Comparable styleKey, String text)
     {
-        appendToDocument(styles.get(styleKey), text);
+        appendToDocument(styleContext.getStyle(styleKey.toString()), text);
     }
 
     /**
@@ -494,7 +502,8 @@ public class OutputPanel extends javax.swing.JPanel
      */
     public final void writeln(Comparable styleKey, String text)
     {
-        appendToDocument(styles.get(styleKey), text + NEWLINE);
+        appendToDocument(styleContext.getStyle(styleKey.toString()),
+                         text + NEWLINE);
     }
 
     /**
@@ -505,7 +514,7 @@ public class OutputPanel extends javax.swing.JPanel
      */
     public final void write(String text)
     {
-        appendToDocument(styles.get(Styles.NORMAL), text);
+        appendToDocument(styleContext.getStyle(Styles.NORMAL.toString()), text);
     }
 
     /**
@@ -516,7 +525,8 @@ public class OutputPanel extends javax.swing.JPanel
      */
     public final void writeln(String text)
     {
-        appendToDocument(styles.get(Styles.NORMAL), text + NEWLINE);
+        appendToDocument(styleContext.getStyle(Styles.NORMAL.toString()),
+                         text + NEWLINE);
     }
 
     /**
@@ -527,7 +537,8 @@ public class OutputPanel extends javax.swing.JPanel
      */
     public final void writeHighlight(String text)
     {
-        appendToDocument(styles.get(Styles.HIGHLIGHT), text);
+        appendToDocument(styleContext.getStyle(Styles.HIGHLIGHT.toString()),
+                         text);
     }
 
     /**
@@ -538,7 +549,8 @@ public class OutputPanel extends javax.swing.JPanel
      */
     public final void writelnHighlight(String text)
     {
-        appendToDocument(styles.get(Styles.HIGHLIGHT), text + NEWLINE);
+        appendToDocument(styleContext.getStyle(Styles.HIGHLIGHT.toString()),
+                         text + NEWLINE);
     }
 
     /**
@@ -549,8 +561,17 @@ public class OutputPanel extends javax.swing.JPanel
      */
     public final void writelnError(String text)
     {
-        appendToDocument(styles.get(Styles.ERROR),
+        appendToDocument(styleContext.getStyle(Styles.ERROR.toString()),
                          "!!! " + text + "!!!" + NEWLINE);
+    }
+
+    void showStyleSamples()
+    {
+        while (styleContext.getStyleNames().hasMoreElements())
+        {
+            String name = (String) styleContext.getStyleNames().nextElement();
+            writeln(name, name);
+        }
     }
 
     /**

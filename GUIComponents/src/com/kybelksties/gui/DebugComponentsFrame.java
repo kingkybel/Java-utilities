@@ -45,10 +45,12 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     {
         initComponents();
         //      fontChooser2.setShowDateLabel(false);
-        outputPanel1.writelnHighlight("HIGHLITE");
-        outputPanel2.writelnError("ERROR");
-        outputPanel1.write("Normal");
-        outputPanel1.writeHighlight("!!!");
+//        outputPanel1.writelnHighlight("HIGHLITE");
+//        outputPanel2.writelnError("ERROR");
+//        outputPanel1.write("Normal");
+//        outputPanel1.writeHighlight("!!!");
+        outputPanel1.showStyleSamples();
+        outputPanel2.showStyleSamples();
     }
 
     /**
@@ -114,13 +116,15 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         controlPanel.add(datePicker1, new org.netbeans.lib.awtextra.AbsoluteConstraints(211, 7, -1, -1));
 
         outputPanel1.setDefaultBackground(new java.awt.Color(255, 255, 51));
+        outputPanel1.setDefaultBold(java.lang.Boolean.TRUE);
         outputPanel1.setDefaultFontFamily(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.outputPanel1.defaultFontFamily")); // NOI18N
         outputPanel1.setDefaultForeground(new java.awt.Color(0, 153, 51));
-        controlPanel.add(outputPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 140, 90));
+        controlPanel.add(outputPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 110, 430, 70));
 
         outputPanel2.setDefaultBackground(new java.awt.Color(0, 204, 204));
+        outputPanel2.setDefaultFontSize(new java.lang.Integer(18));
         outputPanel2.setDefaultForeground(new java.awt.Color(0, 0, 255));
-        controlPanel.add(outputPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 90, 120, 80));
+        controlPanel.add(outputPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 430, 60));
 
         mainSplitPane.setBottomComponent(controlPanel);
 
