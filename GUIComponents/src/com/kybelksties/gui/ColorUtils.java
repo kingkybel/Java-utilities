@@ -1363,7 +1363,8 @@ public class ColorUtils
             {
                 if (!contrastColors.isEmpty())
                 {
-                    return contrastColors.get(contrastColors.size() - 1).theActualContrastColor;
+                    int lastColorIndex = contrastColors.size() - 1;
+                    return contrastColors.get(lastColorIndex).electedContrast;
                 }
                 else
                 {
@@ -1374,14 +1375,14 @@ public class ColorUtils
             {
                 if (!contrastColors.isEmpty())
                 {
-                    return contrastColors.get(0).theActualContrastColor;
+                    return contrastColors.get(0).electedContrast;
                 }
                 else
                 {
                     return Color.WHITE;
                 }
             }
-            return contrastColors.get(index).theActualContrastColor;
+            return contrastColors.get(index).electedContrast;
         }
 
         /**
@@ -1582,7 +1583,7 @@ public class ColorUtils
                 return new Contrast(bg, Type.EXACT, exactColor);
             }
             Type type = null;
-            Color theActualContrastColor = null;
+            Color electedContrast = null;
             Color hintColor = null;
             Integer shift = -1;
 
@@ -1592,16 +1593,16 @@ public class ColorUtils
                 this.type = type;
                 if (type == Type.COMPLEMENT)
                 {
-                    theActualContrastColor = contrastColorByComplement(bg);
+                    electedContrast = contrastColorByComplement(bg);
                 }
                 else if (type == Type.GREY)
                 {
-                    theActualContrastColor = contrastColorGrey(bg);
+                    electedContrast = contrastColorGrey(bg);
                 }
                 else if (type == Type.SHIFT)
                 {
                     shift = params != null ? (int) params[0] : 128;
-                    theActualContrastColor = contrastColorByShift(bg, shift);
+                    electedContrast = contrastColorByShift(bg, shift);
                 }
                 else if (type == Type.HINT || type == Type.EXACT)
                 {
@@ -1610,13 +1611,13 @@ public class ColorUtils
                                 (Color) params[0];
                     if (type == Type.EXACT)
                     {
-                        theActualContrastColor = hintColor;
+                        electedContrast = hintColor;
 
                     }
                     else if (type == Type.HINT)
                     {
-                        theActualContrastColor = contrastColorByHint(bg,
-                                                                     hintColor);
+                        electedContrast = contrastColorByHint(bg,
+                                                              hintColor);
 
                     }
                 }
@@ -1626,7 +1627,7 @@ public class ColorUtils
             public String toString()
             {
                 return "Contrast{" + "type=" + type +
-                       ", theActualContrastColor=" + theActualContrastColor +
+                       ", electedContrast=" + electedContrast +
                        ", hintColor=" + hintColor +
                        ", shift=" + shift +
                        '}';
@@ -1637,7 +1638,7 @@ public class ColorUtils
             {
                 int hash = 5;
                 hash = 17 * hash + Objects.hashCode(this.type);
-                hash = 17 * hash + Objects.hashCode(this.theActualContrastColor);
+                hash = 17 * hash + Objects.hashCode(this.electedContrast);
                 return hash;
             }
 
@@ -1657,15 +1658,15 @@ public class ColorUtils
                 {
                     return false;
                 }
-                return Objects.equals(this.theActualContrastColor,
-                                      other.theActualContrastColor);
+                return Objects.equals(this.electedContrast,
+                                      other.electedContrast);
             }
 
             @Override
             public int compareTo(Contrast o)
             {
-                Color thisColor = theActualContrastColor;
-                Color otherColor = o.theActualContrastColor;
+                Color thisColor = electedContrast;
+                Color otherColor = o.electedContrast;
                 int rDiff = thisColor.getRed() - otherColor.getRed();
                 int gDiff = thisColor.getGreen() - otherColor.getGreen();
                 int bDiff = thisColor.getBlue() - otherColor.getBlue();
