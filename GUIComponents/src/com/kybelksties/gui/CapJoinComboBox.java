@@ -37,6 +37,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import org.openide.util.NbBundle;
 
 /**
  * Specialised combo box to select cap and join styles for line-drawings. All
@@ -48,8 +49,41 @@ import javax.swing.ListCellRenderer;
 public final class CapJoinComboBox extends JComboBox
 {
 
-    private static final String CLASS_NAME = CapJoinComboBox.class.getName();
+    private static final Class CLAZZ = CapJoinComboBox.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
+    static final String BUTT_BEVEL = NbBundle.getMessage(
+                        CLAZZ,
+                        "CapJoinComboBox.buttBevel");
+    static final String BUTT_MITRE = NbBundle.getMessage(
+                        CLAZZ,
+                        "CapJoinComboBox.buttMitre");
+    static final String BUTT_ROUND = NbBundle.getMessage(
+                        CLAZZ,
+                        "CapJoinComboBox.buttRound");
+    static final String ROUND_BEVEL = NbBundle.getMessage(
+                        CLAZZ,
+                        "CapJoinComboBox.buttBevel");
+    static final String ROUND_MITRE = NbBundle.getMessage(
+                        CLAZZ,
+                        "CapJoinComboBox.buttMitre");
+    static final String ROUND_ROUND = NbBundle.getMessage(
+                        CLAZZ,
+                        "CapJoinComboBox.buttRound");
+    static final String SQUARE_BEVEL = NbBundle.getMessage(
+                        CLAZZ,
+                        "CapJoinComboBox.buttBevel");
+    static final String SQUARE_MITRE = NbBundle.getMessage(
+                        CLAZZ,
+                        "CapJoinComboBox.buttMitre");
+    static final String SQUARE_ROUND = NbBundle.getMessage(
+                        CLAZZ,
+                        "CapJoinComboBox.buttRound");
+    static final String UNDEF = NbBundle.getMessage(
+                        CLAZZ,
+                        "CapJoinComboBox.undefined");
+
     private final HashMap<CapJoinType, CapIcon> cap2Icon = new HashMap<>();
 
     /**
@@ -138,16 +172,16 @@ public final class CapJoinComboBox extends JComboBox
         @Override
         public String toString()
         {
-            return this == Butt_Bevel ? "Butt-caps and Bevel-joins" :
-                   this == Butt_Mitre ? "Butt-caps and Mitre-joins" :
-                   this == Butt_Round ? "Butt-caps and Round-joins" :
-                   this == Round_Bevel ? "Round-caps and Bevel-joins" :
-                   this == Round_Mitre ? "Round-caps and Mitre-joins" :
-                   this == Round_Round ? "Round-caps and Round-joins" :
-                   this == Square_Bevel ? "Square-caps and Bevel-joins" :
-                   this == Square_Mitre ? "Square-caps and Mitre-joins" :
-                   this == Square_Round ? "Square caps and Round-joins" :
-                   "Undefined>";
+            return this == Butt_Bevel ? BUTT_BEVEL :
+                   this == Butt_Mitre ? BUTT_MITRE :
+                   this == Butt_Round ? BUTT_ROUND :
+                   this == Round_Bevel ? ROUND_BEVEL :
+                   this == Round_Mitre ? ROUND_MITRE :
+                   this == Round_Round ? ROUND_ROUND :
+                   this == Square_Bevel ? SQUARE_BEVEL :
+                   this == Square_Mitre ? SQUARE_MITRE :
+                   this == Square_Round ? SQUARE_ROUND :
+                   UNDEF;
         }
 
         /**

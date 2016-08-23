@@ -38,6 +38,9 @@ import java.util.logging.Logger;
  */
 public class CapJoinComboBoxBeanInfo extends SimpleBeanInfo
 {
+    private static final Class CLAZZ = CapJoinComboBoxBeanInfo.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     // Bean descriptor//GEN-FIRST:BeanDescriptor
     /*lazy BeanDescriptor*/
@@ -1035,8 +1038,5 @@ public class CapJoinComboBoxBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final String CLASS_NAME =
-                                CapJoinComboBoxBeanInfo.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 }

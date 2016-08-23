@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -29,10 +28,14 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author kybelksd
+ * @author: Dieter J Kybelksties
  */
 public class DebugComponentsFrame extends javax.swing.JFrame
 {
+
+    private static final Class CLAZZ = DebugComponentsFrame.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     Color foregroundColor4 = Color.RED;
     Color foregroundColor5 = Color.GREEN;
@@ -237,7 +240,4 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     private javax.swing.JPanel tablePanel;
     private javax.swing.JScrollPane tableScrollPane;
     // End of variables declaration//GEN-END:variables
-    private static final String CLASS_NAME =
-                                DebugComponentsFrame.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }

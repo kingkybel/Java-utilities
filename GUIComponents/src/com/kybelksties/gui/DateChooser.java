@@ -45,6 +45,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
+import org.openide.util.NbBundle;
 
 /**
  * Custom component to choose a date.
@@ -53,6 +54,10 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
  */
 public class DateChooser extends javax.swing.JPanel
 {
+
+    private static final Class CLAZZ = DateChooser.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private DateChooserModel dateChooserModel;
 
@@ -357,7 +362,7 @@ public class DateChooser extends javax.swing.JPanel
 
         final JDialog dlg = new JDialog(window,
                                         Dialog.ModalityType.APPLICATION_MODAL);
-        dlg.setTitle("Date Chooser");
+        dlg.setTitle(NbBundle.getMessage(CLAZZ, "DateChooser.title"));
         dlg.getContentPane().setLayout(new AbsoluteLayout());
         Dimension chsrDim = chsr.getPreferredSize();
         dlg.getContentPane().setSize(chsrDim);
@@ -367,7 +372,8 @@ public class DateChooser extends javax.swing.JPanel
                                                     chsrDim.width,
                                                     chsrDim.height);
         dlg.add(chsr, constraints);
-        JButton okButton = new JButton("OK");
+        JButton okButton = new JButton(
+                NbBundle.getMessage(CLAZZ, "DateChooser.ok"));
         okButton.addActionListener(new java.awt.event.ActionListener()
         {
             @Override
@@ -609,6 +615,4 @@ public class DateChooser extends javax.swing.JPanel
     private javax.swing.JTextField previewText;
     private javax.swing.JSpinner yearSpinner;
     // End of variables declaration//GEN-END:variables
-    private static final String CLASS_NAME = DateChooser.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }

@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -19,10 +20,11 @@ import javax.swing.JOptionPane;
 public class CloseListener extends WindowAdapter
 {
 
-    private static final String CLASS_NAME = CloseListener.class.getName();
+    private static final Class<CloseListener> CLAZZ = CloseListener.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
-    String prompt = "Are you sure you want to exit the application";
-    String title = "Exit Application";
+    String prompt = NbBundle.getMessage(CLAZZ, "CloseListener.prompt");
+    String title = NbBundle.getMessage(CLAZZ, "CloseListener.title");
 
     public CloseListener()
     {

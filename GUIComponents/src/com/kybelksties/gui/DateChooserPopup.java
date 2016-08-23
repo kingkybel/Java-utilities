@@ -1,10 +1,25 @@
+/*
+ * Copyright (C) 2016 Dieter J Kybelksties
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * @date: 2016-08-23
+ * @author: Dieter J Kybelksties
+ */
 package com.kybelksties.gui;
 
-/*
- * @author  Dieter J Kybelksties
- * @date May 5, 2016
- *
- */
 import java.awt.Frame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -27,7 +42,8 @@ public class DateChooserPopup
         implements WindowFocusListener
 {
 
-    private static final String CLASS_NAME = DateChooserPopup.class.getName();
+    private static final Class<DateChooserPopup> CLAZZ = DateChooserPopup.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     DateChooser dateChooser;
     private final JWindow dialog;

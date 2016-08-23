@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
+import org.openide.util.NbBundle;
 
 /**
  * A collection of utilities for the manipulation of colors/paints,
@@ -48,7 +49,8 @@ import javax.swing.table.AbstractTableModel;
 public class ColorUtils
 {
 
-    private static final String CLASS_NAME = ColorUtils.class.getName();
+    private static final Class<ColorUtils> CLAZZ = ColorUtils.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     static Color2Name[] colName = new Color2Name[]
@@ -1186,10 +1188,9 @@ public class ColorUtils
     public static class ContrastColorSet extends AbstractTableModel
     {
 
-        static String[] headers = new String[]
-                {
-                    "Type", "Color", "Hint", "Shift"
-        };
+        static final String headers[] = NbBundle.getMessage(
+                              CLAZZ,
+                              "CapJoinComboBox.buttBevel").split(",");
 
         private Color color = Color.BLACK;
         private ArrayList<Contrast> contrastColors = new ArrayList<>();
@@ -1728,12 +1729,18 @@ public class ColorUtils
         private Color centerColor;
         private Color outsideColor;
 
-        RoundGradientPaint(double x, double y, Color centerColor,
-                           Point2D radius, Color outsideColor)
+        RoundGradientPaint(double x,
+                           double y,
+                           Color centerColor,
+                           Point2D radius,
+                           Color outsideColor)
         {
             if (radius.distance(0, 0) <= 0)
             {
-                throw new IllegalArgumentException("Radius must be > 0.");
+                throw new IllegalArgumentException(
+                        NbBundle.getMessage(
+                                CLAZZ,
+                                "ColorUtils.RoundGradientPaint.illegalArgument"));
             }
             point = new Point2D.Double(x, y);
             this.centerColor = centerColor;

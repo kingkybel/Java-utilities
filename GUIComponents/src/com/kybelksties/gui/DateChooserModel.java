@@ -56,10 +56,12 @@ public class DateChooserModel
                    ComboBoxModel // for choosin a month
 {
 
-    private static final String CLASS_NAME = DateChooserModel.class.getName();
+    private static final Class<DateChooserModel> CLAZZ = DateChooserModel.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    private static ArrayList<String> nameArray(int type, int style,
+    private static ArrayList<String> nameArray(int type,
+                                               int style,
                                                Locale locale)
     {
         ArrayList<String> reval = new ArrayList<>();

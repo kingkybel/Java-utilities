@@ -51,10 +51,14 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
 /**
  * Custom component to choose a date.
  *
- * @author kybelksd
+ * @author: Dieter J Kybelksties
  */
 public class DatePicker extends javax.swing.JPanel
 {
+
+    private static final Class<DatePicker> CLAZZ = DatePicker.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private DateChooserModel dateChooserModel;
     private final DateChooser dateChooser;
@@ -588,6 +592,4 @@ public class DatePicker extends javax.swing.JPanel
     private javax.swing.JCheckBox showPopupButton;
     private javax.swing.JSpinner yearSpinner;
     // End of variables declaration//GEN-END:variables
-    private static final String CLASS_NAME = DatePicker.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }

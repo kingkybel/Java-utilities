@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -50,7 +49,8 @@ public class CapJoinEditor
                    InplaceEditor.Factory
 {
 
-    private static final String CLASS_NAME = CapJoinEditor.class.getName();
+    private static final Class<CapJoinEditor> CLAZZ = CapJoinEditor.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     private InplaceEditor ed = null;
 
