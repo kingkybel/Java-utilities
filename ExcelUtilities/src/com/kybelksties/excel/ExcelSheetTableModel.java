@@ -51,8 +51,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
 public class ExcelSheetTableModel extends AbstractTableModel
 {
 
-    private static final String CLASS_NAME =
-                                ExcelSheetTableModel.class.getName();
+    private static final Class CLAZZ = ExcelSheetTableModel.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**

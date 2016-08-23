@@ -23,6 +23,7 @@ package com.kybelksties.excel;
 
 import java.util.Objects;
 import java.util.logging.Logger;
+import org.openide.util.NbBundle;
 
 /**
  * A column type class as an all-purpose implementation of the
@@ -34,9 +35,13 @@ public class GenericColumnType implements ColumnTypeConstraints,
                                           Comparable<GenericColumnType>
 {
 
-    private static final String UNDEF_STR = "<UNDEFINED>";
-    private static final String CLASS_NAME = GenericColumnType.class.getName();
+    private static final Class CLAZZ = GenericColumnType.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
+    static final String UNDEF_STR = NbBundle.getMessage(
+                        CLAZZ,
+                        "GenericColumnType.undefined");
     private String typeString = UNDEF_STR;
 
     /**

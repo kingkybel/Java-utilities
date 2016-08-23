@@ -33,7 +33,8 @@ import java.util.logging.Logger;
 public class ExcelColumnInfo
 {
 
-    private static final String CLASS_NAME = ExcelColumnInfo.class.getName();
+    private static final Class CLAZZ = ExcelColumnInfo.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     ArrayList<Info> infos = new ArrayList<>();

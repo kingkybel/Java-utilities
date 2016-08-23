@@ -44,8 +44,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelWorkbookTableModel extends AbstractTableModel
 {
 
-    private static final String CLASS_NAME =
-                                ExcelWorkbookTableModel.class.getName();
+    private static final Class CLAZZ = ExcelWorkbookTableModel.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     Workbook workbook;
     int currentSheet;
