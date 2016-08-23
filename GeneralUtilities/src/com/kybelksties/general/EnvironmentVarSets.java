@@ -43,7 +43,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 public final class EnvironmentVarSets
 {
 
-    private static final String CLASS_NAME = EnvironmentVarSets.class.getName();
+    private static final Class CLAZZ = EnvironmentVarSets.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @XmlElementWrapper(name = "environmentVariables")

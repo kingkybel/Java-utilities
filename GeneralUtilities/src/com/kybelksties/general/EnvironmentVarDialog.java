@@ -35,8 +35,8 @@ import javax.swing.DefaultComboBoxModel;
 public class EnvironmentVarDialog extends javax.swing.JDialog
 {
 
-    private static final String CLASS_NAME =
-                                EnvironmentVarDialog.class.getName();
+    private static final Class CLAZZ = EnvironmentVarDialog.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     EnvironmentVar theValue = null;

@@ -37,8 +37,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class EnvironmentVarTableModel extends AbstractTableModel
 {
 
-    private static final String CLASS_NAME =
-                                EnvironmentVarTableModel.class.getName();
+    private static final Class CLAZZ = EnvironmentVarTableModel.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private final String[] theColumnNames =

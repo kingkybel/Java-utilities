@@ -23,6 +23,7 @@ package com.kybelksties.general;
 
 import java.util.Objects;
 import java.util.logging.Logger;
+import org.openide.util.NbBundle;
 
 /**
  * Class to attach a category, type and default to environment variables.
@@ -32,10 +33,13 @@ import java.util.logging.Logger;
 public class EnvironmentVar implements Comparable
 {
 
-    private static final String CLASS_NAME = EnvironmentVar.class.getName();
+    private static final Class CLAZZ = EnvironmentVar.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    static final String NULL_CATEGORY = "[uncategorised]";
+    static final String NULL_CATEGORY = NbBundle.getMessage(
+                        CLAZZ,
+                        "EnvironmentVar.uncategorized");
 
     /**
      * Create an EnvironentVar from a String.

@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.openide.util.NbBundle;
 
 /**
  * A variant type only capable of holding Plain-old-data types.
@@ -35,8 +36,24 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class PodVariant
 {
 
-    private static final String CLASS_NAME = PodVariant.class.getName();
+    private static final Class CLAZZ = PodVariant.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    public static final String[] BOOLEAN_SYNONYMS = NbBundle.getMessage(
+                                 CLAZZ,
+                                 "PodVariant.booleanSynonyms").split(",");
+    public static final String[] STRING_SYNONYMS = NbBundle.getMessage(
+                                 CLAZZ,
+                                 "PodVariant.stringSynonyms").split(",");
+    public static final String[] FLOAT_SYNONYMS = NbBundle.getMessage(
+                                 CLAZZ,
+                                 "PodVariant.floatSynonyms").split(",");
+    public static final String[] PATH_SYNONYMS = NbBundle.getMessage(
+                                 CLAZZ,
+                                 "PodVariant.pathSynonyms").split(",");
+    public static final String[] INT_SYNONYMS = NbBundle.getMessage(
+                                 CLAZZ,
+                                 "PodVariant.intSynonyms").split(",");
 
     /**
      * Create a PODVariant from a string describing a type.
@@ -383,44 +400,24 @@ public class PodVariant
         static Type fromString(String typeStr)
         {
             Type type = Type.UNDEFINED;
-            String[] booleanSyn = new String[]
-             {
-                 "b", "bool", "boolean"
-            };
-            String[] stringSyn = new String[]
-             {
-                 "s", "string", "t", "text"
-            };
-            String[] pathSyn = new String[]
-             {
-                 "p", "path"
-            };
-            String[] floatSyn = new String[]
-             {
-                 "f", "float", "d", "double"
-            };
-            String[] intSyn = new String[]
-             {
-                 "i", "int", "integer"
-            };
             String lowerTypeStr = typeStr.toLowerCase().trim();
-            if (Arrays.asList(booleanSyn).contains(lowerTypeStr))
+            if (Arrays.asList(BOOLEAN_SYNONYMS).contains(lowerTypeStr))
             {
                 type = Type.BOOLEAN;
             }
-            else if (Arrays.asList(intSyn).contains(lowerTypeStr))
+            else if (Arrays.asList(INT_SYNONYMS).contains(lowerTypeStr))
             {
                 type = Type.INTEGER;
             }
-            else if (Arrays.asList(floatSyn).contains(lowerTypeStr))
+            else if (Arrays.asList(FLOAT_SYNONYMS).contains(lowerTypeStr))
             {
                 type = Type.DOUBLE;
             }
-            else if (Arrays.asList(pathSyn).contains(lowerTypeStr))
+            else if (Arrays.asList(PATH_SYNONYMS).contains(lowerTypeStr))
             {
                 type = Type.PATH;
             }
-            else if (Arrays.asList(stringSyn).contains(lowerTypeStr))
+            else if (Arrays.asList(STRING_SYNONYMS).contains(lowerTypeStr))
             {
                 type = Type.STRING;
             }

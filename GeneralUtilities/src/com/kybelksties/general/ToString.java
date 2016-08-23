@@ -37,8 +37,10 @@ import java.util.logging.Logger;
 public class ToString
 {
 
-    private static final String CLASS_NAME = ToString.class.getName();
+    private static final Class CLAZZ = ToString.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
     private static HashMap<Class, ToString> class2ToString = initialize();
 
     /**

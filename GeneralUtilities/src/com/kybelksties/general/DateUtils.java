@@ -38,7 +38,8 @@ import java.util.logging.Logger;
 public class DateUtils
 {
 
-    private static final String CLASS_NAME = DateUtils.class.getName();
+    private static final Class CLAZZ = DateUtils.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**

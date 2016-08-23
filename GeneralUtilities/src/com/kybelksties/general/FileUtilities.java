@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -53,7 +52,8 @@ import javax.xml.bind.Unmarshaller;
 public class FileUtilities
 {
 
-    private static final String CLASS_NAME = FileUtilities.class.getName();
+    private static final Class CLAZZ = FileUtilities.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     public static final String FILE_SEPARATOR = System.getProperty(
                                "file.separator");
@@ -137,8 +137,7 @@ public class FileUtilities
         {
             return false;
         }
-        File path = new File(pathString);
-        return path.exists();
+        return new File(pathString).exists();
     }
 
     /**
@@ -151,7 +150,7 @@ public class FileUtilities
     public static boolean deleteRecursive(File path)
     {
         boolean deleteSuccessful = false;
-        if (path == null || !path.exists())
+        if (!exists(path))
         {
             return deleteSuccessful;
         }
@@ -325,8 +324,7 @@ public class FileUtilities
         boolean result = true;
         while (it.hasNext())
         {
-            result &= createFolders(rootPath,
-                                    it.next().toString());
+            result &= createFolders(rootPath, it.next().toString());
         }
 
         return result;
