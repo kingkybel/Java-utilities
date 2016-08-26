@@ -37,9 +37,10 @@ import org.junit.Test;
  */
 public class ColorUtilsTest
 {
-
-    private static final Logger LOG =
-                                Logger.getLogger(ColorUtilsTest.class.getName());
+    
+    private static final Class CLAZZ = ColorUtilsTest.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**
      * Set up class statics.

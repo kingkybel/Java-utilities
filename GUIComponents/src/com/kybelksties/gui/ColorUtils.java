@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -49,7 +48,7 @@ import org.openide.util.NbBundle;
 public class ColorUtils
 {
 
-    private static final Class<ColorUtils> CLAZZ = ColorUtils.class;
+    private static final Class CLAZZ = ColorUtils.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
@@ -1190,7 +1189,8 @@ public class ColorUtils
 
         static final String headers[] = NbBundle.getMessage(
                               CLAZZ,
-                              "CapJoinComboBox.buttBevel").split(",");
+                              "ColorUtils.ContrastColorSet.tableHeaders").split(
+                                      ",");
 
         private Color color = Color.BLACK;
         private ArrayList<Contrast> contrastColors = new ArrayList<>();

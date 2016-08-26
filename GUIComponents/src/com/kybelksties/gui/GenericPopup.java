@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -29,6 +28,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import org.openide.util.NbBundle;
 
 /**
  * A Pop-up menu that takes care of some of the boring plumbing. Menus can be
@@ -39,7 +39,8 @@ import javax.swing.JPopupMenu;
 public class GenericPopup extends JPopupMenu
 {
 
-    private static final String CLASS_NAME = GenericPopup.class.getName();
+    private static final Class CLAZZ = GenericPopup.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     GenericActionListener actionListener = new GenericActionListener();
@@ -262,10 +263,11 @@ public class GenericPopup extends JPopupMenu
             }
             else
             {
-                throw new UnsupportedOperationException(CLASS_NAME +
-                                                        ": " +
-                                                        e.getActionCommand() +
-                                                        " has no action attached.");
+                String message = NbBundle.getMessage(CLAZZ,
+                                                     "",
+                                                     CLASS_NAME,
+                                                     e.getActionCommand());
+                throw new UnsupportedOperationException(message);
             }
         }
     }

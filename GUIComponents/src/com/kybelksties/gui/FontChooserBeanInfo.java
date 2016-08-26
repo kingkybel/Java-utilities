@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -38,6 +37,10 @@ import java.util.logging.Logger;
  */
 public class FontChooserBeanInfo extends SimpleBeanInfo
 {
+    
+    private static final Class CLAZZ = FontChooserBeanInfo.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     // Bean descriptor//GEN-FIRST:BeanDescriptor
     /*lazy BeanDescriptor*/
@@ -943,7 +946,5 @@ public class FontChooserBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final String CLASS_NAME = FontChooserBeanInfo.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 }

@@ -49,9 +49,10 @@ public class CapJoinEditor
                    InplaceEditor.Factory
 {
 
-    private static final Class<CapJoinEditor> CLAZZ = CapJoinEditor.class;
+    private static final Class CLAZZ = CapJoinEditor.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    
     private InplaceEditor ed = null;
 
     @Override

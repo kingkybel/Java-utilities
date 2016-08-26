@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -43,8 +42,9 @@ public class GradientTypeEditor
         implements ExPropertyEditor,
                    InplaceEditor.Factory
 {
-
-    private static final String CLASS_NAME = GradientTypeEditor.class.getName();
+    
+    private static final Class CLAZZ = GradientTypeEditor.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     private InplaceEditor ed = null;
 

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -38,6 +37,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
+import org.openide.util.NbBundle;
 
 /**
  * Dialog to chose colors for gradients.
@@ -46,6 +46,10 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
  */
 public class GradientColorChooser extends javax.swing.JPanel
 {
+
+    private static final Class CLAZZ = GradientColorChooser.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     JPopupMenu colorTablePopup;
     IndividualCellEditor ice;
@@ -104,7 +108,9 @@ public class GradientColorChooser extends javax.swing.JPanel
 
         final JDialog dlg = new JDialog(window,
                                         Dialog.ModalityType.APPLICATION_MODAL);
-        dlg.setTitle("Foreground/Background Color Chooser");
+        dlg.setTitle(NbBundle.getMessage(
+                CLAZZ,
+                "GradientColorChooser.title"));
         dlg.getContentPane().setLayout(new AbsoluteLayout());
         Dimension chsrDim = chsr.getPreferredSize();
         dlg.getContentPane().setSize(chsrDim);
@@ -114,7 +120,9 @@ public class GradientColorChooser extends javax.swing.JPanel
                                                     chsrDim.width,
                                                     chsrDim.height);
         dlg.add(chsr, constraints);
-        JButton okButton = new JButton("OK");
+        JButton okButton = new JButton(NbBundle.getMessage(
+                CLAZZ,
+                "GradientColorChooser.ok"));
         okButton.addActionListener(new java.awt.event.ActionListener()
         {
             @Override
@@ -184,7 +192,4 @@ public class GradientColorChooser extends javax.swing.JPanel
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JColorChooser colorChooser;
     // End of variables declaration//GEN-END:variables
-    private static final String CLASS_NAME =
-                                GradientColorChooser.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }

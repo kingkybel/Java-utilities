@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -38,7 +37,8 @@ import javax.swing.table.TableColumnModel;
 public class EnvironmentVarTable extends javax.swing.JTable
 {
 
-    private static final String CLASS_NAME = EnvironmentVarTable.class.getName();
+    private static final Class CLAZZ = EnvironmentVarTable.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     IndividualCellEditor ice;

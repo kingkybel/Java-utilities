@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -19,7 +18,6 @@
  * @date: 2015-12-16
  * @author: Dieter J Kybelksties
  */
-
 package com.kybelksties.gui;
 
 import java.beans.BeanDescriptor;
@@ -38,6 +36,10 @@ import java.util.logging.Logger;
  */
 public class ShapeComboBoxBeanInfo extends SimpleBeanInfo
 {
+    
+    private static final Class CLAZZ = ShapeComboBoxBeanInfo.class;
+     private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     // Bean descriptor//GEN-FIRST:BeanDescriptor
     /*lazy BeanDescriptor*/
@@ -1033,8 +1035,5 @@ public class ShapeComboBoxBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final String CLASS_NAME =
-                                ShapeComboBoxBeanInfo.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 }

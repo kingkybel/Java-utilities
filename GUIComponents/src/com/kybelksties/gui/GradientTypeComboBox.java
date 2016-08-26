@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -35,6 +34,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import org.openide.util.NbBundle;
 
 /**
  * A combo-box extension specialised for gradient types.
@@ -43,9 +43,8 @@ import javax.swing.ListCellRenderer;
  */
 public class GradientTypeComboBox extends JComboBox
 {
-
-    private static final String CLASS_NAME =
-                                GradientTypeComboBox.class.getName();
+    private static final Class CLAZZ = GradientTypeComboBox.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     HashMap<String, GradientIcon> name2Icon = new HashMap<>();
@@ -244,7 +243,10 @@ public class GradientTypeComboBox extends JComboBox
             }
             else
             {
-                setMissingIconText(shapeString + " (no image available)",
+                setMissingIconText(shapeString + NbBundle.getMessage(
+                                    CLAZZ,
+                                    "GradientTypeComboBox.noImageAvailable",
+                                    shapeString),
                                    list.getFont());
             }
 

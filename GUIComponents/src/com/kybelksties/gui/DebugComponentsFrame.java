@@ -210,9 +210,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
                IllegalAccessException |
                javax.swing.UnsupportedLookAndFeelException ex)
         {
-            java.util.logging.Logger.getLogger(DebugComponentsFrame.class.
-                    getName()).log(
-                            java.util.logging.Level.SEVERE, null, ex);
+            LOGGER.log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 

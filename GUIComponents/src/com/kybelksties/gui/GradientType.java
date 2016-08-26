@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -21,6 +20,9 @@
  */
 package com.kybelksties.gui;
 
+import java.util.logging.Logger;
+import org.openide.util.NbBundle;
+
 /**
  * Enumeration of the possible gradient types.
  *
@@ -28,7 +30,6 @@ package com.kybelksties.gui;
  */
 public enum GradientType
 {
-
     /**
      * 2-color gradient that changes from top to bottom.
      */
@@ -56,19 +57,27 @@ public enum GradientType
      */
     FOUR_COLOR_RECTANGULAR;
 
+    private static final Class CLAZZ = GradientColorChooserBeanInfo.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
     @Override
     public String toString()
     {
 
-        return this == TOP_TO_BOTTOM ? "Top to bottom gradient" :
-               this == LEFT_TO_RIGHT ? "Left to right gradient" :
-               this == DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM ?
-               "1st main diagonal gradient" :
-               this == DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM ?
-               "2nd main diagonal gradient" :
-               this == CIRCULAR ? "Circular gradient" :
-               this == FOUR_COLOR_RECTANGULAR ?
-               "Four color rectangular gradient" :
-               "<UNKNOWN>";
+        return NbBundle.getMessage(CLAZZ, 
+                                   this == TOP_TO_BOTTOM ?
+                                                "GradientType.topToBottom" :
+                                    this == LEFT_TO_RIGHT ?
+                                                "GradientType.leftToRight" :
+                                    this == DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM ?
+                                                "GradientType.firstmainDiag" :
+                                    this == DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM ?
+                                                "GradientType.secondMainDiag" :
+                                    this == CIRCULAR ?
+                                                "GradientType.circular" :
+                                    this == FOUR_COLOR_RECTANGULAR ? 
+                                                "GradientType.fourColor" :
+                                                "GradientType.unknown");
     }
 }

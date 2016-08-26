@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -20,6 +19,9 @@
  * @author: Dieter J Kybelksties
  */
 package com.kybelksties.gui;
+
+import java.util.logging.Logger;
+import org.openide.util.NbBundle;
 
 /**
  * Enumeration of the possible shapes.
@@ -61,18 +63,30 @@ public enum ShapeList
      */
     IMAGE;
 
+    private static final Class CLAZZ = ShapeList.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
     @Override
     public String toString()
     {
 
-        return this == RECTANGLE ? "Rectangle" :
-               this == RECTANGLE3D ? "Rectangle 3D" :
-               this == ELLIPSE ? "Ellipse" :
-               this == ROUNDED_RECTANGLE ? "Rounded Rectangle" :
-               this == REGULAR_STAR ? "Regular Star" :
-               this == REGULAR_POLYGON ? "Regular polygon" :
-               this == POLYGON ? "Polygon" :
-               this == IMAGE ? "Image" :
-               "<UNKNOWN>";
+        return this == RECTANGLE ?
+                    NbBundle.getMessage(CLAZZ, "ShapeList.rectangle") :
+               this == RECTANGLE3D ?
+                    NbBundle.getMessage(CLAZZ, "ShapeList.rectangle3D") :
+               this == ELLIPSE ?
+                    NbBundle.getMessage(CLAZZ, "ShapeList.ellipse") :
+               this == ROUNDED_RECTANGLE ?
+                    NbBundle.getMessage(CLAZZ, "ShapeList.roundedRectangle") :
+               this == REGULAR_STAR ?
+                    NbBundle.getMessage(CLAZZ, "ShapeList.regularStar") :
+               this == REGULAR_POLYGON ?
+                    NbBundle.getMessage(CLAZZ, "ShapeList.regularPolygon") :
+               this == POLYGON ?
+                    NbBundle.getMessage(CLAZZ, "ShapeList.polygon") :
+               this == IMAGE ?
+                    NbBundle.getMessage(CLAZZ, "ShapeList.image") :
+                    NbBundle.getMessage(CLAZZ, "ShapeList.unknown") ;
     }
 }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -38,9 +37,11 @@ import javax.swing.ListCellRenderer;
  */
 public class LocaleComboBox extends JComboBox
 {
-
-    private static final String CLASS_NAME = LocaleComboBox.class.getName();
+    
+    private static final Class CLAZZ = LocaleComboBox.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
     private static final Locale[] allLocales = Locale.getAvailableLocales();
     private final TreeMap<String, Locale> mapString2Locale = new TreeMap<>();
 

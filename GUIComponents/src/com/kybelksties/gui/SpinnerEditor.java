@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -37,6 +36,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import org.openide.util.NbBundle;
 
 /**
  * A table cell editor for numeric values. Uses the spinner control to change
@@ -46,8 +46,9 @@ import javax.swing.SwingUtilities;
  */
 public class SpinnerEditor extends DefaultCellEditor
 {
-
-    private static final String CLASS_NAME = SpinnerEditor.class.getName();
+    
+    private static final Class CLAZZ = SpinnerEditor.class;
+   private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     JSpinner spinner;
@@ -204,7 +205,10 @@ public class SpinnerEditor extends DefaultCellEditor
         }
         catch (java.text.ParseException e)
         {
-            JOptionPane.showMessageDialog(null, "Invalid value, discarding.");
+            JOptionPane.showMessageDialog(null,
+                                          NbBundle.getMessage(
+                                                  CLAZZ,
+                                                  "SpinnerEditor.invalidValue"));
         }
         return super.stopCellEditing();
     }

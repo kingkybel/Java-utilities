@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -36,6 +35,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
+import org.openide.util.NbBundle;
 
 /**
  * Custom component to choose a font.
@@ -45,11 +45,13 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
 public class FontChooser extends javax.swing.JPanel
 {
 
-    String[] sizesArray = new String[]
-     {
-         "2", "4", "6", "8", "9", "10", "11", "12", "14", "16", "18",
-         "20", "22", "24", "26", "28", "30", "36", "48", "72"
-    };
+    private static final Class CLAZZ = FontChooser.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
+    String[] sizesArray = NbBundle.getMessage(
+             CLAZZ,
+             "FontChooser.fontSizes").split(",");
 
     private Font configuredFont = null;
 
@@ -158,7 +160,9 @@ public class FontChooser extends javax.swing.JPanel
         if (configuredFont == null)
         {
             fontComboBox.setSelectedIndex(0);
-            sizeComboBox.setSelectedItem("10");
+            sizeComboBox.setSelectedItem(NbBundle.getMessage(
+                    CLAZZ,
+                    "FontChooser.selectedFontSize"));
         }
         setConfiguredFont();
         this.setSize(WIDTH, WIDTH);
@@ -208,7 +212,7 @@ public class FontChooser extends javax.swing.JPanel
 
         final JDialog dlg = new JDialog(window,
                                         Dialog.ModalityType.APPLICATION_MODAL);
-        dlg.setTitle("Font Chooser");
+        dlg.setTitle(NbBundle.getMessage(CLAZZ, "FontChooser.title"));
         dlg.getContentPane().setLayout(new AbsoluteLayout());
         Dimension chsrDim = chsr.getPreferredSize();
         dlg.getContentPane().setSize(chsrDim);
@@ -218,7 +222,8 @@ public class FontChooser extends javax.swing.JPanel
                                                     chsrDim.width,
                                                     chsrDim.height);
         dlg.add(chsr, constraints);
-        JButton okButton = new JButton("OK");
+        JButton okButton = new JButton(
+                NbBundle.getMessage(CLAZZ, "FontChooser.ok"));
         okButton.addActionListener(new java.awt.event.ActionListener()
         {
             @Override
@@ -370,6 +375,4 @@ public class FontChooser extends javax.swing.JPanel
     private javax.swing.JTextField sampleTextField;
     private javax.swing.JComboBox sizeComboBox;
     // End of variables declaration//GEN-END:variables
-    private static final String CLASS_NAME = FontChooser.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }

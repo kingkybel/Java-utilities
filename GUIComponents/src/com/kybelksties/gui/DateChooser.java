@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -373,7 +372,7 @@ public class DateChooser extends javax.swing.JPanel
                                                     chsrDim.height);
         dlg.add(chsr, constraints);
         JButton okButton = new JButton(
-                NbBundle.getMessage(CLAZZ, "DateChooser.ok"));
+                NbBundle.getMessage(CLAZZ, "DateChooser.okButton.text"));
         okButton.addActionListener(new java.awt.event.ActionListener()
         {
             @Override

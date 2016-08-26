@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -38,6 +37,10 @@ import java.util.logging.Logger;
  */
 public class GradientColorChooserBeanInfo extends SimpleBeanInfo
 {
+    
+    private static final Class CLAZZ = GradientColorChooserBeanInfo.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     // Bean descriptor//GEN-FIRST:BeanDescriptor
     /*lazy BeanDescriptor*/
@@ -938,8 +941,5 @@ public class GradientColorChooserBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final String CLASS_NAME =
-                                GradientColorChooserBeanInfo.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 }

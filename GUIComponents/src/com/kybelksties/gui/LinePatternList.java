@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -31,6 +30,10 @@ import java.util.logging.Logger;
  */
 public class LinePatternList extends ArrayList<float[]>
 {
+    
+    private static final Class CLAZZ = LinePatternList.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     static float[][] defaultPatterns = new float[][]
              {
@@ -108,9 +111,6 @@ public class LinePatternList extends ArrayList<float[]>
                      1.0f, 1.0f
                  },
     };
-    private static final String CLASS_NAME =
-                                LinePatternList.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**
      * Default construct.

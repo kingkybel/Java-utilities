@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -38,6 +37,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import org.openide.util.NbBundle;
 
 /**
  * A combo-box extension specialised for line patterns.
@@ -46,10 +46,11 @@ import javax.swing.ListCellRenderer;
  */
 public class LinePatternComboBox extends JComboBox
 {
+    private static final Class CLAZZ = LinePatternComboBox.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     static LinePatternList defaultPatterns = new LinePatternList();
-    private static final String CLASS_NAME = LinePatternComboBox.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     HashMap<float[], LineIcon> pattern2Icon = new HashMap<>();
 
@@ -291,7 +292,10 @@ public class LinePatternComboBox extends JComboBox
             }
             else
             {
-                setNoIconText(patternString + " (no image available)",
+                setNoIconText(NbBundle.getMessage(
+                        CLAZZ,
+                        "LinePatternComboBox.noImageAvailable",
+                        patternString),
                               list.getFont());
             }
 

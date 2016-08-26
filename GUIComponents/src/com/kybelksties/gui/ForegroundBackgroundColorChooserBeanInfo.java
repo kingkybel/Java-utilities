@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -38,6 +37,9 @@ import java.util.logging.Logger;
  */
 public class ForegroundBackgroundColorChooserBeanInfo extends SimpleBeanInfo
 {
+    private static final Class CLAZZ = ForegroundBackgroundColorChooserBeanInfo.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     // Bean descriptor//GEN-FIRST:BeanDescriptor
     /*lazy BeanDescriptor*/
@@ -943,9 +945,5 @@ public class ForegroundBackgroundColorChooserBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final String CLASS_NAME =
-                                ForegroundBackgroundColorChooserBeanInfo.class.
-                                getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 }

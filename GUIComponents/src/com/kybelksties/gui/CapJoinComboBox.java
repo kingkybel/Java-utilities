@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -53,36 +52,26 @@ public final class CapJoinComboBox extends JComboBox
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    static final String BUTT_BEVEL = NbBundle.getMessage(
-                        CLAZZ,
-                        "CapJoinComboBox.buttBevel");
-    static final String BUTT_MITRE = NbBundle.getMessage(
-                        CLAZZ,
-                        "CapJoinComboBox.buttMitre");
-    static final String BUTT_ROUND = NbBundle.getMessage(
-                        CLAZZ,
-                        "CapJoinComboBox.buttRound");
-    static final String ROUND_BEVEL = NbBundle.getMessage(
-                        CLAZZ,
-                        "CapJoinComboBox.buttBevel");
-    static final String ROUND_MITRE = NbBundle.getMessage(
-                        CLAZZ,
-                        "CapJoinComboBox.buttMitre");
-    static final String ROUND_ROUND = NbBundle.getMessage(
-                        CLAZZ,
-                        "CapJoinComboBox.buttRound");
-    static final String SQUARE_BEVEL = NbBundle.getMessage(
-                        CLAZZ,
-                        "CapJoinComboBox.buttBevel");
-    static final String SQUARE_MITRE = NbBundle.getMessage(
-                        CLAZZ,
-                        "CapJoinComboBox.buttMitre");
-    static final String SQUARE_ROUND = NbBundle.getMessage(
-                        CLAZZ,
-                        "CapJoinComboBox.buttRound");
-    static final String UNDEF = NbBundle.getMessage(
-                        CLAZZ,
-                        "CapJoinComboBox.undefined");
+    static final String BUTT_BEVEL = NbBundle.getMessage(CLAZZ,
+                                                         "CapJoinComboBox.buttBevel");
+    static final String BUTT_MITRE = NbBundle.getMessage(CLAZZ,
+                                                         "CapJoinComboBox.buttMitre");
+    static final String BUTT_ROUND = NbBundle.getMessage(CLAZZ,
+                                                         "CapJoinComboBox.buttRound");
+    static final String ROUND_BEVEL = NbBundle.getMessage(CLAZZ,
+                                                          "CapJoinComboBox.buttBevel");
+    static final String ROUND_MITRE = NbBundle.getMessage(CLAZZ,
+                                                          "CapJoinComboBox.buttMitre");
+    static final String ROUND_ROUND = NbBundle.getMessage(CLAZZ,
+                                                          "CapJoinComboBox.buttRound");
+    static final String SQUARE_BEVEL = NbBundle.getMessage(CLAZZ,
+                                                           "CapJoinComboBox.buttBevel");
+    static final String SQUARE_MITRE = NbBundle.getMessage(CLAZZ,
+                                                           "CapJoinComboBox.buttMitre");
+    static final String SQUARE_ROUND = NbBundle.getMessage(CLAZZ,
+                                                           "CapJoinComboBox.buttRound");
+    static final String UNDEF = NbBundle.getMessage(CLAZZ,
+                                                    "CapJoinComboBox.undefined");
 
     private final HashMap<CapJoinType, CapIcon> cap2Icon = new HashMap<>();
 
@@ -350,8 +339,12 @@ public final class CapJoinComboBox extends JComboBox
             }
             else
             {
-                setNoIconText(cap.toString() + " (no image available)",
-                              list.getFont());
+                setNoIconText(
+                        NbBundle.getMessage(
+                                CLAZZ,
+                                "CapJoinComboBox.noImageAvailable",
+                                cap.toString()),
+                        list.getFont());
             }
 
             return this;

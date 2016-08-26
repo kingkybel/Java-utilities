@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -93,9 +92,9 @@ import javax.swing.table.TableModel;
  */
 public class IndividualCellEditor implements TableCellEditor
 {
-
-    private static final String CLASS_NAME = IndividualCellEditor.class.
-                                getName();
+    
+    private static final Class CLAZZ = IndividualCellEditor.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**

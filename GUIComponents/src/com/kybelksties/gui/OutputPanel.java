@@ -1,12 +1,28 @@
 /*
- * @author  Dieter J Kybelksties
- * @date Jul 14, 2016
+ * Copyright (C) 2015 Dieter J Kybelksties
  *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * @date: 2015-12-16
+ * @author: Dieter J Kybelksties
  */
 package com.kybelksties.gui;
 
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -18,6 +34,7 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -25,8 +42,9 @@ import javax.swing.text.StyledDocument;
  */
 public class OutputPanel extends javax.swing.JPanel
 {
-
-    private static final String CLASS_NAME = OutputPanel.class.getName();
+    
+    private static final Class CLAZZ = OutputPanel.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     public static final String NEWLINE = System.getProperty("line.separator");
@@ -39,10 +57,15 @@ public class OutputPanel extends javax.swing.JPanel
         @Override
         public String toString()
         {
-            return this == NORMAL ? "NORMAL" :
-                   this == HIGHLIGHT ? "HIGHLIGHT" :
-                   this == META ? "META" :
-                   this == ERROR ? "ERROR" : "";
+            return this == NORMAL ?
+                        NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.normal") :
+                   this == HIGHLIGHT ?
+                        NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.highlight") : 
+                   this == META ? 
+                        NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.meta") :
+                   this == ERROR ?
+                        NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.error")  : 
+                        NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.undefined") ;
         }
     }
     private StyleContext styleContext = new StyleContext();
@@ -200,7 +223,8 @@ public class OutputPanel extends javax.swing.JPanel
         if (fontFamilyModel.getIndexOf(defaultFontFamily) == -1)
         {
             LOGGER.log(Level.INFO,
-                       "FontFamily '" + defaultFontFamily + "' not found.");
+                       NbBundle.getMessage(CLAZZ, "OutputPanel.noSuchFontFamily"),
+                       defaultFontFamily);
             boolean found = false;
             for (int i = 0; i < fontFamilyModel.getSize() && !found; i++)
             {
@@ -212,19 +236,21 @@ public class OutputPanel extends javax.swing.JPanel
                 {
                     defaultFontFamily = (String) fontFamilyModel.getElementAt(i);
                     LOGGER.log(Level.INFO,
-                               "\nFontFamily set to '" +
-                               defaultFontFamily +
-                               "'.");
+                               NbBundle.getMessage(CLAZZ,
+                                                   "OutputPanel.fontFamilySetTo",
+                                                   defaultFontFamily)
+                               );
                     found = true;
                 }
             }
             if (!found)
             {
                 defaultFontFamily = (String) fontFamilyModel.getElementAt(0);
-                LOGGER.log(Level.INFO,
-                           "\nFontFamily set to '" +
-                           defaultFontFamily +
-                           "'.");
+                    LOGGER.log(Level.INFO,
+                               NbBundle.getMessage(CLAZZ,
+                                                   "OutputPanel.fontFamilySetTo",
+                                                   defaultFontFamily)
+                               );
             }
 
         }
@@ -308,7 +334,7 @@ public class OutputPanel extends javax.swing.JPanel
         if (key == null)
         {
             throw new Exception(
-                    "Cannot add a style without key to later identify it");
+                    NbBundle.getMessage(CLAZZ, "OutputPanel.noKeyForStyle"));
         }
         if (fgColor == null)
         {
@@ -567,10 +593,27 @@ public class OutputPanel extends javax.swing.JPanel
 
     void showStyleSamples()
     {
-        while (styleContext.getStyleNames().hasMoreElements())
+        final Enumeration<?> styleNames = styleContext.getStyleNames();
+
+        while (styleNames.hasMoreElements())
         {
-            String name = (String) styleContext.getStyleNames().nextElement();
-            writeln(name, name);
+            String name = (String) styleNames.nextElement();
+
+            String sampleString = "";
+            final Enumeration<?> attributeNames =
+                                 styleContext.getStyle(name).getAttributeNames();
+
+            while (attributeNames.hasMoreElements())
+            {
+                Object attrName = attributeNames.nextElement();
+                sampleString += attrName.toString() +
+                                "=" +
+                                styleContext.getStyle(name).getAttribute(
+                                        attrName) +
+                                " ";
+            }
+            writeln(name, sampleString);
+
         }
     }
 

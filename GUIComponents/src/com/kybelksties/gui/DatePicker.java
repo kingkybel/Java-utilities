@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -47,6 +46,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
+import org.openide.util.NbBundle;
 
 /**
  * Custom component to choose a date.
@@ -56,7 +56,7 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
 public class DatePicker extends javax.swing.JPanel
 {
 
-    private static final Class<DatePicker> CLAZZ = DatePicker.class;
+    private static final Class CLAZZ = DatePicker.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
@@ -418,7 +418,7 @@ public class DatePicker extends javax.swing.JPanel
 
         final JDialog dlg = new JDialog(window,
                                         Dialog.ModalityType.APPLICATION_MODAL);
-        dlg.setTitle("Date Chooser");
+        dlg.setTitle(NbBundle.getMessage(CLAZZ, "DatePicker.title"));
         dlg.getContentPane().setLayout(new AbsoluteLayout());
         Dimension chsrDim = chsr.getPreferredSize();
         dlg.getContentPane().setSize(chsrDim);
@@ -428,7 +428,8 @@ public class DatePicker extends javax.swing.JPanel
                                                     chsrDim.width,
                                                     chsrDim.height);
         dlg.add(chsr, constraints);
-        JButton okButton = new JButton("OK");
+        JButton okButton = new JButton(
+                NbBundle.getMessage(CLAZZ, "DatePicker.ok"));
         okButton.addActionListener(new java.awt.event.ActionListener()
         {
             @Override

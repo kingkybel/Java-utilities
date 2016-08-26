@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -34,6 +33,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import org.openide.util.NbBundle;
 
 /**
  * A combo-box extension specialised for some basic geometric shapes.
@@ -42,8 +42,9 @@ import javax.swing.ListCellRenderer;
  */
 public class ShapeComboBox extends JComboBox
 {
-
-    private static final String CLASS_NAME = ShapeComboBox.class.getName();
+    
+    private static final Class CLAZZ = ShapeComboBox.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     HashMap<String, ShapeIcon> name2Icon = new HashMap<>();
@@ -150,9 +151,10 @@ public class ShapeComboBox extends JComboBox
             }
             else
             {
-                throw new Exception("Cannot create ShapeIcon '" +
-                                    shapeType +
-                                    "'. Not specified - use different constructor.");
+                throw new Exception(NbBundle.getMessage(
+                        CLAZZ,
+                        "ShapeComboBox.cannotCreateShapeIcon",
+                        shapeType));
             }
         }
 
@@ -161,12 +163,13 @@ public class ShapeComboBox extends JComboBox
             if (!shapeType.equals(ShapeList.REGULAR_POLYGON) &&
                 !shapeType.equals(ShapeList.REGULAR_STAR))
             {
-                throw new Exception("Cannot create ShapeIcon '" +
-                                    shapeType +
-                                    "'. Only '" +
-                                    ShapeList.REGULAR_POLYGON + "' and '" +
-                                    ShapeList.REGULAR_STAR +
-                                    "' can be created with this - use different constructor.");
+                throw new Exception(NbBundle.getMessage(
+                        CLAZZ,
+                        "ShapeComboBox.cannotCreateShapeIcon2",
+                        shapeType,
+                        ShapeList.REGULAR_POLYGON,
+                        ShapeList.REGULAR_STAR)
+                );
             }
 
             this.shapeType = shapeType;
@@ -329,7 +332,10 @@ public class ShapeComboBox extends JComboBox
             }
             else
             {
-                setMissingIconText(shapeString + " (no image available)",
+                setMissingIconText(NbBundle.getMessage(
+                        CLAZZ,
+                        "LinePatternComboBox.noImageAvailable",
+                        shapeString),
                                    list.getFont());
             }
 

@@ -42,9 +42,10 @@ public class DateChooserPopup
         implements WindowFocusListener
 {
 
-    private static final Class<DateChooserPopup> CLAZZ = DateChooserPopup.class;
+    private static final Class CLAZZ = DateChooserPopup.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    
     DateChooser dateChooser;
     private final JWindow dialog;
 

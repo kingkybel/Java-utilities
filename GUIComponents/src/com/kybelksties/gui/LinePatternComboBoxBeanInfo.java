@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -38,7 +37,11 @@ import java.util.logging.Logger;
  */
 public class LinePatternComboBoxBeanInfo extends SimpleBeanInfo
 {
-
+    
+    private static final Class CLAZZ = LinePatternComboBoxBeanInfo.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    
     // Bean descriptor//GEN-FIRST:BeanDescriptor
     /*lazy BeanDescriptor*/
     private static BeanDescriptor getBdescriptor(){
@@ -1033,8 +1036,4 @@ public class LinePatternComboBoxBeanInfo extends SimpleBeanInfo
                 return null;
         }
     }
-    private static final String CLASS_NAME =
-                                LinePatternComboBoxBeanInfo.class.getName();
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
-
 }

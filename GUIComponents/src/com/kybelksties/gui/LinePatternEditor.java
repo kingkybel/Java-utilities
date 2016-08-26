@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -48,10 +47,10 @@ public class LinePatternEditor
         implements ExPropertyEditor,
                    InplaceEditor.Factory
 {
-
-    private static final String CLASS_NAME =
-                                LinePatternEditor.class.getName();
+    private static final Class CLAZZ = LinePatternEditor.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    
     private InplaceEditor ed = null;
 
     @Override

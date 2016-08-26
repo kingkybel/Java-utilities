@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -45,6 +44,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -52,6 +52,10 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
  */
 public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
 {
+
+    private static final Class CLAZZ = ForegroundBackgroundColorChooser.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     ColorUtils.ContrastColorSet colorSet = new ColorUtils.ContrastColorSet();
     JPopupMenu colorTablePopup;
@@ -170,6 +174,93 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
         shiftSpinner.setValue(this.colorShift);
     }
 
+    enum TableMenuActions
+    {
+
+        Delete, Up, Down, Change;
+
+        @Override
+        public String toString()
+        {
+            return this == Delete ?
+                   NbBundle.getMessage(CLAZZ,
+                                       "ForegroundBackgroundColorChooser.TableMenuActions.delete") :
+                   this == Up ?
+                   NbBundle.getMessage(CLAZZ,
+                                       "ForegroundBackgroundColorChooser.TableMenuActions.up") :
+                   this == Down ?
+                   NbBundle.getMessage(CLAZZ,
+                                       "ForegroundBackgroundColorChooser.TableMenuActions.down") :
+                   this == Change ?
+                   NbBundle.getMessage(CLAZZ,
+                                       "ForegroundBackgroundColorChooser.TableMenuActions.change") :
+
+                   NbBundle.getMessage(CLAZZ,
+                                       "ForegroundBackgroundColorChooser.TableMenuActions.unknown");
+        }
+
+    }
+
+    class TableMenu extends JPopupMenu
+    {
+
+        class AugmentedMenuItem extends JMenuItem
+        {
+
+            TableMenuActions action;
+
+            AugmentedMenuItem(TableMenuActions action)
+            {
+                super(action.toString());
+                this.action = action;
+            }
+
+            TableMenuActions getMenuAction()
+            {
+                return action;
+            }
+        }
+
+        TableMenu()
+        {
+            ActionListener action = new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    TableMenuActions command =
+                                     ((AugmentedMenuItem) e.getSource()).
+                                     getMenuAction();
+                    int[] rows = colorCombinationTable.getSelectedRows();
+                    switch (command)
+                    {
+                        case Delete:
+                            ForegroundBackgroundColorChooser.this.deleteRows(
+                                    rows);
+                            break;
+                        case Up:
+                            ForegroundBackgroundColorChooser.this.moveUp(rows);
+                            break;
+                        case Down:
+                            ForegroundBackgroundColorChooser.this.moveDown(rows);
+                            break;
+                        case Change:
+                            ForegroundBackgroundColorChooser.this.changeColor(
+                                    rows[0]);
+                            break;
+                    }
+                }
+            };
+
+            for (TableMenuActions nma : TableMenuActions.values())
+            {
+                AugmentedMenuItem menuItem = new AugmentedMenuItem(nma);
+                menuItem.addActionListener(action);
+                add(menuItem);
+            }
+        }
+    }
+
     /**
      * Creates new form ForegroundBackgroundColorChooser.
      */
@@ -181,49 +272,7 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
         colorCombinationTable.setColumnSelectionInterval(
                 0,
                 colorCombinationTable.getColumnCount() - 1);
-        JMenuItem menuItem;
-        ActionListener action = new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                String command = e.getActionCommand().toUpperCase();
-                int[] rows = colorCombinationTable.getSelectedRows();
-                switch (command)
-                {
-                    case "DELETE":
-                        ForegroundBackgroundColorChooser.this.deleteRows(rows);
-                        break;
-                    case "UP":
-                        ForegroundBackgroundColorChooser.this.moveUp(rows);
-                        break;
-                    case "DOWN":
-                        ForegroundBackgroundColorChooser.this.moveDown(rows);
-                        break;
-                    case "CHANGE":
-                        ForegroundBackgroundColorChooser.this.changeColor(
-                                rows[0]);
-                        break;
-                }
-            }
-        };
-        colorTablePopup = new JPopupMenu();
-
-        menuItem = new JMenuItem("Delete");
-        menuItem.addActionListener(action);
-        colorTablePopup.add(menuItem);
-
-        menuItem = new JMenuItem("Up");
-        menuItem.addActionListener(action);
-        colorTablePopup.add(menuItem);
-
-        menuItem = new JMenuItem("Down");
-        menuItem.addActionListener(action);
-        colorTablePopup.add(menuItem);
-
-        menuItem = new JMenuItem("Change");
-        menuItem.addActionListener(action);
-        colorTablePopup.add(menuItem);
+        colorTablePopup = new TableMenu();
 
         colorCombinationTable.setModel(colorSet);
         colorCombinationTable.setEnabled(true);
@@ -327,7 +376,9 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
 
         final JDialog dlg = new JDialog(window,
                                         Dialog.ModalityType.APPLICATION_MODAL);
-        dlg.setTitle("Foreground/Background Color Chooser");
+        dlg.setTitle(NbBundle.getMessage(
+                CLAZZ,
+                "ForegroundBackgroundColorChooser.title"));
         dlg.getContentPane().setLayout(new AbsoluteLayout());
         Dimension chsrDim = chsr.getPreferredSize();
         dlg.getContentPane().setSize(chsrDim);
@@ -337,7 +388,9 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
                                                     chsrDim.width,
                                                     chsrDim.height);
         dlg.add(chsr, constraints);
-        JButton okButton = new JButton("OK");
+        JButton okButton = new JButton(
+                NbBundle.getMessage(CLAZZ,
+                                    "ForegroundBackgroundColorChooser.ok"));
         okButton.addActionListener(new java.awt.event.ActionListener()
         {
             @Override
@@ -524,11 +577,15 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
     {//GEN-HEADEREND:event_suitableForegroundButtonActionPerformed
         if (!colorSet.addComplement())
         {
-            String message = "Cannot add complement foreground " +
-                             " as it is already in the list.";
+            String message = NbBundle.getMessage(
+                   CLAZZ,
+                   "ForegroundBackgroundColorChooser.cannotAddComplement");
+            String header = NbBundle.getMessage(
+                   CLAZZ,
+                   "ForegroundBackgroundColorChooser.cannotAddHeader");
             JOptionPane.showMessageDialog(colorChooser,
                                           message,
-                                          "Cannot add color",
+                                          header,
                                           JOptionPane.WARNING_MESSAGE);
         }
         updateComponents();
@@ -536,17 +593,24 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
 
     private void exactForegroundButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_exactForegroundButtonActionPerformed
     {//GEN-HEADEREND:event_exactForegroundButtonActionPerformed
-        Color color = JColorChooser.showDialog(exactForegroundButton,
-                                               "Foreground",
-                                               Color.BLACK);
+        Color color = JColorChooser.showDialog(
+              exactForegroundButton,
+              NbBundle.getMessage(
+                      CLAZZ,
+                      "ForegroundBackgroundColorChooser.foreground"),
+              Color.BLACK);
         if (!colorSet.addExactColorContrast(color))
         {
-            String message = "Cannot add foreground " +
-                             ColorUtils.xtermColorString(color, true, true) +
-                             " as it is already in the list.";
+            String message = NbBundle.getMessage(
+                   CLAZZ,
+                   "ForegroundBackgroundColorChooser.cannotAddForeground",
+                   ColorUtils.xtermColorString(color, true, true));
+            String header = NbBundle.getMessage(
+                   CLAZZ,
+                   "ForegroundBackgroundColorChooser.cannotAddHeader");
             JOptionPane.showMessageDialog(colorChooser,
                                           message,
-                                          "Cannot add color",
+                                          header,
                                           JOptionPane.WARNING_MESSAGE);
         }
         updateComponents();
@@ -556,11 +620,15 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
     {//GEN-HEADEREND:event_greyForegroundButtonActionPerformed
         if (!colorSet.addGreyContrast())
         {
-            String message =
-                   "Cannot add shift foreground as it is already in the list.";
+            String message = NbBundle.getMessage(
+                   CLAZZ,
+                   "ForegroundBackgroundColorChooser.cannotAddGrey");
+            String header = NbBundle.getMessage(
+                   CLAZZ,
+                   "ForegroundBackgroundColorChooser.cannotAddHeader");
             JOptionPane.showMessageDialog(colorChooser,
                                           message,
-                                          "Cannot add color",
+                                          header,
                                           JOptionPane.WARNING_MESSAGE);
         }
         updateComponents();
@@ -570,12 +638,16 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
     {//GEN-HEADEREND:event_shiftButtonActionPerformed
         if (!colorSet.addShiftContrast((int) shiftSpinner.getValue()))
         {
-            String message = "Cannot add foreground shift(" +
-                             (int) shiftSpinner.getValue() +
-                             ") as it is already in the list.";
+            String message = NbBundle.getMessage(
+                   CLAZZ,
+                   "ForegroundBackgroundColorChooser.cannotAddShift",
+                   (int) shiftSpinner.getValue());
+            String header = NbBundle.getMessage(
+                   CLAZZ,
+                   "ForegroundBackgroundColorChooser.cannotAddHeader");
             JOptionPane.showMessageDialog(colorChooser,
                                           message,
-                                          "Cannot add color",
+                                          header,
                                           JOptionPane.WARNING_MESSAGE);
         }
         updateComponents();
@@ -584,17 +656,23 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
 
     private void hintButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_hintButtonActionPerformed
     {//GEN-HEADEREND:event_hintButtonActionPerformed
-        Color color = JColorChooser.showDialog(hintButton,
-                                               "Foreground",
-                                               Color.BLACK);
+        Color color = JColorChooser.showDialog(
+                hintButton,
+                NbBundle.getMessage(CLAZZ,
+                                    "ForegroundBackgroundColorChooser.foreground"),
+                Color.BLACK);
         if (!colorSet.addHintContrast(color))
         {
-            String message = "Cannot add (hinted) foreground " +
-                             ColorUtils.xtermColorString(color, true, true) +
-                             " as it is already in the list.";
+            String message = NbBundle.getMessage(
+                   CLAZZ,
+                   "ForegroundBackgroundColorChooser.cannotAddHinted",
+                   ColorUtils.xtermColorString(color, true, true));
+            String header = NbBundle.getMessage(
+                   CLAZZ,
+                   "ForegroundBackgroundColorChooser.cannotAddHeader");
             JOptionPane.showMessageDialog(colorChooser,
                                           message,
-                                          "Cannot add color",
+                                          header,
                                           JOptionPane.WARNING_MESSAGE);
         }
         updateComponents();
@@ -617,7 +695,4 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
     private javax.swing.JSpinner shiftSpinner;
     private javax.swing.JButton suitableForegroundButton;
     // End of variables declaration//GEN-END:variables
-    private static final String CLASS_NAME =
-                                ForegroundBackgroundColorChooser.class.getName();
-    static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 }
