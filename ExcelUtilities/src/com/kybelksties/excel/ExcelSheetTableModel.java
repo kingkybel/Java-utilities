@@ -42,6 +42,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.openide.util.NbBundle;
 
 /**
  * Table model to make it easier to display Excel sheets in JTable objects.
@@ -95,8 +96,9 @@ public class ExcelSheetTableModel extends AbstractTableModel
     {
         if (workbookModel == null)
         {
-            throw new Exception(
-                    "Cannot create an ExcelSheetTableModel within a <null> workbook.");
+            throw new Exception(NbBundle.getMessage(
+                    CLAZZ,
+                    "ExcelSheetTableModel.nullWorkbookException"));
         }
         this.workbook = workbookModel.getWorkbook();
         Sheet sheet = this.workbook.createSheet();

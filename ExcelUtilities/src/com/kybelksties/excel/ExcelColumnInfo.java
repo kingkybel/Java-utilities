@@ -23,6 +23,7 @@ package com.kybelksties.excel;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
+import org.openide.util.NbBundle;
 
 /**
  * Formalise additional information about columns in an Excel sheet. This can be
@@ -159,7 +160,10 @@ public class ExcelColumnInfo
     {
         if (infos.isEmpty())
         {
-            throw new Exception("ExcelColumnInfo: infos is empty()");
+            throw new Exception(NbBundle.getMessage(
+                    CLAZZ,
+                    "ExcelColumnInfo.infoListEmptyError",
+                    CLASS_NAME));
         }
         return col < 0 || col > infos.size() - 1 ?
                infos.get(0).type.undefinedType() : infos.get(col).type;
