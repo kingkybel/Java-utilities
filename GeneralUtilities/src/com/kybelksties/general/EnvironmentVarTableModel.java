@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.openide.util.NbBundle;
 
 /**
  * A table model for categorized variables. Helps display in GUI components such
@@ -43,10 +44,10 @@ public class EnvironmentVarTableModel extends AbstractTableModel
 
     private final String[] theColumnNames =
     {
-        "Def/Undef",
-        "Variable",
-        "Type",
-        "Value"
+        NbBundle.getMessage(CLAZZ, "EnvironmentVarTableModel.header.defUndef"),
+        NbBundle.getMessage(CLAZZ, "EnvironmentVarTableModel.header.variable"),
+        NbBundle.getMessage(CLAZZ, "EnvironmentVarTableModel.header.type"),
+        NbBundle.getMessage(CLAZZ, "EnvironmentVarTableModel.header.value")
     };
 
     private final ArrayList<EnvironmentVar> theEnvironmentVarInfos =

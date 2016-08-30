@@ -37,12 +37,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.openide.util.NbBundle;
 
 /**
  * A collection of file manipulation utilities.
@@ -378,9 +378,10 @@ public class FileUtilities
         {
             if (!path.exists())
             {
-                String msg = "Directory " + path.getParent() +
-                             " does not exist so cannot create file." +
-                             ex.getMessage();
+                String msg = NbBundle.getMessage(CLAZZ,
+                                                 "EnvironmentVarTableModel.noSuchDirectory",
+                                                 path.getParent(),
+                                                 ex.getMessage());
                 throw new IOException(msg);
             }
             throw ex;
@@ -396,8 +397,11 @@ public class FileUtilities
             }
             catch (IOException ex)
             {
-                String msg = "Cannot close outstream " +
-                             fileName + ". " + ex.getMessage();
+                String msg = NbBundle.getMessage(
+                       CLAZZ,
+                       "EnvironmentVarTableModel.cannotCloseOutstream",
+                       fileName,
+                       ex.getMessage());
                 throw new IOException(msg);
             }
         }
@@ -440,18 +444,15 @@ public class FileUtilities
      * @param <T>      a serializable type
      * @param filename the file to which the serialization is written
      * @param obj      the serializable object
+     * @throws java.io.FileNotFoundException
      */
     public static <T> void serialize(String filename, T obj)
+            throws FileNotFoundException,
+                   IOException
     {
-        try (FileOutputStream fileOut = new FileOutputStream(filename);
-             ObjectOutputStream out = new ObjectOutputStream(fileOut))
-        {
-            out.writeObject(obj);
-        }
-        catch (IOException ex)
-        {
-            LOGGER.log(Level.SEVERE, "Serialize-Error", ex);
-        }
+        FileOutputStream fileOut = new FileOutputStream(filename);
+        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        out.writeObject(obj);
 
     }
 
@@ -461,21 +462,19 @@ public class FileUtilities
      * @param <T>      a serializable type
      * @param filename the file from which the serialization is read
      * @return the object
+     * @throws java.io.FileNotFoundException
+     * @throws java.lang.ClassNotFoundException
      */
     public static <T> T deserialize(String filename)
+            throws FileNotFoundException,
+                   IOException,
+                   ClassNotFoundException
     {
-        T reval = null;
-        try (FileInputStream fileIn = new FileInputStream(filename);
-             ObjectInputStream in = new ObjectInputStream(fileIn))
-        {
-            reval = (T) in.readObject();
-        }
-        catch (IOException | ClassNotFoundException ex)
-        {
-            LOGGER.log(Level.SEVERE, "Deserialize-Error", ex);
-        }
 
-        return reval;
+        FileInputStream fileIn = new FileInputStream(filename);
+        ObjectInputStream in = new ObjectInputStream(fileIn);
+
+        return (T) in.readObject();
     }
 
     /**
@@ -484,23 +483,20 @@ public class FileUtilities
      * @param <T>      a XML serializable type
      * @param filename the file to which the serialization is written
      * @param obj      the serializable object
+     * @throws javax.xml.bind.JAXBException
+     * @throws java.io.FileNotFoundException
      */
     public static <T> void xmlSerialize(String filename, T obj)
+            throws JAXBException,
+                   FileNotFoundException
     {
-        try (FileOutputStream fileOut = new FileOutputStream(filename))
-        {
-            JAXBContext context = JAXBContext.newInstance(obj.getClass());
+        FileOutputStream fileOut = new FileOutputStream(filename);
+        JAXBContext context = JAXBContext.newInstance(obj.getClass());
 
-            Marshaller m = context.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        Marshaller m = context.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-            m.marshal(obj, fileOut);
-        }
-        catch (IOException | JAXBException ex)
-        {
-            LOGGER.log(Level.SEVERE, "XmlSerialize-Error", ex);
-        }
-
+        m.marshal(obj, fileOut);
     }
 
     /**
@@ -510,21 +506,16 @@ public class FileUtilities
      * @param filename the file from which the serialization is read
      * @param reval    return value
      * @return the object
+     * @throws javax.xml.bind.JAXBException
      */
     public static <T> T xmlDeserialize(String filename, T reval)
+            throws JAXBException
     {
-        try
-        {
-            JAXBContext jc = JAXBContext.newInstance(reval.getClass());
-            Unmarshaller u = jc.createUnmarshaller();
+        JAXBContext jc = JAXBContext.newInstance(reval.getClass());
+        Unmarshaller u = jc.createUnmarshaller();
 
-            File f = new File(filename);
-            reval = (T) u.unmarshal(f);
-        }
-        catch (JAXBException ex)
-        {
-            LOGGER.log(Level.SEVERE, "XmlDeserialize-Error", ex);
-        }
+        File f = new File(filename);
+        reval = (T) u.unmarshal(f);
 
         return reval;
     }
@@ -556,10 +547,11 @@ public class FileUtilities
         {
             if (!path.exists())
             {
-                String msg = "Directory " +
-                             path.getParent() +
-                             " does not exist so cannot create file." +
-                             ex.getMessage();
+                String msg = NbBundle.getMessage(
+                       CLAZZ,
+                       "FileUtilities.cannotCreateMissingDirectory",
+                       path.getParent(),
+                       ex.getMessage());
                 throw new IOException(msg);
             }
             throw ex;
@@ -575,9 +567,12 @@ public class FileUtilities
             }
             catch (IOException ex)
             {
-                String msg = "Cannot close outstream " +
-                             fileName + ". " + ex.getMessage();
-                throw new IOException(msg);
+                throw new IOException(
+                        NbBundle.getMessage(
+                                CLAZZ,
+                                "FileUtilities.cannotCloseOutstream",
+                                fileName,
+                                ex.getMessage()));
             }
         }
     }
