@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -28,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBException;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -35,6 +35,7 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openide.util.Exceptions;
 
 /**
  * Test the public interface of the FileUtilities class.
@@ -44,8 +45,10 @@ import org.junit.Test;
 public class FileUtilitiesTest
 {
 
-    private static final String CLASS_NAME = FileUtilitiesTest.class.getName();
+    private static final Class CLAZZ = FileUtilitiesTest.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
     final static String testDirectory = FileUtilities.FILE_SEPARATOR +
                                         "tmp" +
                                         FileUtilities.FILE_SEPARATOR +
@@ -84,7 +87,8 @@ public class FileUtilitiesTest
     {
         if (new File(testDirectory).exists())
         {
-            throw new Exception("Directory '" + testDirectory +
+            throw new Exception("Directory '" +
+                                testDirectory +
                                 "' exists. Please remove.");
         }
     }
@@ -369,9 +373,16 @@ public class FileUtilitiesTest
     public void testSerialize()
     {
         LOGGER.log(Level.INFO, "Serialize");
-        String filename = "";
+        String filename = "object.ser";
         Object obj = null;
-        FileUtilities.serialize(filename, obj);
+        try
+        {
+            FileUtilities.serialize(filename, obj);
+        }
+        catch (IOException ex)
+        {
+            Exceptions.printStackTrace(ex);
+        }
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -385,7 +396,19 @@ public class FileUtilitiesTest
         LOGGER.log(Level.INFO, "Deserialize");
         String filename = "";
         Object expResult = null;
-        Object result = FileUtilities.deserialize(filename);
+        Object result = null;
+        try
+        {
+            result = FileUtilities.deserialize(filename);
+        }
+        catch (IOException ex)
+        {
+            Exceptions.printStackTrace(ex);
+        }
+        catch (ClassNotFoundException ex)
+        {
+            Exceptions.printStackTrace(ex);
+        }
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -400,7 +423,18 @@ public class FileUtilitiesTest
         LOGGER.log(Level.INFO, "XmlSerialize");
         String filename = "";
         Object obj = null;
-        FileUtilities.xmlSerialize(filename, obj);
+        try
+        {
+            FileUtilities.xmlSerialize(filename, obj);
+        }
+        catch (JAXBException ex)
+        {
+            Exceptions.printStackTrace(ex);
+        }
+        catch (FileNotFoundException ex)
+        {
+            Exceptions.printStackTrace(ex);
+        }
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

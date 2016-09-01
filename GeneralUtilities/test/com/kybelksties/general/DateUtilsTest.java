@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -49,7 +48,8 @@ import org.junit.Test;
 public class DateUtilsTest
 {
 
-    private static final String CLASS_NAME = DateUtilsTest.class.getName();
+    private static final Class CLAZZ = DateUtilsTest.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**
@@ -113,8 +113,9 @@ public class DateUtilsTest
      */
     public void testMakeDateFormats(DateUtils.Preference pref)
     {
-        LOGGER.log(Level.INFO, "make predefined date formats ({0})", pref.
-                   toString());
+        LOGGER.log(Level.INFO,
+                   "make predefined date formats ({0})",
+                   pref.toString());
         if (pref.equals(DateUtils.Preference.PREFER_EUROPEAN))
         {
             DateUtils.initialiseFormatsEuropean();

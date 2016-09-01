@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -38,7 +37,8 @@ import org.junit.Test;
 public class StringUtilsTest
 {
 
-    private static final String CLASS_NAME = StringUtilsTest.class.getName();
+    private static final Class CLAZZ = StringUtilsTest.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**
@@ -177,8 +177,8 @@ public class StringUtilsTest
                          StringUtils.findSpecies(test.s));
         }
         StringUtils.NumberSpecies nc =
-                                StringUtils.commonSpecies(
-                                        (String[]) null);
+                                  StringUtils.commonSpecies(
+                                          (String[]) null);
 
         assertEquals("number class of null-list",
                      StringUtils.NumberSpecies.NONE,

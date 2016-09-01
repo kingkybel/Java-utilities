@@ -36,9 +36,11 @@ import org.junit.Test;
 public class ExtRandomTest
 {
 
-    static java.util.Random javaRandom = new java.util.Random(0);
-    private static final String CLASS_NAME = ExtRandomTest.class.getName();
+    private static final Class CLAZZ = ExtRandomTest.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
+    static java.util.Random javaRandom = new java.util.Random(0);
 
     /**
      * Set up class statics.
