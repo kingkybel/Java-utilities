@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -192,9 +191,9 @@ public class ExcelSheetTableModel extends AbstractTableModel
             while (iter.hasNext())
             {
                 Row row = iter.next();
-                // According whit documentation, this method gets the index of
+                // According to documentation, this method gets the index of
                 // the last cell. This value is increased BY ONE, so for
-                // example, whith maximum index of 5 will be 6. I think this has
+                // example, with maximum index of 5 will be 6. I think this has
                 // been done to simplify iteration over rowcell.
                 int lastCol = row.getLastCellNum();
                 if (numberOfColumns < lastCol)
