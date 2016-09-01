@@ -22,6 +22,7 @@ package com.kybelksties.gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Paint;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -69,11 +70,12 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         mainSplitPane = new javax.swing.JSplitPane();
         controlPanel = new javax.swing.JPanel();
         dateButton = new javax.swing.JButton();
-        colorButton = new javax.swing.JButton();
+        fgBgColorButton = new javax.swing.JButton();
         fontButton = new javax.swing.JButton();
         datePicker1 = new com.kybelksties.gui.DatePicker();
         outputPanel1 = new com.kybelksties.gui.OutputPanel();
         outputPanel2 = new com.kybelksties.gui.OutputPanel();
+        gradientButton = new javax.swing.JButton();
         tablePanel = new javax.swing.JPanel();
         tableScrollPane = new javax.swing.JScrollPane();
         colorTable = new javax.swing.JTable();
@@ -97,15 +99,15 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         });
         controlPanel.add(dateButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(3, 5, -1, -1));
 
-        colorButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.colorButton.text")); // NOI18N
-        colorButton.addActionListener(new java.awt.event.ActionListener()
+        fgBgColorButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.fgBgColorButton.text")); // NOI18N
+        fgBgColorButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                colorButtonActionPerformed(evt);
+                fgBgColorButtonActionPerformed(evt);
             }
         });
-        controlPanel.add(colorButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 5, -1, -1));
+        controlPanel.add(fgBgColorButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, -1, -1));
 
         fontButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.fontButton.text")); // NOI18N
         fontButton.addActionListener(new java.awt.event.ActionListener()
@@ -115,19 +117,29 @@ public class DebugComponentsFrame extends javax.swing.JFrame
                 fontButtonActionPerformed(evt);
             }
         });
-        controlPanel.add(fontButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 5, -1, -1));
+        controlPanel.add(fontButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 0, -1, -1));
         controlPanel.add(datePicker1, new org.netbeans.lib.awtextra.AbsoluteConstraints(211, 7, -1, -1));
 
         outputPanel1.setDefaultBackground(new java.awt.Color(255, 255, 51));
         outputPanel1.setDefaultBold(java.lang.Boolean.TRUE);
         outputPanel1.setDefaultFontFamily(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.outputPanel1.defaultFontFamily")); // NOI18N
         outputPanel1.setDefaultForeground(new java.awt.Color(0, 153, 51));
-        controlPanel.add(outputPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 110, 430, 70));
+        controlPanel.add(outputPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 140, 430, 70));
 
         outputPanel2.setDefaultBackground(new java.awt.Color(0, 204, 204));
         outputPanel2.setDefaultFontSize(new java.lang.Integer(18));
         outputPanel2.setDefaultForeground(new java.awt.Color(0, 0, 255));
-        controlPanel.add(outputPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 430, 60));
+        controlPanel.add(outputPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 430, 60));
+
+        gradientButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.gradientButton.text")); // NOI18N
+        gradientButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                gradientButtonActionPerformed(evt);
+            }
+        });
+        controlPanel.add(gradientButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, -1, -1));
 
         mainSplitPane.setBottomComponent(controlPanel);
 
@@ -157,8 +169,8 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void colorButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_colorButtonActionPerformed
-    {//GEN-HEADEREND:event_colorButtonActionPerformed
+    private void fgBgColorButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_fgBgColorButtonActionPerformed
+    {//GEN-HEADEREND:event_fgBgColorButtonActionPerformed
         ColorUtils.ContrastColorSet colSet =
                                     ForegroundBackgroundColorChooser.showDialog(
                                             this,
@@ -171,7 +183,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
 
         colorTable.setModel(colSet);
         repaint();
-    }//GEN-LAST:event_colorButtonActionPerformed
+    }//GEN-LAST:event_fgBgColorButtonActionPerformed
 
     private void fontButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_fontButtonActionPerformed
     {//GEN-HEADEREND:event_fontButtonActionPerformed
@@ -183,6 +195,15 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         Date f = DateChooser.showDialog(this, null, Locale.getDefault());
         System.out.println("Date=" + f.toString());
     }//GEN-LAST:event_dateButtonActionPerformed
+
+    private void gradientButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_gradientButtonActionPerformed
+    {//GEN-HEADEREND:event_gradientButtonActionPerformed
+        Paint gradient = GradientColorChooser.showDialog(this,
+                                                         Color.CYAN,
+                                                         Color.MAGENTA);
+
+        repaint();
+    }//GEN-LAST:event_gradientButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -226,12 +247,13 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton colorButton;
     private javax.swing.JTable colorTable;
     private javax.swing.JPanel controlPanel;
     private javax.swing.JButton dateButton;
     private com.kybelksties.gui.DatePicker datePicker1;
+    private javax.swing.JButton fgBgColorButton;
     private javax.swing.JButton fontButton;
+    private javax.swing.JButton gradientButton;
     private javax.swing.JSplitPane mainSplitPane;
     private com.kybelksties.gui.OutputPanel outputPanel1;
     private com.kybelksties.gui.OutputPanel outputPanel2;
