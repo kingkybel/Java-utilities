@@ -50,8 +50,6 @@ import org.openide.util.NbBundle;
 
 /**
  * Custom component to choose a date.
- *
- * @author: Dieter J Kybelksties
  */
 public class DatePicker extends javax.swing.JPanel
 {
@@ -328,47 +326,9 @@ public class DatePicker extends javax.swing.JPanel
      */
     private Popup createPopup(Component content, Component source)
     {
-//        Point compPos = source.getLocation();
-//        Point mousePos = source.getMousePosition();
-//        if (mousePos == null)
-//        {
-//            mousePos = new Point(0, 0);
-//        }
-//        Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-//
-//        // Create a JScrollPane around the content, in case there's not
-//        // enough space
-//        JScrollPane scrollPane = new JScrollPane(content);
-//        scrollPane.setHorizontalScrollBarPolicy(
-//                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//        scrollPane.setBorder(BorderFactory.createRaisedBevelBorder());
-//        // Implement max-size content-independent
-//        Dimension prefsize = scrollPane.getPreferredSize();
-//        int w = Math.min(prefsize.width,
-//                         Math.min(800, (screenDim.width / 2) - 16));
-//        int h = Math.min(prefsize.height, screenDim.height - 10);
-//        scrollPane.setPreferredSize(new Dimension(w, h));
-//
-//        int xPos = compPos.x + mousePos.x + 16;
-//        // Display the popup to the left of the cursor if it would be cut
-//        // off on its right, but only if more space is available
-//        if (xPos + w > screenDim.width && xPos > screenDim.width / 2)
-//        {
-//            xPos = compPos.x + mousePos.x - 4 - w;
-//        }
-//        int yPos = compPos.y + mousePos.y + 16;
-//        // Move the popup up if it would be cut off at its bottom but do not
-//        // move it off screen on the top
-//        if (yPos + h > screenDim.height - 5)
-//        {
-//            yPos = Math.max(5, screenDim.height - h - 5);
-//        }
-//
-//        PopupFactory pf = PopupFactory.getSharedInstance();
-//
-//        p.show();
-//        PopupFactory pf = PopupFactory.getSharedInstance();
-        Popup p = new DateChooserPopup(null, 0, 0);
+        Popup p = new DateChooserPopup(null,
+                                       getX() + showPopupButton.getX(),
+                                       getY() + showPopupButton.getY());
         p.show();
         return p;
     }
@@ -566,6 +526,7 @@ public class DatePicker extends javax.swing.JPanel
 
     private void showPopupButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_showPopupButtonActionPerformed
     {//GEN-HEADEREND:event_showPopupButtonActionPerformed
+
         //if (popup == null)
         {
             popup = createPopup(dateChooser, showPopupButton);

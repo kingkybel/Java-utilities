@@ -328,7 +328,7 @@ public class TextComponentDemo extends JFrame
     /**
      * Create the edit menu.
      *
-     * @return
+     * @return the created menu
      */
     protected final JMenu createEditMenu()
     {

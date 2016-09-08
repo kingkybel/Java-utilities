@@ -28,8 +28,7 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 /**
- *
- * @author: Dieter J Kybelksties
+ * A class to be used for debugging of visual components of this package.
  */
 public class DebugComponentsFrame extends javax.swing.JFrame
 {
@@ -76,6 +75,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         outputPanel1 = new com.kybelksties.gui.OutputPanel();
         outputPanel2 = new com.kybelksties.gui.OutputPanel();
         gradientButton = new javax.swing.JButton();
+        timePicker1 = new com.kybelksties.gui.TimePicker();
         tablePanel = new javax.swing.JPanel();
         tableScrollPane = new javax.swing.JScrollPane();
         colorTable = new javax.swing.JTable();
@@ -140,6 +140,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
             }
         });
         controlPanel.add(gradientButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, -1, -1));
+        controlPanel.add(timePicker1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 40, -1, -1));
 
         mainSplitPane.setBottomComponent(controlPanel);
 
@@ -259,5 +260,6 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     private com.kybelksties.gui.OutputPanel outputPanel2;
     private javax.swing.JPanel tablePanel;
     private javax.swing.JScrollPane tableScrollPane;
+    private com.kybelksties.gui.TimePicker timePicker1;
     // End of variables declaration//GEN-END:variables
 }
