@@ -25,6 +25,8 @@ import java.awt.Paint;
 import java.awt.PaintContext;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import static java.awt.Transparency.OPAQUE;
+import static java.awt.Transparency.TRANSLUCENT;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -1721,7 +1723,7 @@ public class ColorUtils
     /**
      * A circular gradient class.
      */
-    public class RoundGradientPaint implements Paint
+    public static class RoundGradientPaint implements Paint
     {
 
         private Point2D point;
@@ -1729,11 +1731,11 @@ public class ColorUtils
         private Color centerColor;
         private Color outsideColor;
 
-        RoundGradientPaint(double x,
-                           double y,
-                           Color centerColor,
-                           Point2D radius,
-                           Color outsideColor)
+        public RoundGradientPaint(double x,
+                                  double y,
+                                  Color centerColor,
+                                  Point2D radius,
+                                  Color outsideColor)
         {
             if (radius.distance(0, 0) <= 0)
             {
@@ -1775,11 +1777,11 @@ public class ColorUtils
     /**
      * A circular gradient context class.
      */
-    public class RoundGradientContext implements PaintContext
+    public static class RoundGradientContext implements PaintContext
     {
 
         /**
-         * Center point.
+         * Center point1.
          */
         protected Point2D point;
 
@@ -1794,17 +1796,17 @@ public class ColorUtils
         protected Color color1;
 
         /**
-         * The color at the radius.
+         * The color at the point2.
          */
         protected Color color2;
 
         /**
          * Construct a circular gradient.
          *
-         * @param point  center point
+         * @param point  center point1
          * @param color1 color at the center
-         * @param radius radius at which the gradient is color2
-         * @param color2 the color at the radius
+         * @param radius point2 at which the gradient is color2
+         * @param color2 the color at the point2
          */
         public RoundGradientContext(Point2D point,
                                     Color color1,
@@ -1840,7 +1842,7 @@ public class ColorUtils
                 for (int i = 0; i < w; i++)
                 {
                     double distance = point.distance(x + i, y + j);
-                    double loc_radius = this.radius.distance(0, 0);
+                    double loc_radius = radius.distance(0, 0);
                     double ratio = distance / loc_radius;
                     if (ratio > 1.0)
                     {
@@ -1865,6 +1867,233 @@ public class ColorUtils
             raster.setPixels(0, 0, w, h, data);
 
             return raster;
+        }
+    }
+
+    /**
+     * A 4-colour gradient class.
+     */
+    public static class FourColorGradientPaint implements Paint
+    {
+
+        Point2D point1;
+        Point2D point2;
+        Point2D point3;
+        Point2D point4;
+        Color color1;
+        Color color2;
+        Color color3;
+        Color color4;
+
+        public FourColorGradientPaint(Point2D point1,
+                                      Color color1,
+                                      Point2D point2,
+                                      Color color2,
+                                      Point2D point3,
+                                      Color color3,
+                                      Point2D point4,
+                                      Color color4)
+        {
+            if (invalid(point1, color1) ||
+                invalid(point2, color2) ||
+                invalid(point3, color3) ||
+                invalid(point4, color4) ||
+                point1.equals(point2) ||
+                point1.equals(point3) ||
+                point1.equals(point4) ||
+                point2.equals(point3) ||
+                point2.equals(point4) ||
+                point3.equals(point4))
+            {
+                throw new IllegalArgumentException(
+                        NbBundle.getMessage(
+                                CLAZZ,
+                                "ColorUtils.FourColorGradientPaint.illegalArgument"));
+            }
+            this.point1 = point1;
+            this.color1 = color1;
+            this.point2 = point2;
+            this.color2 = color2;
+            this.point3 = point3;
+            this.color3 = color3;
+            this.point4 = point4;
+            this.color4 = color4;
+        }
+
+        @Override
+        public PaintContext createContext(ColorModel cm,
+                                          Rectangle deviceBounds,
+                                          Rectangle2D userBounds,
+                                          AffineTransform xform,
+                                          RenderingHints hints)
+        {
+            Point2D transformedPoint1 = xform.transform(point1, null);
+            Point2D transformedPoint2 = xform.transform(point2, null);
+            Point2D transformedPoint3 = xform.transform(point3, null);
+            Point2D transformedPoint4 = xform.transform(point4, null);
+            return new FourColorGradientPaintContext(transformedPoint1,
+                                                     color1,
+                                                     transformedPoint2,
+                                                     color2,
+                                                     transformedPoint3,
+                                                     color3,
+                                                     transformedPoint4,
+                                                     color4);
+        }
+
+        @Override
+        public int getTransparency()
+        {
+            int a1 = color1.getAlpha();
+            int a2 = color2.getAlpha();
+            int a3 = color3.getAlpha();
+            int a4 = color4.getAlpha();
+            return (((a1 & a2 & a3 & a4) == 0xff) ? OPAQUE : TRANSLUCENT);
+        }
+
+        private boolean invalid(Point2D point, Color color)
+        {
+            return point == null || color == null;
+        }
+
+    }
+
+    /**
+     * A circular gradient context class.
+     */
+    public static class FourColorGradientPaintContext implements PaintContext
+    {
+
+        Point2D point1;
+        Point2D point2;
+        Point2D point3;
+        Point2D point4;
+        Color color1;
+        Color color2;
+        Color color3;
+        Color color4;
+
+        /**
+         * Construct a circular gradient.
+         *
+         * @param point1 corner point1
+         * @param color1 color at point1
+         * @param point2 corner point2
+         * @param color2 color at point2
+         * @param point3 corner point3
+         * @param color3 color at point3
+         * @param point4 corner point4
+         * @param color4 color at point4
+         */
+        public FourColorGradientPaintContext(Point2D point1,
+                                             Color color1,
+                                             Point2D point2,
+                                             Color color2,
+                                             Point2D point3,
+                                             Color color3,
+                                             Point2D point4,
+                                             Color color4)
+        {
+            this.point1 = point1;
+            this.color1 = color1;
+            this.point2 = point2;
+            this.color2 = color2;
+            this.point3 = point3;
+            this.color3 = color3;
+            this.point4 = point4;
+            this.color4 = color4;
+        }
+
+        @Override
+        public void dispose()
+        {
+        }
+
+        @Override
+        public ColorModel getColorModel()
+        {
+            return ColorModel.getRGBdefault();
+        }
+
+        @Override
+        public Raster getRaster(int x, int y, int w, int h)
+        {
+            WritableRaster raster =
+                           getColorModel().createCompatibleWritableRaster(w, h);
+
+            int[] data = new int[w * h * 4];
+            for (int j = 0; j < h; j++)
+            {
+                for (int i = 0; i < w; i++)
+                {
+                    double ratio_w = (double) i / (double) w;
+                    double ratio_h = (double) j / (double) h;
+                    if (ratio_w > 1.0)
+                    {
+                        ratio_w = 1.0;
+                    }
+                    if (ratio_h > 1.0)
+                    {
+                        ratio_h = 1.0;
+                    }
+
+                    int base = (j * w + i) * 4;
+
+                    data[base + 0] = fourCornerAverage(color1.getRed(),
+                                                       color2.getRed(),
+                                                       color2.getRed(),
+                                                       color3.getRed(),
+                                                       ratio_w,
+                                                       ratio_h);
+                    data[base + 1] = fourCornerAverage(color1.getGreen(),
+                                                       color2.getGreen(),
+                                                       color2.getGreen(),
+                                                       color3.getGreen(),
+                                                       ratio_w,
+                                                       ratio_h);
+                    data[base + 2] = fourCornerAverage(color1.getBlue(),
+                                                       color2.getBlue(),
+                                                       color2.getBlue(),
+                                                       color3.getBlue(),
+                                                       ratio_w,
+                                                       ratio_h);
+                    data[base + 3] = fourCornerAverage(color1.getAlpha(),
+                                                       color2.getAlpha(),
+                                                       color2.getAlpha(),
+                                                       color3.getAlpha(),
+                                                       ratio_w,
+                                                       ratio_h);
+//                    data[base + 0] = (int) ((color1.getRed() + ratio_w *
+//                                                               (color2.getRed() -
+//                                                                color1.getRed())) *
+//                                            ratio_h);
+//
+//                    data[base + 1] = (int) (color1.getGreen() +
+//                                            ratio_w * (color2.getGreen() -
+//                                                       color1.getGreen()));
+//                    data[base + 2] = (int) (color1.getBlue() +
+//                                            ratio_w * (color2.getBlue() -
+//                                                       color1.getBlue()));
+//                    data[base + 3] = (int) (color1.getAlpha() +
+//                                            ratio_w * (color2.getAlpha() -
+//                                                       color1.getAlpha()));
+                }
+            }
+            raster.setPixels(0, 0, w, h, data);
+
+            return raster;
+        }
+
+        private int fourCornerAverage(int val1,
+                                      int val2,
+                                      int val3,
+                                      int val4,
+                                      double ratio_w,
+                                      double ratio_h)
+        {
+            double reval1 = val1 * ratio_w + val2 * (1.0 - ratio_w);
+            double reval2 = val3 * ratio_w + val4 * (1.0 - ratio_w);
+            return (int) (reval1 * ratio_h + reval2 * (1.0 - ratio_h));
         }
     }
 }

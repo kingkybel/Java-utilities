@@ -26,6 +26,7 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -43,6 +44,7 @@ import org.openide.util.NbBundle;
  */
 public class GradientTypeComboBox extends JComboBox
 {
+
     private static final Class CLAZZ = GradientTypeComboBox.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
@@ -140,7 +142,6 @@ public class GradientTypeComboBox extends JComboBox
 
             g.setColor(Color.black);
             Graphics2D g2 = (Graphics2D) g;
-//            g2.setPaint(new ColorUtils.RoundGradientPaint());
 
             if (gradientType.equals(GradientType.TOP_TO_BOTTOM))
             {
@@ -148,10 +149,10 @@ public class GradientTypeComboBox extends JComboBox
                         new GradientPaint(
                                 0,
                                 0,
-                                Color.BLACK,
+                                Color.BLUE,
                                 0,
                                 getIconHeight(),
-                                Color.WHITE,
+                                Color.YELLOW,
                                 false));
             }
             else if (gradientType.equals(GradientType.LEFT_TO_RIGHT))
@@ -160,10 +161,10 @@ public class GradientTypeComboBox extends JComboBox
                         new GradientPaint(
                                 0,
                                 0,
-                                Color.BLACK,
+                                Color.RED,
                                 getIconWidth(),
                                 0,
-                                Color.WHITE,
+                                Color.GREEN,
                                 false));
             }
             else if (gradientType.equals(
@@ -171,12 +172,12 @@ public class GradientTypeComboBox extends JComboBox
             {
                 g2.setPaint(
                         new GradientPaint(
+                                0,
+                                0,
+                                Color.CYAN,
                                 getIconWidth(),
-                                0,
-                                Color.BLACK,
-                                0,
                                 getIconHeight(),
-                                Color.WHITE,
+                                Color.MAGENTA,
                                 false));
             }
             else if (gradientType.equals(
@@ -184,13 +185,43 @@ public class GradientTypeComboBox extends JComboBox
             {
                 g2.setPaint(
                         new GradientPaint(
-                                0,
-                                getIconHeight(),
-                                Color.BLACK,
                                 getIconWidth(),
                                 0,
-                                Color.WHITE,
+                                Color.ORANGE,
+                                0,
+                                getIconHeight(),
+                                Color.BLUE,
                                 false));
+            }
+            else if (gradientType.equals(GradientType.CIRCULAR))
+            {
+                g2.setPaint(
+                        new ColorUtils.RoundGradientPaint(
+                                getIconWidth() / 2,
+                                getIconHeight() / 2,
+                                Color.PINK,
+                                new Point(
+                                        getIconWidth() / 2,
+                                        getIconHeight() / 2),
+                                Color.GREEN.brighter()));
+
+            }
+            else if (gradientType.equals(GradientType.FOUR_COLOR_RECTANGULAR))
+            {
+                g2.setPaint(
+                        new ColorUtils.FourColorGradientPaint(
+                                new Point(0, 0),
+                                Color.BLUE,
+                                new Point(getIconWidth(),
+                                          0),
+                                Color.CYAN,
+                                new Point(0,
+                                          getIconHeight()),
+                                Color.RED,
+                                new Point(getIconWidth(),
+                                          getIconHeight()),
+                                Color.YELLOW));
+
             }
             g.fillRect(0, 0, getIconWidth(), getIconHeight());
         }
@@ -244,9 +275,9 @@ public class GradientTypeComboBox extends JComboBox
             else
             {
                 setMissingIconText(shapeString + NbBundle.getMessage(
-                                    CLAZZ,
-                                    "GradientTypeComboBox.noImageAvailable",
-                                    shapeString),
+                                   CLAZZ,
+                                   "GradientTypeComboBox.noImageAvailable",
+                                   shapeString),
                                    list.getFont());
             }
 

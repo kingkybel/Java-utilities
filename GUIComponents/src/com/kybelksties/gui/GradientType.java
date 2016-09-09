@@ -30,6 +30,7 @@ import org.openide.util.NbBundle;
  */
 public enum GradientType
 {
+
     /**
      * 2-color gradient that changes from top to bottom.
      */
@@ -65,19 +66,19 @@ public enum GradientType
     public String toString()
     {
 
-        return NbBundle.getMessage(CLAZZ, 
+        return NbBundle.getMessage(CLAZZ,
                                    this == TOP_TO_BOTTOM ?
-                                                "GradientType.topToBottom" :
-                                    this == LEFT_TO_RIGHT ?
-                                                "GradientType.leftToRight" :
-                                    this == DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM ?
-                                                "GradientType.firstmainDiag" :
-                                    this == DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM ?
-                                                "GradientType.secondMainDiag" :
-                                    this == CIRCULAR ?
-                                                "GradientType.circular" :
-                                    this == FOUR_COLOR_RECTANGULAR ? 
-                                                "GradientType.fourColor" :
-                                                "GradientType.unknown");
+                                   "GradientType.topToBottom" :
+                                   this == LEFT_TO_RIGHT ?
+                                   "GradientType.leftToRight" :
+                                   this == DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM ?
+                                   "GradientType.firstMainDiag" :
+                                   this == DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM ?
+                                   "GradientType.secondMainDiag" :
+                                   this == CIRCULAR ?
+                                   "GradientType.circular" :
+                                   this == FOUR_COLOR_RECTANGULAR ?
+                                   "GradientType.fourColor" :
+                                   "GradientType.unknown");
     }
 }

@@ -76,6 +76,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         outputPanel2 = new com.kybelksties.gui.OutputPanel();
         gradientButton = new javax.swing.JButton();
         timePicker1 = new com.kybelksties.gui.TimePicker();
+        gradientTypeComboBox1 = new com.kybelksties.gui.GradientTypeComboBox();
         tablePanel = new javax.swing.JPanel();
         tableScrollPane = new javax.swing.JScrollPane();
         colorTable = new javax.swing.JTable();
@@ -124,12 +125,12 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         outputPanel1.setDefaultBold(java.lang.Boolean.TRUE);
         outputPanel1.setDefaultFontFamily(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.outputPanel1.defaultFontFamily")); // NOI18N
         outputPanel1.setDefaultForeground(new java.awt.Color(0, 153, 51));
-        controlPanel.add(outputPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 140, 430, 70));
+        controlPanel.add(outputPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 200, 430, 70));
 
         outputPanel2.setDefaultBackground(new java.awt.Color(0, 204, 204));
         outputPanel2.setDefaultFontSize(new java.lang.Integer(18));
         outputPanel2.setDefaultForeground(new java.awt.Color(0, 0, 255));
-        controlPanel.add(outputPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 430, 60));
+        controlPanel.add(outputPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 430, 60));
 
         gradientButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.gradientButton.text")); // NOI18N
         gradientButton.addActionListener(new java.awt.event.ActionListener()
@@ -141,6 +142,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         });
         controlPanel.add(gradientButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, -1, -1));
         controlPanel.add(timePicker1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 40, -1, -1));
+        controlPanel.add(gradientTypeComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
 
         mainSplitPane.setBottomComponent(controlPanel);
 
@@ -255,6 +257,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     private javax.swing.JButton fgBgColorButton;
     private javax.swing.JButton fontButton;
     private javax.swing.JButton gradientButton;
+    private com.kybelksties.gui.GradientTypeComboBox gradientTypeComboBox1;
     private javax.swing.JSplitPane mainSplitPane;
     private com.kybelksties.gui.OutputPanel outputPanel1;
     private com.kybelksties.gui.OutputPanel outputPanel2;
