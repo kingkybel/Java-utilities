@@ -20,9 +20,11 @@
  */
 package com.kybelksties.gui;
 
+import com.kybelksties.general.ExtRandom;
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.PaintContext;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import static java.awt.Transparency.OPAQUE;
@@ -1080,7 +1082,8 @@ public class ColorUtils
      *                       matches, otherwise use the closest match
      * @return closest xterm-name of a RGB-color
      */
-    public static String xtermColorString(Color color, boolean includeRGB,
+    public static String xtermColorString(Color color,
+                                          boolean includeRGB,
                                           boolean exactMatchOnly)
     {
         if (color == null)
@@ -1791,7 +1794,7 @@ public class ColorUtils
         protected Point2D radius;
 
         /**
-         * Color at the center.
+         * Color at the centre.
          */
         protected Color color1;
 
@@ -1803,8 +1806,8 @@ public class ColorUtils
         /**
          * Construct a circular gradient.
          *
-         * @param point  center point1
-         * @param color1 color at the center
+         * @param point  centre point1
+         * @param color1 color at the centre
          * @param radius point2 at which the gradient is color2
          * @param color2 the color at the point2
          */
@@ -1885,6 +1888,37 @@ public class ColorUtils
         Color color3;
         Color color4;
 
+        public FourColorGradientPaint(int x,
+                                      int y,
+                                      Color color1,
+                                      Color color2,
+                                      Color color3,
+                                      Color color4)
+        {
+            this(new Point(x, y),
+                 color1,
+                 color2,
+                 color3,
+                 color4);
+        }
+
+        public FourColorGradientPaint(Point2D point,
+                                      Color color1,
+                                      Color color2,
+                                      Color color3,
+                                      Color color4)
+        {
+            this(new Point(0, 0),
+                 color1,
+                 new Point((int) point.getX(), 0),
+                 color2,
+                 new Point(0, (int) point.getY()),
+                 color3,
+                 new Point((int) point.getX(), (int) point.getY()),
+                 color4
+            );
+        }
+
         public FourColorGradientPaint(Point2D point1,
                                       Color color1,
                                       Point2D point2,
@@ -1959,7 +1993,7 @@ public class ColorUtils
     }
 
     /**
-     * A circular gradient context class.
+     * A 4-color gradient context class.
      */
     public static class FourColorGradientPaintContext implements PaintContext
     {
@@ -2041,42 +2075,28 @@ public class ColorUtils
 
                     data[base + 0] = fourCornerAverage(color1.getRed(),
                                                        color2.getRed(),
-                                                       color2.getRed(),
                                                        color3.getRed(),
+                                                       color4.getRed(),
                                                        ratio_w,
                                                        ratio_h);
                     data[base + 1] = fourCornerAverage(color1.getGreen(),
                                                        color2.getGreen(),
-                                                       color2.getGreen(),
                                                        color3.getGreen(),
+                                                       color4.getGreen(),
                                                        ratio_w,
                                                        ratio_h);
                     data[base + 2] = fourCornerAverage(color1.getBlue(),
                                                        color2.getBlue(),
-                                                       color2.getBlue(),
                                                        color3.getBlue(),
+                                                       color4.getBlue(),
                                                        ratio_w,
                                                        ratio_h);
                     data[base + 3] = fourCornerAverage(color1.getAlpha(),
                                                        color2.getAlpha(),
-                                                       color2.getAlpha(),
                                                        color3.getAlpha(),
+                                                       color4.getAlpha(),
                                                        ratio_w,
                                                        ratio_h);
-//                    data[base + 0] = (int) ((color1.getRed() + ratio_w *
-//                                                               (color2.getRed() -
-//                                                                color1.getRed())) *
-//                                            ratio_h);
-//
-//                    data[base + 1] = (int) (color1.getGreen() +
-//                                            ratio_w * (color2.getGreen() -
-//                                                       color1.getGreen()));
-//                    data[base + 2] = (int) (color1.getBlue() +
-//                                            ratio_w * (color2.getBlue() -
-//                                                       color1.getBlue()));
-//                    data[base + 3] = (int) (color1.getAlpha() +
-//                                            ratio_w * (color2.getAlpha() -
-//                                                       color1.getAlpha()));
                 }
             }
             raster.setPixels(0, 0, w, h, data);
@@ -2096,4 +2116,277 @@ public class ColorUtils
             return (int) (reval1 * ratio_h + reval2 * (1.0 - ratio_h));
         }
     }
+
+    public static class RandomGridGradientPaint implements Paint
+    {
+
+        ExtRandom random = new ExtRandom(1);
+
+        private Color randomColor()
+        {
+            return new Color(random.nextInt(0, 256),
+                             random.nextInt(0, 256),
+                             random.nextInt(0, 256));
+        }
+
+        ArrayList<Color> colors = new ArrayList<>();
+        int distanceX;
+        int distanceY;
+
+        /**
+         *
+         * @param distanceX
+         * @param distanceY
+         * @param numColors
+         */
+        public RandomGridGradientPaint(int distanceX,
+                                       int distanceY,
+                                       int numColors)
+        {
+            if (distanceX < 1 || distanceY < 1 || numColors < 1)
+            {
+                throw new IllegalArgumentException(
+                        NbBundle.getMessage(
+                                CLAZZ,
+                                "ColorUtils.RandomGridGradientPaint.illegalArgument"));
+            }
+            this.distanceX = distanceX;
+            this.distanceY = distanceY;
+            for (int i = 0; i < numColors; i++)
+            {
+                Color color = randomColor();
+                colors.add(color);
+            }
+
+        }
+
+        @Override
+        public PaintContext createContext(ColorModel cm,
+                                          Rectangle deviceBounds,
+                                          Rectangle2D userBounds,
+                                          AffineTransform xform,
+                                          RenderingHints hints)
+        {
+
+            return new RandomGridGradientPaintContext(
+                    distanceX,
+                    distanceY,
+                    colors);
+        }
+
+        @Override
+        public int getTransparency()
+        {
+            return TRANSLUCENT;
+        }
+
+    }
+
+    /**
+     * A 4-color gradient context class.
+     */
+    public static class RandomGridGradientPaintContext implements PaintContext
+    {
+
+        int distanceX;
+        int distanceY;
+        ArrayList<Color> colors;
+
+        private RandomGridGradientPaintContext(int distanceX,
+                                               int distanceY,
+                                               ArrayList<Color> colorsX)
+        {
+            this.distanceX = distanceX;
+            this.distanceY = distanceY;
+            this.colors = colorsX;
+        }
+
+        @Override
+        public void dispose()
+        {
+        }
+
+        @Override
+        public ColorModel getColorModel()
+        {
+            return ColorModel.getRGBdefault();
+        }
+
+        @Override
+        public Raster getRaster(int x, int y, int w, int h)
+        {
+            WritableRaster raster =
+                           getColorModel().createCompatibleWritableRaster(w, h);
+            final int ciXsize = w / distanceX + 1;
+            final int ciYsize = h / distanceY + 1;
+
+            int colorIndex[][] = new int[ciXsize][ciYsize];
+            int co = 0;
+            for (int yi = 0; yi < ciYsize; yi++)
+            {
+                for (int xi = 0; xi < ciXsize; xi++)
+                {
+
+                    colorIndex[xi][yi] = co % colors.size();
+                    co++;
+                    System.out.print(ColorUtils.xtermColorString(colors.get(
+                            colorIndex[xi][yi])) + "\t");
+                }
+                System.out.println("\n");
+            }
+            int[] data = new int[w * h * 4];
+
+            int colorIndexX = 0;
+            int colorIndexY = 0;
+            Color topLeft;
+            Color topRight;
+            Color bottomLeft;
+            Color bottomRight;
+            printCornerColors(0, 0, colorIndex, colorIndexX, colorIndexY,
+                              ciXsize, ciYsize);
+            boolean didOutput = false;
+            for (int hi = 0; hi < h; hi++)
+            {
+                for (int wi = 0; wi < w; wi++)
+                {
+                    topLeft = getColorByIndex(colorIndex,
+                                              colorIndexX,
+                                              ciXsize,
+                                              colorIndexY,
+                                              ciYsize);
+                    topRight = getColorByIndex(colorIndex,
+                                               colorIndexX + 1,
+                                               ciXsize,
+                                               colorIndexY,
+                                               ciYsize);
+                    bottomLeft = getColorByIndex(colorIndex,
+                                                 colorIndexX,
+                                                 ciXsize,
+                                                 colorIndexY + 1,
+                                                 ciYsize);
+                    bottomRight = getColorByIndex(colorIndex,
+                                                  colorIndexX + 1,
+                                                  ciXsize,
+                                                  colorIndexY + 1,
+                                                  ciYsize);
+
+                    double ratio_w = (double) wi / (double) w;
+                    double ratio_h = (double) hi / (double) h;
+                    if (ratio_w > 1.0)
+                    {
+                        ratio_w = 1.0;
+                    }
+                    if (ratio_h > 1.0)
+                    {
+                        ratio_h = 1.0;
+                    }
+
+                    int base = (hi * w + wi) * 4;
+
+                    data[base + 0] = fourCornerAverage(topLeft.getRed(),
+                                                       topRight.getRed(),
+                                                       bottomLeft.getRed(),
+                                                       bottomRight.getRed(),
+                                                       ratio_w,
+                                                       ratio_h);
+                    data[base + 1] = fourCornerAverage(topLeft.getGreen(),
+                                                       topRight.getGreen(),
+                                                       bottomLeft.getGreen(),
+                                                       bottomRight.getGreen(),
+                                                       ratio_w,
+                                                       ratio_h);
+                    data[base + 2] = fourCornerAverage(topLeft.getBlue(),
+                                                       topRight.getBlue(),
+                                                       bottomLeft.getBlue(),
+                                                       bottomRight.getBlue(),
+                                                       ratio_w,
+                                                       ratio_h);
+                    data[base + 3] = fourCornerAverage(topLeft.getAlpha(),
+                                                       topRight.getAlpha(),
+                                                       bottomLeft.getAlpha(),
+                                                       bottomRight.getAlpha(),
+                                                       ratio_w,
+                                                       ratio_h);
+                    if ((wi + 1) % distanceX == 0)
+                    {
+                        colorIndexX = ((wi + 1) / distanceX) % ciXsize;
+                        if (!didOutput)
+                        {
+                            printCornerColors(wi, hi, colorIndex, colorIndexX,
+                                              colorIndexY, ciXsize, ciYsize);
+                            didOutput = true;
+                        }
+                    }
+                }
+                if ((hi + 1) % distanceY == 0 && (hi + 1) < h)
+                {
+                    colorIndexX = 0;
+                    colorIndexY = ((hi + 1) / distanceY) % ciYsize;
+                    didOutput = false;
+
+                    printCornerColors(0, hi, colorIndex, colorIndexX,
+                                      colorIndexY,
+                                      ciXsize, ciYsize);
+                }
+            }
+            raster.setPixels(0, 0, w, h, data);
+
+            return raster;
+        }
+
+        private Color getColorByIndex(int[][] colorIndex,
+                                      int colorIndexX,
+                                      final int ciXsize,
+                                      int colorIndexY,
+                                      final int ciYsize)
+        {
+            int x = colorIndexX % ciXsize;
+            final int y = colorIndexY % ciYsize;
+            return colors.get(colorIndex[y][x]);
+        }
+
+        private void printCornerColors(int i, int j, int[][] colorIndex,
+                                       int colorIndexX, int colorIndexY,
+                                       final int ciXsize, final int ciYsize)
+        {
+            System.out.println("[" + i + "," + j + "] colorIndex=(" +
+                               colorIndexX + "," + colorIndexY + "):\n" +
+                               ColorUtils.xtermColorString(
+                                       colors.
+                                       get(
+                                               colorIndex[colorIndexX][colorIndexY])) +
+                               "\t" +
+                               ColorUtils.xtermColorString(
+                                       colors.
+                                       get(
+                                               colorIndex[(colorIndexX +
+                                                           1) %
+                                                          ciXsize][colorIndexY])) +
+                               "\n" +
+                               ColorUtils.xtermColorString(
+                                       colors.
+                                       get(
+                                               colorIndex[colorIndexX][(colorIndexY +
+                                                                        1) %
+                                                                       ciYsize])) +
+                               "\t" +
+                               ColorUtils.xtermColorString(getColorByIndex(
+                                               colorIndex, colorIndexX, ciXsize,
+                                               colorIndexY, ciYsize)) +
+                               "\n---");
+        }
+
+        private int fourCornerAverage(int topLeft,
+                                      int topRight,
+                                      int bottomLeft,
+                                      int bottomRight,
+                                      double ratio_w,
+                                      double ratio_h)
+        {
+            double reval1 = topLeft * ratio_w + topRight * (1.0 - ratio_w);
+            double reval2 = bottomLeft * ratio_w + bottomRight * (1.0 - ratio_w);
+            return (int) (reval1 * ratio_h + reval2 * (1.0 - ratio_h));
+        }
+    }
+
 }

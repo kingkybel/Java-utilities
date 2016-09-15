@@ -158,10 +158,22 @@
                 </Constraint>
               </Constraints>
             </Component>
+            <Component class="javax.swing.JButton" name="gradButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="com/kybelksties/gui/Bundle.properties" key="DebugComponentsFrame.gradButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+                  <AbsoluteConstraints x="340" y="70" width="130" height="60"/>
+                </Constraint>
+              </Constraints>
+            </Component>
             <Component class="com.kybelksties.gui.GradientTypeComboBox" name="gradientTypeComboBox1">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="10" y="80" width="-1" height="-1"/>
+                  <AbsoluteConstraints x="30" y="80" width="-1" height="-1"/>
                 </Constraint>
               </Constraints>
             </Component>

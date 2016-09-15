@@ -47,13 +47,12 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     public DebugComponentsFrame()
     {
         initComponents();
-        //      fontChooser2.setShowDateLabel(false);
-//        outputPanel1.writelnHighlight("HIGHLITE");
-//        outputPanel2.writelnError("ERROR");
-//        outputPanel1.write("Normal");
-//        outputPanel1.writeHighlight("!!!");
         outputPanel1.showStyleSamples();
         outputPanel2.showStyleSamples();
+
+//        Graphics2D g = (Graphics2D) gradButton.getGraphics();
+//        g.setPaint(new ColorUtils.RandomGridGradientPaint(10, 20, 7));
+//        g.fillOval(0, 0, 40, 50);
     }
 
     /**
@@ -76,6 +75,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         outputPanel2 = new com.kybelksties.gui.OutputPanel();
         gradientButton = new javax.swing.JButton();
         timePicker1 = new com.kybelksties.gui.TimePicker();
+        gradButton = new javax.swing.JButton();
         gradientTypeComboBox1 = new com.kybelksties.gui.GradientTypeComboBox();
         tablePanel = new javax.swing.JPanel();
         tableScrollPane = new javax.swing.JScrollPane();
@@ -142,7 +142,10 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         });
         controlPanel.add(gradientButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, -1, -1));
         controlPanel.add(timePicker1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 40, -1, -1));
-        controlPanel.add(gradientTypeComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
+
+        gradButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.gradButton.text")); // NOI18N
+        controlPanel.add(gradButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 70, 130, 60));
+        controlPanel.add(gradientTypeComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, -1, -1));
 
         mainSplitPane.setBottomComponent(controlPanel);
 
@@ -256,6 +259,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     private com.kybelksties.gui.DatePicker datePicker1;
     private javax.swing.JButton fgBgColorButton;
     private javax.swing.JButton fontButton;
+    private javax.swing.JButton gradButton;
     private javax.swing.JButton gradientButton;
     private com.kybelksties.gui.GradientTypeComboBox gradientTypeComboBox1;
     private javax.swing.JSplitPane mainSplitPane;

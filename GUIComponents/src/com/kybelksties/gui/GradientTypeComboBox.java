@@ -62,6 +62,7 @@ public class GradientTypeComboBox extends JComboBox
         addGradientItem(GradientType.DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM);
         addGradientItem(GradientType.CIRCULAR);
         addGradientItem(GradientType.FOUR_COLOR_RECTANGULAR);
+        addGradientItem(GradientType.RANDOM_RASTER);
         setRenderer(new ComboBoxRenderer());
     }
 
@@ -142,89 +143,88 @@ public class GradientTypeComboBox extends JComboBox
 
             g.setColor(Color.black);
             Graphics2D g2 = (Graphics2D) g;
+            switch (gradientType)
+            {
+                case TOP_TO_BOTTOM:
+                    g2.setPaint(
+                            new GradientPaint(
+                                    0,
+                                    0,
+                                    Color.BLUE,
+                                    0,
+                                    getIconHeight(),
+                                    Color.YELLOW,
+                                    false));
+                    break;
+                case LEFT_TO_RIGHT:
+                    g2.setPaint(
+                            new GradientPaint(
+                                    0,
+                                    0,
+                                    Color.RED,
+                                    getIconWidth(),
+                                    0,
+                                    Color.GREEN,
+                                    false));
+                    break;
+                case DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM:
+                    g2.setPaint(
+                            new GradientPaint(
+                                    0,
+                                    0,
+                                    Color.CYAN,
+                                    getIconWidth(),
+                                    getIconHeight(),
+                                    Color.MAGENTA,
+                                    false));
+                    break;
+                case DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM:
+                    g2.setPaint(
+                            new GradientPaint(
+                                    getIconWidth(),
+                                    0,
+                                    Color.ORANGE,
+                                    0,
+                                    getIconHeight(),
+                                    Color.BLUE,
+                                    false));
+                    break;
+                case CIRCULAR:
+                    g2.setPaint(
+                            new ColorUtils.RoundGradientPaint(
+                                    getIconWidth() / 2,
+                                    getIconHeight() / 2,
+                                    Color.PINK,
+                                    new Point(
+                                            getIconWidth() / 2,
+                                            getIconHeight() / 2),
+                                    Color.GREEN.brighter()));
 
-            if (gradientType.equals(GradientType.TOP_TO_BOTTOM))
-            {
-                g2.setPaint(
-                        new GradientPaint(
-                                0,
-                                0,
-                                Color.BLUE,
-                                0,
-                                getIconHeight(),
-                                Color.YELLOW,
-                                false));
-            }
-            else if (gradientType.equals(GradientType.LEFT_TO_RIGHT))
-            {
-                g2.setPaint(
-                        new GradientPaint(
-                                0,
-                                0,
-                                Color.RED,
-                                getIconWidth(),
-                                0,
-                                Color.GREEN,
-                                false));
-            }
-            else if (gradientType.equals(
-                    GradientType.DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM))
-            {
-                g2.setPaint(
-                        new GradientPaint(
-                                0,
-                                0,
-                                Color.CYAN,
-                                getIconWidth(),
-                                getIconHeight(),
-                                Color.MAGENTA,
-                                false));
-            }
-            else if (gradientType.equals(
-                    GradientType.DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM))
-            {
-                g2.setPaint(
-                        new GradientPaint(
-                                getIconWidth(),
-                                0,
-                                Color.ORANGE,
-                                0,
-                                getIconHeight(),
-                                Color.BLUE,
-                                false));
-            }
-            else if (gradientType.equals(GradientType.CIRCULAR))
-            {
-                g2.setPaint(
-                        new ColorUtils.RoundGradientPaint(
-                                getIconWidth() / 2,
-                                getIconHeight() / 2,
-                                Color.PINK,
-                                new Point(
-                                        getIconWidth() / 2,
-                                        getIconHeight() / 2),
-                                Color.GREEN.brighter()));
+                    break;
+                case FOUR_COLOR_RECTANGULAR:
+                    g2.setPaint(
+                            new ColorUtils.FourColorGradientPaint(
+                                    new Point(getIconWidth(),
+                                              getIconHeight()),
+                                    Color.BLUE,
+                                    Color.CYAN,
+                                    Color.RED,
+                                    Color.YELLOW));
 
-            }
-            else if (gradientType.equals(GradientType.FOUR_COLOR_RECTANGULAR))
-            {
-                g2.setPaint(
-                        new ColorUtils.FourColorGradientPaint(
-                                new Point(0, 0),
-                                Color.BLUE,
-                                new Point(getIconWidth(),
-                                          0),
-                                Color.CYAN,
-                                new Point(0,
-                                          getIconHeight()),
-                                Color.RED,
-                                new Point(getIconWidth(),
-                                          getIconHeight()),
-                                Color.YELLOW));
+                    break;
+                case RANDOM_RASTER:
+                    g2.setPaint(randomGridGradientPaint);
 
             }
             g.fillRect(0, 0, getIconWidth(), getIconHeight());
         }
+        private final ColorUtils.RandomGridGradientPaint randomGridGradientPaint =
+                                                         new ColorUtils.RandomGridGradientPaint(
+                                                                 getIconWidth() /
+                                                                 2,
+                                                                 getIconHeight() /
+                                                                 2,
+                                                                 17);
     }
 
     class ComboBoxRenderer extends JLabel implements ListCellRenderer

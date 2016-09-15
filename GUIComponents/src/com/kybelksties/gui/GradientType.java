@@ -56,7 +56,11 @@ public enum GradientType
     /**
      * 4-color gradient from the corner of a rectangle.
      */
-    FOUR_COLOR_RECTANGULAR;
+    FOUR_COLOR_RECTANGULAR,
+    /**
+     * Random raster.
+     */
+    RANDOM_RASTER;
 
     private static final Class CLAZZ = GradientColorChooserBeanInfo.class;
     private static final String CLASS_NAME = CLAZZ.getName();
@@ -79,6 +83,8 @@ public enum GradientType
                                    "GradientType.circular" :
                                    this == FOUR_COLOR_RECTANGULAR ?
                                    "GradientType.fourColor" :
+                                   this == RANDOM_RASTER ?
+                                   "GradientType.randomRaster" :
                                    "GradientType.unknown");
     }
 }
