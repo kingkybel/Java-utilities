@@ -110,7 +110,7 @@ public class StringUtils
     /**
      * Classify a String representation of a number into a number class.
      *
-     * @param str the stringised value
+     * @param str the stringized value
      * @return the classification
      */
     public static NumberSpecies findSpecies(String str)

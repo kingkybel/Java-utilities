@@ -131,8 +131,7 @@ public class SystemProperties
         HashMap<String, ?> sys = new HashMap(System.getProperties());
         for (String key : sys.keySet())
         {
-            map.put(new PropKey(key, Type.SystemProperty),
-                    sys.get(key));
+            map.put(new PropKey(key, Type.SystemProperty), sys.get(key));
         }
         for (String key : System.getenv().keySet())
         {
@@ -144,6 +143,14 @@ public class SystemProperties
 
     private static TreeMap<PropKey, Object> map = makeMap();
 
+    /**
+     * Retrieve the the property by it's key. First look in the environment
+     * properties then in the system properties.
+     *
+     * @param key the key to the property
+     * @return the property as object, or null if no such property exists in
+     *         either set
+     */
     public static Object get(String key)
     {
         if (System.getenv().containsKey(key))
@@ -155,9 +162,14 @@ public class SystemProperties
         {
             return sys.get(key);
         }
-        return "";
+        return null;
     }
 
+    /**
+     * Print an ordered list of all properties to the given print-stream.
+     *
+     * @param printStream the print-stream to print to
+     */
     public static void print(PrintStream printStream)
     {
         for (PropKey k : map.keySet())
@@ -166,6 +178,11 @@ public class SystemProperties
         }
     }
 
+    /**
+     * Main entry point.
+     *
+     * @param args standard array of strings (parameters)
+     */
     public static void main(String[] args)
     {
         print(System.out);

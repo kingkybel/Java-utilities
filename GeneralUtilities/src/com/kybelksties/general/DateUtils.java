@@ -364,13 +364,13 @@ public class DateUtils
     /**
      * Create a date by trying defined formats in consecutive order.
      *
-     * @param dateStr
-     * @param format
+     * @param dateStr a string that denotes a date
+     * @param format  the format to which the date-string will be parsed
      * @return the date created by parsing the string.
      * @throws java.text.ParseException
      */
-    public static Date fromString(String dateStr, String format) throws
-            ParseException
+    public static Date fromString(String dateStr, String format)
+            throws ParseException
     {
         SimpleDateFormat fmt = new SimpleDateFormat(format);
         return fmt.parse(dateStr);
@@ -379,7 +379,7 @@ public class DateUtils
     /**
      * Create a date by trying defined formats in consecutive order.
      *
-     * @param dateStr
+     * @param dateStr a string that denotes a date
      * @return the date created by parsing the string.
      */
     public static Date fromString(String dateStr)
