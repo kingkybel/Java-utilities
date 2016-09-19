@@ -180,7 +180,7 @@ public class ToStringTest
         "(string1,\"string 2\",\"S S S S S\",\"\",last)";
         assertEquals(expResult, result);
 
-        // Change the ke/value-separator fot maps.
+        // Change the key/value-separator fot maps.
         ToString.setKeyValueSeparator(Map.class, ">>>");
         TreeMap<String, String> map = new TreeMap<>();
         expResult = "<>";
