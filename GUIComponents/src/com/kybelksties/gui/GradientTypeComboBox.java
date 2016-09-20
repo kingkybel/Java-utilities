@@ -23,10 +23,12 @@ package com.kybelksties.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.LinearGradientPaint;
+import java.awt.MultipleGradientPaint;
 import java.awt.Point;
+import java.awt.RadialGradientPaint;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -56,13 +58,13 @@ public class GradientTypeComboBox extends JComboBox
      */
     public GradientTypeComboBox()
     {
+        addGradientItem(GradientType.RANDOM_RASTER);
+        addGradientItem(GradientType.FOUR_COLOR_RECTANGULAR);
         addGradientItem(GradientType.TOP_TO_BOTTOM);
         addGradientItem(GradientType.LEFT_TO_RIGHT);
         addGradientItem(GradientType.DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM);
         addGradientItem(GradientType.DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM);
         addGradientItem(GradientType.CIRCULAR);
-        addGradientItem(GradientType.FOUR_COLOR_RECTANGULAR);
-        addGradientItem(GradientType.RANDOM_RASTER);
         setRenderer(new ComboBoxRenderer());
     }
 
@@ -128,13 +130,13 @@ public class GradientTypeComboBox extends JComboBox
         @Override
         public final int getIconWidth()
         {
-            return 30;
+            return 60;
         }
 
         @Override
         public final int getIconHeight()
         {
-            return 20;
+            return 40;
         }
 
         @Override
@@ -147,58 +149,151 @@ public class GradientTypeComboBox extends JComboBox
             {
                 case TOP_TO_BOTTOM:
                     g2.setPaint(
-                            new GradientPaint(
-                                    0,
-                                    0,
-                                    Color.BLUE,
-                                    0,
-                                    getIconHeight(),
-                                    Color.YELLOW,
-                                    false));
+                            new LinearGradientPaint(
+                                    new Point(0, 0),
+                                    new Point(0, getIconHeight()),
+                                    new float[]
+                                    {
+                                        0.0F,
+                                        0.15F,
+                                        0.30F,
+                                        0.45F,
+                                        0.6F,
+                                        0.75F,
+                                        0.9F
+                                    },
+                                    new Color[]
+                                    {
+                                        new Color(200, 0, 200),
+                                        Color.BLUE,
+                                        Color.CYAN,
+                                        Color.GREEN,
+                                        Color.YELLOW,
+                                        Color.ORANGE,
+                                        Color.RED
+                                    },
+                                    MultipleGradientPaint.CycleMethod.REFLECT
+                            )
+                    );
                     break;
                 case LEFT_TO_RIGHT:
                     g2.setPaint(
-                            new GradientPaint(
-                                    0,
-                                    0,
-                                    Color.RED,
-                                    getIconWidth(),
-                                    0,
-                                    Color.GREEN,
-                                    false));
+                            new LinearGradientPaint(
+                                    new Point(0, 0),
+                                    new Point(getIconWidth(), 0),
+                                    new float[]
+                                    {
+                                        0.0F,
+                                        0.15F,
+                                        0.30F,
+                                        0.45F,
+                                        0.6F,
+                                        0.75F,
+                                        0.9F
+                                    },
+                                    new Color[]
+                                    {
+                                        new Color(200, 0, 200),
+                                        Color.BLUE,
+                                        Color.CYAN,
+                                        Color.GREEN,
+                                        Color.YELLOW,
+                                        Color.ORANGE,
+                                        Color.RED
+                                    },
+                                    MultipleGradientPaint.CycleMethod.REFLECT
+                            )
+                    );
                     break;
                 case DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM:
                     g2.setPaint(
-                            new GradientPaint(
-                                    0,
-                                    0,
-                                    Color.CYAN,
-                                    getIconWidth(),
-                                    getIconHeight(),
-                                    Color.MAGENTA,
-                                    false));
+                            new LinearGradientPaint(
+                                    new Point(0, 0),
+                                    new Point(getIconWidth(), getIconHeight()),
+                                    new float[]
+                                    {
+                                        0.0F,
+                                        0.15F,
+                                        0.30F,
+                                        0.45F,
+                                        0.6F,
+                                        0.75F,
+                                        0.9F
+                                    },
+                                    new Color[]
+                                    {
+                                        new Color(200, 0, 200),
+                                        Color.BLUE,
+                                        Color.CYAN,
+                                        Color.GREEN,
+                                        Color.YELLOW,
+                                        Color.ORANGE,
+                                        Color.RED
+                                    },
+                                    MultipleGradientPaint.CycleMethod.REFLECT
+                            )
+                    );
                     break;
                 case DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM:
                     g2.setPaint(
-                            new GradientPaint(
-                                    getIconWidth(),
-                                    0,
-                                    Color.ORANGE,
-                                    0,
-                                    getIconHeight(),
-                                    Color.BLUE,
-                                    false));
+                            new LinearGradientPaint(
+                                    new Point(getIconWidth(), 0),
+                                    new Point(0, getIconHeight()),
+                                    new float[]
+                                    {
+                                        0.0F,
+                                        0.15F,
+                                        0.30F,
+                                        0.45F,
+                                        0.6F,
+                                        0.75F,
+                                        0.9F
+                                    },
+                                    new Color[]
+                                    {
+                                        new Color(200, 0, 200),
+                                        Color.BLUE,
+                                        Color.CYAN,
+                                        Color.GREEN,
+                                        Color.YELLOW,
+                                        Color.ORANGE,
+                                        Color.RED
+                                    },
+                                    MultipleGradientPaint.CycleMethod.REFLECT
+                            )
+                    );
                     break;
                 case CIRCULAR:
                     g2.setPaint(
-                            new ColorUtils.RoundGradientPaint(
-                                    getIconWidth() / 2,
-                                    getIconHeight() / 2,
-                                    Color.PINK,
+                            new RadialGradientPaint(
                                     new Point(
-                                            getIconWidth() / 2,
+                                            getIconWidth() / 3,
+                                            getIconHeight() / 3),
+                                    getIconWidth() / 3.0F,
+                                    new Point(
+                                            getIconWidth() / 3,
                                             getIconHeight() / 2),
-                                    Color.GREEN.brighter()));
+                                    new float[]
+                                    {
+                                        0.0F,
+                                        0.15F,
+                                        0.30F,
+                                        0.45F,
+                                        0.6F,
+                                        0.75F,
+                                        0.9F
+                                    },
+                                    new Color[]
+                                    {
+                                        new Color(200, 0, 200),
+                                        Color.BLUE,
+                                        Color.CYAN,
+                                        Color.GREEN,
+                                        Color.YELLOW,
+                                        Color.ORANGE,
+                                        Color.RED
+                                    },
+                                    MultipleGradientPaint.CycleMethod.REFLECT));
 
                     break;
                 case FOUR_COLOR_RECTANGULAR:
@@ -206,9 +301,9 @@ public class GradientTypeComboBox extends JComboBox
                             new ColorUtils.FourColorGradientPaint(
                                     new Point(getIconWidth(),
                                               getIconHeight()),
-                                    Color.BLUE,
-                                    Color.CYAN,
                                     Color.RED,
+                                    Color.GREEN,
+                                    Color.BLUE,
                                     Color.YELLOW));
 
                     break;
@@ -220,6 +315,10 @@ public class GradientTypeComboBox extends JComboBox
         }
         private final ColorUtils.RandomGridGradientPaint randomGridGradientPaint =
                                                          new ColorUtils.RandomGridGradientPaint(
+                                                                 new Point(0, 0),
+                                                                 new Point(
+                                                                         getIconWidth(),
+                                                                         getIconHeight()),
                                                                  getIconWidth() /
                                                                  2,
                                                                  getIconHeight() /
