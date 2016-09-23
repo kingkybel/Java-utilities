@@ -22,6 +22,7 @@
 package com.kybelksties.gui;
 
 import java.awt.Color;
+import java.awt.MultipleGradientPaint;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -37,7 +38,7 @@ import org.junit.Test;
  */
 public class ColorUtilsTest
 {
-    
+
     private static final Class CLAZZ = ColorUtilsTest.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
@@ -231,6 +232,46 @@ public class ColorUtilsTest
 //                       intensityDiff > 150);
         }
 
+    }
+
+    Color ratioAvgColor(Color topLeft,
+                        Color topRight,
+                        Color bottomLeft,
+                        Color bottomRight,
+                        final double ratio_x,
+                        final double ratio_y,
+                        MultipleGradientPaint.CycleMethod cycleMethod)
+    {
+        return ColorUtils.FourColorGradientPaint.ratioAvgColor(
+                topLeft,
+                topRight,
+                bottomLeft,
+                bottomRight,
+                ratio_x,
+                ratio_y,
+                cycleMethod);
+    }
+
+    /**
+     * Test of contrastColorByComplement method, of class ColorUtils.
+     */
+    @Test
+    public void testRatioAvgColor()
+    {
+        System.out.println("ratioAvgColor");
+        Color topLeft = Color.RED;
+        Color topRight = Color.GREEN;
+        Color bottomLeft = Color.BLUE;
+        Color bottomRight = Color.YELLOW;
+
+        Color result = ratioAvgColor(topLeft,
+                                     topRight,
+                                     bottomLeft,
+                                     bottomRight,
+                                     0.0,
+                                     0.0,
+                                     MultipleGradientPaint.CycleMethod.NO_CYCLE);
+        assertEquals(Color.YELLOW, result);
     }
 
 }

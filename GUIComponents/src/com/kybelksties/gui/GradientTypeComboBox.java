@@ -58,8 +58,8 @@ public class GradientTypeComboBox extends JComboBox
      */
     public GradientTypeComboBox()
     {
-        addGradientItem(GradientType.RANDOM_RASTER);
         addGradientItem(GradientType.FOUR_COLOR_RECTANGULAR);
+        addGradientItem(GradientType.RANDOM_RASTER);
         addGradientItem(GradientType.TOP_TO_BOTTOM);
         addGradientItem(GradientType.LEFT_TO_RIGHT);
         addGradientItem(GradientType.DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM);
@@ -299,6 +299,7 @@ public class GradientTypeComboBox extends JComboBox
                 case FOUR_COLOR_RECTANGULAR:
                     g2.setPaint(
                             new ColorUtils.FourColorGradientPaint(
+                                    new Point(10, 10),
                                     new Point(getIconWidth(),
                                               getIconHeight()),
                                     Color.RED,

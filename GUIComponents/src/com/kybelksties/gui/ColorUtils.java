@@ -22,6 +22,7 @@ package com.kybelksties.gui;
 
 import com.kybelksties.general.ExtRandom;
 import java.awt.Color;
+import java.awt.MultipleGradientPaint;
 import java.awt.Paint;
 import java.awt.PaintContext;
 import java.awt.Point;
@@ -729,7 +730,6 @@ public class ColorUtils
                     new Color2Name(Color.LIGHT_GRAY, "light_grey")
                 // </editor-fold>
     };
-
     private static HashMap<Color, String> xtermColors2Strings =
                                           initializeXtermColors();
     private static TreeMap<String, Color> xtermStrings2Colors =
@@ -1766,79 +1766,296 @@ public class ColorUtils
     public static class FourColorGradientPaint implements Paint
     {
 
-        Point2D point1;
-        Point2D point2;
-        Point2D point3;
-        Point2D point4;
-        Color color1;
-        Color color2;
-        Color color3;
-        Color color4;
+        Point2D topLeft;
+        Point2D bottomRight;
+        Color topLeftColor;
+        Color topRightColor;
+        Color bottomLeftColor;
+        Color bottomRightColor;
+        int colorDistanceX;
+        int colorDistanceY;
+        MultipleGradientPaint.CycleMethod cycleMethod =
+                                          MultipleGradientPaint.CycleMethod.REPEAT;
 
+        /**
+         * Constructor taking x- and y- coordinates of bottom right corner of a
+         * rectangle and colors for each corner. The top-left corner is assumed
+         * to be (0,0).
+         *
+         * @param x                x-coordinate of bottom right corner
+         * @param y                y-coordinate of bottom right corner
+         * @param topLeftColor     color in the top left corner of the rectangle
+         * @param topRightColor    color in the top right corner of the
+         *                         rectangle
+         * @param bottomLeftColor  color in the bottom left corner of the
+         *                         rectangle
+         * @param bottomRightColor color in the bottom right corner of the
+         *                         rectangle
+         */
         public FourColorGradientPaint(int x,
                                       int y,
-                                      Color color1,
-                                      Color color2,
-                                      Color color3,
-                                      Color color4)
+                                      Color topLeftColor,
+                                      Color topRightColor,
+                                      Color bottomLeftColor,
+                                      Color bottomRightColor)
         {
             this(new Point(x, y),
-                 color1,
-                 color2,
-                 color3,
-                 color4);
+                 topLeftColor,
+                 topRightColor,
+                 bottomLeftColor,
+                 bottomRightColor);
         }
 
+        /**
+         * Constructor taking x- and y- coordinates of bottom right corner of a
+         * rectangle and colors for each corner. The top-left corner is assumed
+         * to be (0,0).
+         *
+         * @param x                x-coordinate of bottom right corner
+         * @param y                y-coordinate of bottom right corner
+         * @param topLeftColor     color in the top left corner of the rectangle
+         * @param topRightColor    color in the top right corner of the
+         *                         rectangle
+         * @param bottomLeftColor  color in the bottom left corner of the
+         *                         rectangle
+         * @param bottomRightColor color in the bottom right corner of the
+         *                         rectangle
+         * @param cycleMethod      how to extend the gradient outside the
+         *                         defining rectangle
+         */
+        public FourColorGradientPaint(int x,
+                                      int y,
+                                      Color topLeftColor,
+                                      Color topRightColor,
+                                      Color bottomLeftColor,
+                                      Color bottomRightColor,
+                                      MultipleGradientPaint.CycleMethod cycleMethod)
+        {
+            this(new Point(x, y),
+                 topLeftColor,
+                 topRightColor,
+                 bottomLeftColor,
+                 bottomRightColor,
+                 cycleMethod);
+        }
+
+        /**
+         * Constructor taking x- and y- coordinates for top left and bottom
+         * right corner of a rectangle and colors for each corner.
+         *
+         * @param x1               x-coordinate of top left corner
+         * @param y1               y-coordinate of top left corner
+         * @param x2               x-coordinate of bottom right corner
+         * @param y2               y-coordinate of bottom right corner
+         * @param topLeftColor     color in the top left corner of the rectangle
+         * @param topRightColor    color in the top right corner of the
+         *                         rectangle
+         * @param bottomLeftColor  color in the bottom left corner of the
+         *                         rectangle
+         * @param bottomRightColor color in the bottom right corner of the
+         *                         rectangle
+         */
+        public FourColorGradientPaint(int x1,
+                                      int y1,
+                                      int x2,
+                                      int y2,
+                                      Color topLeftColor,
+                                      Color topRightColor,
+                                      Color bottomLeftColor,
+                                      Color bottomRightColor)
+        {
+            this(new Point(x1, y1),
+                 new Point(x2, y2),
+                 topLeftColor,
+                 topRightColor,
+                 bottomLeftColor,
+                 bottomRightColor,
+                 MultipleGradientPaint.CycleMethod.NO_CYCLE);
+        }
+
+        /**
+         * Constructor taking x- and y- coordinates for top left and bottom
+         * right corner of a rectangle and colors for each corner.
+         *
+         * @param x1               x-coordinate of top left corner
+         * @param y1               y-coordinate of top left corner
+         * @param x2               x-coordinate of bottom right corner
+         * @param y2               y-coordinate of bottom right corner
+         * @param topLeftColor     color in the top left corner of the rectangle
+         * @param topRightColor    color in the top right corner of the
+         *                         rectangle
+         * @param bottomLeftColor  color in the bottom left corner of the
+         *                         rectangle
+         * @param bottomRightColor color in the bottom right corner of the
+         *                         rectangle
+         * @param cycleMethod      how to extend the gradient outside the
+         *                         defining rectangle
+         */
+        public FourColorGradientPaint(int x1,
+                                      int y1,
+                                      int x2,
+                                      int y2,
+                                      Color topLeftColor,
+                                      Color topRightColor,
+                                      Color bottomLeftColor,
+                                      Color bottomRightColor,
+                                      MultipleGradientPaint.CycleMethod cycleMethod)
+        {
+            this(new Point(x1, y1),
+                 new Point(x2, y2),
+                 topLeftColor,
+                 topRightColor,
+                 bottomLeftColor,
+                 bottomRightColor,
+                 cycleMethod);
+        }
+
+        /**
+         * Constructor taking the bottom right corner point of a rectangle and
+         * colors for each corner. The top-left corner is assumed to be (0,0).
+         *
+         * @param point            bottom right corner point
+         * @param topLeftColor     color in the top left corner of the rectangle
+         * @param topRightColor    color in the top right corner of the
+         *                         rectangle
+         * @param bottomLeftColor  color in the bottom left corner of the
+         *                         rectangle
+         * @param bottomRightColor color in the bottom right corner of the
+         *                         rectangle
+         */
         public FourColorGradientPaint(Point2D point,
-                                      Color color1,
-                                      Color color2,
-                                      Color color3,
-                                      Color color4)
+                                      Color topLeftColor,
+                                      Color topRightColor,
+                                      Color bottomLeftColor,
+                                      Color bottomRightColor)
         {
             this(new Point(0, 0),
-                 color1,
-                 new Point((int) point.getX(), 0),
-                 color2,
-                 new Point(0, (int) point.getY()),
-                 color3,
                  new Point((int) point.getX(), (int) point.getY()),
-                 color4
+                 topLeftColor,
+                 topRightColor,
+                 bottomLeftColor,
+                 bottomRightColor,
+                 MultipleGradientPaint.CycleMethod.NO_CYCLE
             );
         }
 
-        public FourColorGradientPaint(Point2D point1,
-                                      Color color1,
-                                      Point2D point2,
-                                      Color color2,
-                                      Point2D point3,
-                                      Color color3,
-                                      Point2D point4,
-                                      Color color4)
+        /**
+         * Constructor taking the bottom right corner point of a rectangle and
+         * colors for each corner. The top-left corner is assumed to be (0,0).
+         *
+         * @param point            bottom right corner point
+         * @param topLeftColor     color in the top left corner of the rectangle
+         * @param topRightColor    color in the top right corner of the
+         *                         rectangle
+         * @param bottomLeftColor  color in the bottom left corner of the
+         *                         rectangle
+         * @param bottomRightColor color in the bottom right corner of the
+         *                         rectangle
+         * @param cycleMethod      how to extend the gradient outside the
+         *                         defining rectangle
+         */
+        public FourColorGradientPaint(Point2D point,
+                                      Color topLeftColor,
+                                      Color topRightColor,
+                                      Color bottomLeftColor,
+                                      Color bottomRightColor,
+                                      MultipleGradientPaint.CycleMethod cycleMethod)
         {
-            if (invalid(point1, color1) ||
-                invalid(point2, color2) ||
-                invalid(point3, color3) ||
-                invalid(point4, color4) ||
-                point1.equals(point2) ||
-                point1.equals(point3) ||
-                point1.equals(point4) ||
-                point2.equals(point3) ||
-                point2.equals(point4) ||
-                point3.equals(point4))
+            this(new Point(0, 0),
+                 new Point((int) point.getX(), (int) point.getY()),
+                 topLeftColor,
+                 topRightColor,
+                 bottomLeftColor,
+                 bottomRightColor,
+                 MultipleGradientPaint.CycleMethod.NO_CYCLE
+            );
+        }
+
+        /**
+         * Constructor taking the top left and bottom right corner points of a
+         * rectangle and colors for each corner. The top-left corner is assumed
+         * to be (0,0).
+         *
+         * @param topLeft          top left corner point
+         * @param bottomRight      bottom right corner point
+         * @param topLeftColor     color in the top left corner of the rectangle
+         * @param topRightColor    color in the top right corner of the
+         *                         rectangle
+         * @param bottomLeftColor  color in the bottom left corner of the
+         *                         rectangle
+         * @param bottomRightColor color in the bottom right corner of the
+         *                         rectangle
+         */
+        public FourColorGradientPaint(Point2D topLeft,
+                                      Point2D bottomRight,
+                                      Color topLeftColor,
+                                      Color topRightColor,
+                                      Color bottomLeftColor,
+                                      Color bottomRightColor)
+        {
+            this(topLeft,
+                 bottomRight,
+                 topLeftColor,
+                 topRightColor,
+                 bottomLeftColor,
+                 bottomRightColor,
+                 MultipleGradientPaint.CycleMethod.NO_CYCLE
+            );
+        }
+
+        /**
+         * Constructor taking the top left and bottom right corner points of a
+         * rectangle and colors for each corner. The top-left corner is assumed
+         * to be (0,0).
+         *
+         * @param topLeft          top left corner point
+         * @param bottomRight      bottom right corner point
+         * @param topLeftColor     color in the top left corner of the rectangle
+         * @param topRightColor    color in the top right corner of the
+         *                         rectangle
+         * @param bottomLeftColor  color in the bottom left corner of the
+         *                         rectangle
+         * @param bottomRightColor color in the bottom right corner of the
+         *                         rectangle
+         * @param cycleMethod      how to extend the gradient outside the
+         *                         defining rectangle
+         */
+        public FourColorGradientPaint(Point2D topLeft,
+                                      Point2D bottomRight,
+                                      Color topLeftColor,
+                                      Color topRightColor,
+                                      Color bottomLeftColor,
+                                      Color bottomRightColor,
+                                      MultipleGradientPaint.CycleMethod cycleMethod)
+        {
+            if (topLeft == null ||
+                bottomRight == null ||
+                topLeftColor == null ||
+                topRightColor == null ||
+                bottomLeftColor == null ||
+                bottomRightColor == null ||
+                topLeft.equals(bottomRight))
             {
                 throw new IllegalArgumentException(
                         NbBundle.getMessage(
                                 CLAZZ,
                                 "ColorUtils.FourColorGradientPaint.illegalArgument"));
             }
-            this.point1 = point1;
-            this.color1 = color1;
-            this.point2 = point2;
-            this.color2 = color2;
-            this.point3 = point3;
-            this.color3 = color3;
-            this.point4 = point4;
-            this.color4 = color4;
+            int minX = min((int) topLeft.getX(), (int) bottomRight.getX());
+            int maxX = max((int) topLeft.getX(), (int) bottomRight.getX());
+            int minY = min((int) topLeft.getY(), (int) bottomRight.getY());
+            int maxY = max((int) topLeft.getY(), (int) bottomRight.getY());
+            this.topLeft = new Point(minX, minY);
+            this.bottomRight = new Point(maxX, maxY);
+            this.topLeftColor = topLeftColor;
+            this.topRightColor = topRightColor;
+            this.bottomLeftColor = bottomLeftColor;
+            this.bottomRightColor = bottomRightColor;
+            this.colorDistanceX = maxX - minX;
+            this.colorDistanceY = maxY - minY;
+            this.cycleMethod = cycleMethod == null ?
+                               MultipleGradientPaint.CycleMethod.NO_CYCLE :
+                               cycleMethod;
         }
 
         @Override
@@ -1848,169 +2065,377 @@ public class ColorUtils
                                           AffineTransform xform,
                                           RenderingHints hints)
         {
-            Point2D transformedPoint1 = xform.transform(point1, null);
-            Point2D transformedPoint2 = xform.transform(point2, null);
-            Point2D transformedPoint3 = xform.transform(point3, null);
-            Point2D transformedPoint4 = xform.transform(point4, null);
-            return new FourColorGradientPaintContext(transformedPoint1,
-                                                     color1,
-                                                     transformedPoint2,
-                                                     color2,
-                                                     transformedPoint3,
-                                                     color3,
-                                                     transformedPoint4,
-                                                     color4);
+            Point2D xFormedTopLeft = xform.transform(topLeft, null);
+            Point2D xFormedBottomRight = xform.transform(bottomRight, null);
+            return new FourColorGradientPaintContext(xFormedTopLeft,
+                                                     xFormedBottomRight);
         }
 
         @Override
         public int getTransparency()
         {
-            int a1 = color1.getAlpha();
-            int a2 = color2.getAlpha();
-            int a3 = color3.getAlpha();
-            int a4 = color4.getAlpha();
+            int a1 = topLeftColor.getAlpha();
+            int a2 = topRightColor.getAlpha();
+            int a3 = bottomLeftColor.getAlpha();
+            int a4 = bottomRightColor.getAlpha();
             return (((a1 & a2 & a3 & a4) == 0xff) ? OPAQUE : TRANSLUCENT);
         }
 
-        private boolean invalid(Point2D point, Color color)
-        {
-            return point == null || color == null;
-        }
-
-    }
-
-    /**
-     * A 4-color gradient context class.
-     */
-    public static class FourColorGradientPaintContext implements PaintContext
-    {
-
-        Point topLeft;
-        Point bottomRight;
-        Point2D point1;
-        Point2D point2;
-        Point2D point3;
-        Point2D point4;
-        Color color1;
-        Color color2;
-        Color color3;
-        Color color4;
-
         /**
-         * Construct a 4-corner gradient.
+         * Find a color that uses the defining member-colors and averages them
+         * using x- and y- ratios.
          *
-         * @param point1 corner point1
-         * @param color1 color at point1
-         * @param point2 corner point2
-         * @param color2 color at point2
-         * @param point3 corner point3
-         * @param color3 color at point3
-         * @param point4 corner point4
-         * @param color4 color at point4
+         *
+         * @param topLeftColor     color in the top left corner of the rectangle
+         * @param topRightColor    color in the top right corner of the
+         *                         rectangle
+         * @param bottomLeftColor  color in the bottom left corner of the
+         *                         rectangle
+         * @param bottomRightColor color in the bottom right corner of the
+         *                         rectangle
+         * @param ratio_x          ratio in x- direction
+         * @param ratio_y          ratio in y-direction
+         * @param cycleMethod
+         * @return
          */
-        public FourColorGradientPaintContext(Point2D point1,
-                                             Color color1,
-                                             Point2D point2,
-                                             Color color2,
-                                             Point2D point3,
-                                             Color color3,
-                                             Point2D point4,
-                                             Color color4)
+        public static Color ratioAvgColor(
+                Color topLeftColor,
+                Color topRightColor,
+                Color bottomLeftColor,
+                Color bottomRightColor,
+                final double ratio_x,
+                final double ratio_y,
+                MultipleGradientPaint.CycleMethod cycleMethod)
         {
-            this.point1 = point1;
-            this.color1 = color1;
-            this.point2 = point2;
-            this.color2 = color2;
-            this.point3 = point3;
-            this.color3 = color3;
-            this.point4 = point4;
-            this.color4 = color4;
-            int minX = min(
-                (int) min(point1.getX(), point2.getX()),
-                (int) min(point4.getX(), point4.getX()));
-            int maxX = max(
-                (int) max(point1.getX(), point2.getX()),
-                (int) max(point4.getX(), point4.getX()));
-            int minY = min(
-                (int) min(point1.getY(), point2.getY()),
-                (int) min(point4.getY(), point4.getY()));
-            int maxY = max(
-                (int) max(point1.getY(), point2.getY()),
-                (int) max(point4.getY(), point4.getY()));
-            topLeft = new Point(minX, minY);
-            bottomRight = new Point(maxX, maxY);
-        }
+            // create local copies of the parameters. We cannot change the
+            // final parameters.
+            Color topLeftColorLoc = topLeftColor;
+            Color topRightColorLoc = topRightColor;
+            Color bottomLeftColorLoc = bottomLeftColor;
+            Color bottomRightColorLoc = bottomRightColor;
+            double ratio_xLoc = ratio_x;
+            double ratio_yLoc = ratio_y;
 
-        @Override
-        public void dispose()
-        {
-        }
-
-        @Override
-        public ColorModel getColorModel()
-        {
-            return ColorModel.getRGBdefault();
-        }
-
-        @Override
-        public Raster getRaster(int x, int y, int w, int h)
-        {
-            System.out.println("FourColorGradientPaintContext:x=" + x + " y=" +
-                               y + " w=" + w + " h=" + h);
-            WritableRaster raster =
-                           getColorModel().createCompatibleWritableRaster(w, h);
-
-            int[] data = new int[w * h * 4];
-            int totalWidth = bottomRight.x - topLeft.x;
-            int totalHeight = bottomRight.y - topLeft.y;
-            for (int j = 0; j < h; j++)
+            // if any ratio is outside [0.0, 1.0] use the ratios to determine
+            // how to extend beyond the corners of the original rectangle
+            if (ratio_y < 0.0 ||
+                ratio_y > 1.0 ||
+                ratio_x < 0.0 ||
+                ratio_x > 1.0)
             {
-                for (int i = 0; i < w; i++)
+                switch (cycleMethod)
                 {
-                    double ratio_w = (double) (topLeft.x + x + i) /
-                                     (double) totalWidth;
-                    double ratio_h = (double) (topLeft.y + y + j) /
-                                     (double) totalHeight;
-                    if (ratio_w > 1.0)
-                    {
-                        ratio_w = 1.0;
-                    }
-                    if (ratio_h > 1.0)
-                    {
-                        ratio_h = 1.0;
-                    }
+                    case NO_CYCLE:
+                        // X|_|_
+                        // _|_|_
+                        //  | |
+                        if (ratio_x < 0.0 && ratio_y < 0.0)
+                        {
+                            topLeftColorLoc = bottomRightColorLoc;
+                            topRightColorLoc = bottomRightColorLoc;
+                            bottomLeftColorLoc = bottomRightColorLoc;
+                            ratio_xLoc = 1.0;
+                            ratio_yLoc = 1.0;
+                        }
+                        // _|_|_
+                        // X|_|_
+                        //  | |
+                        else if (ratio_x < 0.0 &&
+                                 ratio_y >= 0.0 &&
+                                 ratio_y <= 1.0)
+                        {
+                            topLeftColorLoc = topRightColor;
+                            bottomLeftColorLoc = bottomRightColor;
+                            ratio_xLoc = 1.0;
+                        }
+                        // _|_|_
+                        // _|_|_
+                        // X| |
+                        if (ratio_y > 1.0 && ratio_x < 0.0)
+                        {
+                            topLeftColorLoc = topRightColor;
+                            bottomLeftColorLoc = topRightColor;
+                            bottomRightColorLoc = topRightColor;
+                            ratio_yLoc = 1.0;
+                            ratio_xLoc = 1.0;
+                        }
+                        // _|X|_
+                        // _|_|_
+                        //  | |
+                        else if (ratio_y < 0.0 &&
+                                 ratio_x >= 0.0 &&
+                                 ratio_x <= 1.0)
+                        {
+                            topLeftColorLoc = bottomLeftColor;
+                            topRightColorLoc = bottomRightColor;
+                            ratio_yLoc = 1.0;
+                        }
+                        // _|_|_
+                        // _|_|_
+                        //  |X|
+                        else if (ratio_y > 1.0 &&
+                                 ratio_x >= 0.0 &&
+                                 ratio_x <= 1.0)
+                        {
+                            bottomLeftColorLoc = topLeftColor;
+                            bottomRightColorLoc = topRightColor;
+                            ratio_yLoc = 1.0;
+                        }
+                        // _|_|X
+                        // _|_|_
+                        //  | |
+                        else if (ratio_y < 0.0 && ratio_x > 1.0)
+                        {
+                            topLeftColorLoc = bottomLeftColor;
+                            topRightColorLoc = bottomLeftColor;
+                            bottomRightColorLoc = bottomLeftColor;
+                            ratio_yLoc = 1.0;
+                            ratio_xLoc = 1.0;
+                        }
+                        // _|_|_
 
-                    int base = (j * w + i) * 4;
+                        // _|_|X
+                        //  | |
+                        else if (ratio_x > 1.0 &&
+                                 ratio_y >= 0.0 &&
+                                 ratio_y <= 1.0)
+                        {
+                            topRightColorLoc = topLeftColor;
+                            bottomRightColorLoc = bottomLeftColor;
+                            ratio_yLoc = 1.0;
+                            ratio_xLoc = 1.0;
+                        }
+                        // _|_|_
+                        // _|_|_
+                        //  | |X
+                        else if (ratio_y > 1.0 && ratio_x > 1.0)
+                        {
+                            topRightColorLoc = topLeftColor;
+                            bottomLeftColorLoc = topLeftColor;
+                            bottomRightColorLoc = topLeftColor;
+                            ratio_yLoc = 1.0;
+                            ratio_xLoc = 1.0;
+                        }
+                        break;
+                    case REPEAT:
 
-                    data[base + 0] = fourCornerAverage(color1.getRed(),
-                                                       color2.getRed(),
-                                                       color3.getRed(),
-                                                       color4.getRed(),
-                                                       ratio_w,
-                                                       ratio_h);
-                    data[base + 1] = fourCornerAverage(color1.getGreen(),
-                                                       color2.getGreen(),
-                                                       color3.getGreen(),
-                                                       color4.getGreen(),
-                                                       ratio_w,
-                                                       ratio_h);
-                    data[base + 2] = fourCornerAverage(color1.getBlue(),
-                                                       color2.getBlue(),
-                                                       color3.getBlue(),
-                                                       color4.getBlue(),
-                                                       ratio_w,
-                                                       ratio_h);
-                    data[base + 3] = fourCornerAverage(color1.getAlpha(),
-                                                       color2.getAlpha(),
-                                                       color3.getAlpha(),
-                                                       color4.getAlpha(),
-                                                       ratio_w,
-                                                       ratio_h);
+                        if (ratio_x < 0.0)
+                        {
+                            ratio_xLoc = 1.0 + (ratio_x - (int) ratio_x);
+                        }
+                        else if (ratio_x > 1.0)
+                        {
+                            ratio_xLoc = ratio_x - (int) ratio_x;
+                        }
+                        if (ratio_y < 0.0)
+                        {
+                            ratio_xLoc = 1.0 + (ratio_y - (int) ratio_y);
+                        }
+                        else if (ratio_y > 1.0)
+                        {
+                            ratio_xLoc = (ratio_y - (int) ratio_y);
+                        }
+                        break;
+                    case REFLECT:
+                        if (ratio_x < 0.0)
+                        {
+                            topRightColorLoc = topLeftColor;
+                            bottomRightColorLoc = bottomLeftColor;
+                            ratio_xLoc = 1.0;
+                        }
+                        else if (ratio_x > 1.0)
+                        {
+                            topLeftColorLoc = topRightColor;
+                            bottomLeftColorLoc = bottomRightColor;
+                            ratio_xLoc = 1.0;
+                        }
+                        if (ratio_y < 0.0)
+                        {
+                            bottomLeftColorLoc = topLeftColor;
+                            bottomRightColorLoc = topRightColor;
+                            ratio_xLoc = 1.0;
+                        }
+                        else if (ratio_y > 1.0)
+                        {
+                            topLeftColorLoc = bottomLeftColor;
+                            topRightColorLoc = bottomRightColor;
+                            ratio_xLoc = 1.0;
+                        }
+                        break;
                 }
             }
-            raster.setPixels(0, 0, w, h, data);
 
-            return raster;
+            float r = fourCornerAverage(topLeftColorLoc.getRed(),
+                                        topRightColorLoc.getRed(),
+                                        bottomLeftColorLoc.getRed(),
+                                        bottomRightColorLoc.getRed(),
+                                        ratio_xLoc,
+                                        ratio_yLoc) / 255.0F;
+            float g = fourCornerAverage(topLeftColorLoc.getGreen(),
+                                        topRightColorLoc.getGreen(),
+                                        bottomLeftColorLoc.getGreen(),
+                                        bottomRightColorLoc.getGreen(),
+                                        ratio_xLoc,
+                                        ratio_yLoc) / 255.0F;
+            float b = fourCornerAverage(topLeftColorLoc.getBlue(),
+                                        topRightColorLoc.getBlue(),
+                                        bottomLeftColorLoc.getBlue(),
+                                        bottomRightColorLoc.getBlue(),
+                                        ratio_xLoc,
+                                        ratio_yLoc) / 255.0F;
+            float a = fourCornerAverage(topLeftColorLoc.getAlpha(),
+                                        topRightColorLoc.getAlpha(),
+                                        bottomLeftColorLoc.getAlpha(),
+                                        bottomRightColorLoc.getAlpha(),
+                                        ratio_xLoc,
+                                        ratio_yLoc) / 255.0F;
+            r = (r < 0.0F) ? 0.0F : r > 1.0F ? 1.0F : r;
+            g = (g < 0.0F) ? 0.0F : g > 1.0F ? 1.0F : g;
+            b = (b < 0.0F) ? 0.0F : b > 1.0F ? 1.0F : b;
+            a = (a < 0.0F) ? 0.0F : a > 1.0F ? 1.0F : a;
+
+            return new Color(r, g, b, a);
+        }
+
+        /**
+         * A 4-color gradient context class.
+         */
+        public class FourColorGradientPaintContext
+                implements PaintContext
+        {
+
+            Point2D topLeft;
+            Point2D bottomRight;
+
+            /**
+             * Constructor taking the top left and bottom right corner of the
+             * defining rectangle in device coordinates.
+             *
+             * @param topLeft     top left corner point in device coordinates
+             * @param bottomRight bottom right corner point in device
+             *                    coordinates
+             */
+            public FourColorGradientPaintContext(Point2D topLeft,
+                                                 Point2D bottomRight)
+            {
+                this.topLeft = topLeft;
+                this.bottomRight = bottomRight;
+            }
+
+            @Override
+            public void dispose()
+            {
+            }
+
+            @Override
+            public ColorModel getColorModel()
+            {
+                return ColorModel.getRGBdefault();
+            }
+
+            private Color ratioAvgColor(final double ratio_x,
+                                        final double ratio_y)
+            {
+                return ColorUtils.FourColorGradientPaint.ratioAvgColor(
+                        topLeftColor,
+                        topRightColor,
+                        bottomLeftColor,
+                        bottomRightColor,
+                        ratio_x,
+                        ratio_y,
+                        cycleMethod);
+            }
+
+            @Override
+            public Raster getRaster(int x, int y, int w, int h)
+            {
+                WritableRaster raster =
+                               getColorModel().createCompatibleWritableRaster(w,
+                                                                              h);
+                // get the colors of the four corners of this raster, which might be
+                // a sub-grid of topLeft - bottomRight or (partly/fully) outside of
+                // the given corner-points
+                double ratio_w_l = 1.0 -
+                                   (double) (x - topLeft.getX()) /
+                                   (double) colorDistanceX;
+                double ratio_w_r = 1.0 - (double) (x + w - topLeft.
+                                                   getX()) /
+                                         (double) colorDistanceX;
+                double ratio_h_t = 1.0 -
+                                   (double) (y - topLeft.getY()) /
+                                   (double) colorDistanceY;
+                double ratio_h_b = 1.0 - (double) (y + h - topLeft.
+                                                   getY()) /
+                                         (double) colorDistanceY;
+                Color tl = ratioAvgColor(ratio_w_l, ratio_h_t);
+                Color tr = ratioAvgColor(ratio_w_r, ratio_h_t);
+                Color bl = ratioAvgColor(ratio_w_l, ratio_h_b);
+                Color br = ratioAvgColor(ratio_w_r, ratio_h_b);
+
+                int[] data = new int[w * h * 4];
+
+                // calculate the step-size for each channel in h)eight direction
+                double step_R_h_l =
+                       (double) (bl.getRed() - tl.getRed()) / (double) h;
+                double step_G_h_l =
+                       (double) (bl.getGreen() - tl.getGreen()) / (double) h;
+                double step_B_h_l =
+                       (double) (bl.getBlue() - tl.getBlue()) / (double) h;
+                double step_A_h_l =
+                       (double) (bl.getAlpha() - tl.getAlpha()) / (double) h;
+                double step_R_h_r =
+                       (double) (br.getRed() - tr.getRed()) / (double) h;
+                double step_G_h_r =
+                       (double) (br.getGreen() - tr.getGreen()) / (double) h;
+                double step_B_h_r =
+                       (double) (br.getBlue() - tr.getBlue()) / (double) h;
+                double step_A_h_r =
+                       (double) (br.getAlpha() - tr.getAlpha()) / (double) h;
+
+                for (int j = 0; j < h; j++)
+                {
+                    // set the channel values at the left pixel of the line
+                    double curR = (double) tl.getRed() + j * step_R_h_l;
+                    double curG = (double) tl.getGreen() + j * step_G_h_l;
+                    double curB = (double) tl.getBlue() + j * step_B_h_l;
+                    double curA = (double) tl.getAlpha() + j * step_A_h_l;
+
+                    // calculate the stepsize for each channel in w)idth direction
+                    double step_R_w =
+                           ((double) tr.getRed() + j * step_R_h_r - curR) /
+                           (double) w;
+                    double step_G_w =
+                           ((double) tr.getGreen() + j * step_G_h_r - curG) /
+                           (double) w;
+                    double step_B_w =
+                           ((double) tr.getBlue() + j * step_B_h_r - curB) /
+                           (double) w;
+                    double step_A_w =
+                           ((double) tr.getAlpha() + j * step_A_h_r - curA) /
+                           (double) w;
+
+                    for (int i = 0; i < w; i++)
+                    {
+
+                        int base = (j * w + i) * 4;
+
+                        data[base + 0] = (int) curR;
+                        data[base + 1] = (int) curG;
+                        data[base + 2] = (int) curB;
+                        data[base + 3] = (int) curA;
+                        // increase each channel value by its step-size in
+                        // width direction
+                        curR += step_R_w;
+                        curG += step_G_w;
+                        curB += step_B_w;
+                        curA += step_A_w;
+                    }
+                }
+                raster.setPixels(0, 0, w, h, data);
+
+                return raster;
+            }
+
         }
 
     }
@@ -2060,13 +2485,14 @@ public class ColorUtils
                                     float aMax)
     {
         return randomColor(0.0F, rMax, 0.0F, gMax, 0.0F, bMax, 0.0F, aMax);
+
     }
 
     public static class RandomGridGradientPaint implements Paint
     {
 
-        Point topLeft;
-        Point bottomRight;
+        Point2D topLeft;
+        Point2D bottomRight;
         int distanceX;
         int distanceY;
         int numColors;
@@ -2114,10 +2540,11 @@ public class ColorUtils
                                           AffineTransform xform,
                                           RenderingHints hints)
         {
-
+            Point2D xFormedTopLeft = xform.transform(topLeft, null);
+            Point2D xFormedBottomRight = xform.transform(bottomRight, null);
             return new RandomGridGradientPaintContext(
-                    topLeft,
-                    bottomRight,
+                    xFormedTopLeft,
+                    xFormedBottomRight,
                     distanceX,
                     distanceY,
                     numColors);
@@ -2134,17 +2561,18 @@ public class ColorUtils
     /**
      * A 4-color gradient context class.
      */
-    public static class RandomGridGradientPaintContext implements PaintContext
+    public static class RandomGridGradientPaintContext implements
+            PaintContext
     {
 
-        Point topLeft;
-        Point bottomRight;
+        Point2D topLeft;
+        Point2D bottomRight;
         int distanceX;
         int distanceY;
         Color[][] colors;
 
-        private RandomGridGradientPaintContext(Point topLeft,
-                                               Point bottomRight,
+        private RandomGridGradientPaintContext(Point2D topLeft,
+                                               Point2D bottomRight,
                                                int distanceX,
                                                int distanceY,
                                                int numColors)
@@ -2154,8 +2582,10 @@ public class ColorUtils
             this.topLeft = topLeft;
             this.bottomRight = bottomRight;
 
-            int colorsX = (bottomRight.x - topLeft.x) / distanceX + 1;
-            int colorsY = (bottomRight.y - topLeft.y) / distanceY + 1;
+            int colorsX = (int) ((bottomRight.getX() - topLeft.getX()) /
+                                 distanceX + 1);
+            int colorsY = (int) ((bottomRight.getY() - topLeft.getY()) /
+                                 distanceY + 1);
             colors = new Color[colorsX][colorsY];
 
             Color[] colorArr = new Color[numColors];
@@ -2199,10 +2629,9 @@ public class ColorUtils
         @Override
         public Raster getRaster(int x, int y, int w, int h)
         {
-            System.out.println("getRaster() x=" + x + " y=" + y + " w=" + w +
-                               " h=" + h);
             WritableRaster raster =
-                           getColorModel().createCompatibleWritableRaster(w, h);
+                           getColorModel().createCompatibleWritableRaster(w,
+                                                                          h);
 
             int[] data = new int[w * h * 4];
 
@@ -2212,21 +2641,24 @@ public class ColorUtils
             Color topRightColor;
             Color bottomLeftColor;
             Color bottomRightColor;
-            int totalWidth = bottomRight.x - topLeft.x;
-            int totalHeight = bottomRight.y - topLeft.y;
 
             for (int hi = 0; hi < h; hi++)
             {
                 for (int wi = 0; wi < w; wi++)
                 {
-                    colorIndexX = (x + wi - topLeft.x) / totalWidth;
-                    colorIndexY = (y + hi - bottomRight.y) / totalHeight;
-                    int leftBorderX = topLeft.x + colorIndexX * distanceX;
-                    int topBorderY = topLeft.y + colorIndexY * distanceY;
+                    colorIndexX = (int) ((x + wi - topLeft.getX()) /
+                                         distanceX);
+                    colorIndexY =
+                    (int) ((y + hi - topLeft.getY()) / distanceY);
+                    int leftBorderX = (int) (topLeft.getX() + colorIndexX *
+                                                              distanceX);
+                    int topBorderY = (int) (topLeft.getY() + colorIndexY *
+                                                             distanceY);
                     double ratio_w = (double) (x + wi - leftBorderX) /
                                      (double) distanceX;
                     double ratio_h = (double) (y + hi - topBorderY) /
                                      (double) distanceY;
+
                     topLeftColor = getTopLeftColor(colorIndexX, colorIndexY);
                     topRightColor = getTopRightColor(hi, wi);
                     bottomLeftColor = getBottomLeftColor(hi, wi);
@@ -2251,29 +2683,37 @@ public class ColorUtils
 
                     int base = (hi * w + wi) * 4;
 
-                    data[base + 0] = fourCornerAverage(topLeftColor.getRed(),
-                                                       topRightColor.getRed(),
-                                                       bottomLeftColor.getRed(),
-                                                       bottomRightColor.getRed(),
-                                                       ratio_w,
-                                                       ratio_h);
-                    data[base + 1] = fourCornerAverage(topLeftColor.getGreen(),
-                                                       topRightColor.getGreen(),
+                    data[base + 0] =
+                    fourCornerAverage(topLeftColor.getRed(),
+                                      topRightColor.getRed(),
+                                      bottomLeftColor.getRed(),
+                                      bottomRightColor.getRed(),
+                                      ratio_w,
+                                      ratio_h);
+                    data[base + 1] = fourCornerAverage(topLeftColor.
+                    getGreen(),
+                                                       topRightColor.
+                                                       getGreen(),
                                                        bottomLeftColor.
                                                        getGreen(),
                                                        bottomRightColor.
                                                        getGreen(),
                                                        ratio_w,
                                                        ratio_h);
-                    data[base + 2] = fourCornerAverage(topLeftColor.getBlue(),
-                                                       topRightColor.getBlue(),
-                                                       bottomLeftColor.getBlue(),
+                    data[base + 2] = fourCornerAverage(topLeftColor.
+                    getBlue(),
+                                                       topRightColor.
+                                                       getBlue(),
+                                                       bottomLeftColor.
+                                                       getBlue(),
                                                        bottomRightColor.
                                                        getBlue(),
                                                        ratio_w,
                                                        ratio_h);
-                    data[base + 3] = fourCornerAverage(topLeftColor.getAlpha(),
-                                                       topRightColor.getAlpha(),
+                    data[base + 3] = fourCornerAverage(topLeftColor.
+                    getAlpha(),
+                                                       topRightColor.
+                                                       getAlpha(),
                                                        bottomLeftColor.
                                                        getAlpha(),
                                                        bottomRightColor.
@@ -2306,22 +2746,23 @@ public class ColorUtils
 
         private Color getTopLeftColor(int x, int y)
         {
-            return colors[x % colors[0].length][y % colors.length];
+            return colors[x % colors.length][y % colors[0].length];
         }
 
         private Color getTopRightColor(int x, int y)
         {
-            return colors[(x + 1) % colors[0].length][y % colors.length];
+            return colors[(x + 1) % colors.length][y % colors[0].length];
         }
 
         private Color getBottomLeftColor(int x, int y)
         {
-            return colors[x % colors[0].length][(y + 1) % colors.length];
+            return colors[x % colors.length][(y + 1) % colors[0].length];
         }
 
         private Color getBottomRightColor(int x, int y)
         {
-            return colors[(x + 1) % colors[0].length][(y + 1) % colors.length];
+            return colors[(x + 1) % colors.length][(y + 1) %
+                                                   colors[0].length];
         }
     }
 
