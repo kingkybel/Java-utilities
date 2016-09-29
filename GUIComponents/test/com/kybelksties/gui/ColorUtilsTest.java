@@ -271,7 +271,40 @@ public class ColorUtilsTest
                                      0.0,
                                      0.0,
                                      MultipleGradientPaint.CycleMethod.NO_CYCLE);
-        assertEquals(Color.YELLOW, result);
+        assertEquals(bottomRight, result);
+        result = ratioAvgColor(topLeft,
+                               topRight,
+                               bottomLeft,
+                               bottomRight,
+                               1.0,
+                               0.0,
+                               MultipleGradientPaint.CycleMethod.NO_CYCLE);
+        assertEquals(bottomLeft, result);
+        result = ratioAvgColor(topLeft,
+                               topRight,
+                               bottomLeft,
+                               bottomRight,
+                               0.0,
+                               1.0,
+                               MultipleGradientPaint.CycleMethod.NO_CYCLE);
+        assertEquals(topRight, result);
+        result = ratioAvgColor(topLeft,
+                               topRight,
+                               bottomLeft,
+                               bottomRight,
+                               1.0,
+                               1.0,
+                               MultipleGradientPaint.CycleMethod.NO_CYCLE);
+        assertEquals(topLeft, result);
+
+        result = ratioAvgColor(topLeft,
+                               topRight,
+                               bottomLeft,
+                               bottomRight,
+                               -1.0,
+                               -1.0,
+                               MultipleGradientPaint.CycleMethod.NO_CYCLE);
+        assertEquals(bottomRight, result);
     }
 
 }

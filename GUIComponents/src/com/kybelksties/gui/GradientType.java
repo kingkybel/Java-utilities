@@ -32,6 +32,10 @@ public enum GradientType
 {
 
     /**
+     * No gradient, used to model single color.
+     */
+    NONE,
+    /**
      * 2-color gradient that changes from top to bottom.
      */
     TOP_TO_BOTTOM,
