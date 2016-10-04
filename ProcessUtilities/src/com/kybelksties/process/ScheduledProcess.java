@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -21,13 +20,14 @@
 package com.kybelksties.process;
 
 import com.kybelksties.general.EnvironmentVarSets;
-import com.kybelksties.general.StringUtils;
+import com.kybelksties.general.ToString;
 import java.io.IOException;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.openide.util.NbBundle;
 
 /**
  * Class to encapsulate executables and processes of these executables.
@@ -38,7 +38,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class ScheduledProcess
 {
 
-    private static final String CLASS_NAME = ScheduledProcess.class.getName();
+    private static final Class CLAZZ = ScheduledProcess.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private ConcreteProcess process = null;
@@ -107,18 +108,15 @@ public class ScheduledProcess
         {
             sortedEnv.put(key, process.getEnvironmentMap().get(key));
         }
-        return process == null ? "<no executable defined>" :
-               StringUtils.toString(process.command(),
-                                    " ",
-                                    StringUtils.BracketType.NONE) +
-               "\nStart directory: " +
-               startInDirectory +
-               "\nEnvironment: " +
-               StringUtils.toString(sortedEnv,
-                                    " ",
-                                    StringUtils.BracketType.NONE) +
-               "\nLog-file: " +
-               logFileName;
+        return NbBundle.getMessage(
+                CLAZZ,
+                process == null ?
+                "ScheduledProcess.noProcess" :
+                "ScheduledProcess.process",
+                ToString.make(process.command()),
+                startInDirectory,
+                ToString.make(sortedEnv),
+                logFileName);
 
     }
 
@@ -388,23 +386,20 @@ public class ScheduledProcess
             catch (IOException ex)
             {
                 LOGGER.log(Level.INFO,
-                           "Cannot initialise Environment for {0}. {1}",
-                           new Object[]
-                           {
-                               exeDefinition.getName(),
-                               ex.toString()
-                           });
+                           NbBundle.getMessage(
+                                   CLAZZ,
+                                   "ScheduledProcess.cannotIninialize",
+                                   exeDefinition.getName(),
+                                   ex.toString()));
             }
         }
         else
         {
             LOGGER.log(Level.INFO,
-                       "Cannot initialise Environment for {0}. {1}",
-                       new Object[]
-                       {
-                           exeDefinition.getName(),
-                           "No Process."
-                       });
+                       NbBundle.getMessage(
+                               CLAZZ,
+                               "ScheduledProcess.cannotIninializeNoProcess",
+                               exeDefinition.getName()));
         }
     }
 
@@ -424,23 +419,19 @@ public class ScheduledProcess
             catch (IOException ex)
             {
                 LOGGER.log(Level.INFO,
-                           "Cannot initialise Environment for {0}. {1}",
-                           new Object[]
-                           {
-                               exeDefinition.getName(),
-                               ex.toString()
-                           });
+                           NbBundle.getMessage(
+                                   CLAZZ,
+                                   "ScheduledProcess.cannotIninialize",
+                                   exeDefinition.getName(),
+                                   ex.toString()));
             }
         }
         else
         {
-            LOGGER.log(Level.INFO,
-                       "Cannot initialise Environment for {0}. {1}",
-                       new Object[]
-                       {
-                           exeDefinition.getName(),
-                           "No Process."
-                       });
+            NbBundle.getMessage(
+                    CLAZZ,
+                    "ScheduledProcess.cannotIninializeNoProcess",
+                    exeDefinition.getName());
         }
     }
 }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -23,6 +22,7 @@ package com.kybelksties.process;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.swing.JToggleButton;
+import org.openide.util.NbBundle;
 
 /**
  * A dialog to customize which letters constitute legal parameters.
@@ -32,13 +32,19 @@ import javax.swing.JToggleButton;
 public class LetterParameterDialog extends javax.swing.JDialog
 {
 
-    private static final String CLASS_NAME = LetterParameterDialog.class.
-                                getName();
+    private static final Class CLAZZ = LetterParameterDialog.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    static final String alpha = "abcdefghijklmnopqrstuvwxyz";
-    static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    static final String num = "0123456789";
+    static final String alpha = NbBundle.getMessage(
+                        CLAZZ,
+                        "LetterParameterDialog.alpha");
+    static final String ALPHA = NbBundle.getMessage(
+                        CLAZZ,
+                        "LetterParameterDialog.alphaCap");
+    static final String num = NbBundle.getMessage(
+                        CLAZZ,
+                        "LetterParameterDialog.digits");
     static final String all = alpha + ALPHA + num;
 
     ArrayList<JToggleButton> btn = new ArrayList<>();
@@ -129,7 +135,8 @@ public class LetterParameterDialog extends javax.swing.JDialog
         controlPane = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
 
-        setTitle("Parameter Selection");
+        setTitle(NbBundle.getMessage(CLAZZ, "LetterParameterDialog.paramSelect")
+        );
         setBounds(new java.awt.Rectangle(200, 200, 0, 0));
         setMinimumSize(new java.awt.Dimension(230, 400));
         setName("parameterSelectorFrame"); // NOI18N
@@ -145,7 +152,7 @@ public class LetterParameterDialog extends javax.swing.JDialog
         controlPane.setMaximumSize(new java.awt.Dimension(2147483647, 25));
         controlPane.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        okButton.setText("OK");
+        okButton.setText(NbBundle.getMessage(CLAZZ, "LetterParameterDialog.ok"));
         okButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)

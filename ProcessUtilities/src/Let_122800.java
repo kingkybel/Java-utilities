@@ -21,6 +21,10 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Dieter J Kybelksties
+ */
 public class Let_122800
 {
 
@@ -44,9 +48,9 @@ public class Let_122800
                w);
         char z = (char) (b[b.length - 1].charAt(
                          b[b.length - 1].length() - 1) - 1);
-        System.out.println();
 
-        LOGGER.log(Level.SEVERE, "{0}{1}{2}{3}{4}{5}{6}",
+        LOGGER.log(Level.SEVERE,
+                   "{0}{1}{2}{3}{4}{5}{6}",
                    new Object[]
                    {
                        b[b.length - 1],

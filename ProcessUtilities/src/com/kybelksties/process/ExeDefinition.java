@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -34,7 +33,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class ExeDefinition implements Serializable, Comparable<Object>
 {
 
-    private static final String CLASS_NAME = ExeDefinition.class.getName();
+    private static final Class CLAZZ = ExeDefinition.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     static Integer creationCounter = 0;

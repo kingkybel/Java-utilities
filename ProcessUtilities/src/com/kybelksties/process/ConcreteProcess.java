@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -30,7 +29,6 @@ import java.io.OutputStream;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.EventListenerList;
 import javax.swing.table.TableModel;
@@ -161,12 +159,6 @@ public class ConcreteProcess extends Process
      */
     public final void setState(State state)
     {
-        LOGGER.log(Level.FINE, "Change state from ''{0}'' to ''{1}''",
-                   new Object[]
-                   {
-                       this.state == null ? "<null>" : this.state.toString(),
-                       state
-                   });
         this.state = state;
         fireProcessStateEvent();
     }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -34,8 +33,8 @@ import javax.swing.event.ChangeListener;
 public class PositionalParameterDialog extends javax.swing.JDialog
 {
 
-    private static final String CLASS_NAME =
-                                PositionalParameterDialog.class.getName();
+    private static final Class CLAZZ = PositionalParameterDialog.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     ParameterList theParameters;
@@ -100,7 +99,8 @@ public class PositionalParameterDialog extends javax.swing.JDialog
         mandLabel = new javax.swing.JLabel();
         optLabel = new javax.swing.JLabel();
 
-        setTitle("Positional Parameters");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/kybelksties/process/Bundle"); // NOI18N
+        setTitle(bundle.getString("PositionalParameterDialog.title")); // NOI18N
         setBounds(new java.awt.Rectangle(200, 200, 0, 0));
         setModalityType(java.awt.Dialog.ModalityType.TOOLKIT_MODAL);
         setName("positionalParameterDialog"); // NOI18N
@@ -109,7 +109,7 @@ public class PositionalParameterDialog extends javax.swing.JDialog
 
         optSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
 
-        cancelButton.setText("Cancel");
+        cancelButton.setText(org.openide.util.NbBundle.getMessage(PositionalParameterDialog.class, "PositionalParameterDialog.cancel")); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -118,7 +118,7 @@ public class PositionalParameterDialog extends javax.swing.JDialog
             }
         });
 
-        okButton.setText("OK");
+        okButton.setText(org.openide.util.NbBundle.getMessage(PositionalParameterDialog.class, "PositionalParameterDialog.ok")); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -127,9 +127,9 @@ public class PositionalParameterDialog extends javax.swing.JDialog
             }
         });
 
-        mandLabel.setText("number of mandatory parameters");
+        mandLabel.setText(org.openide.util.NbBundle.getMessage(PositionalParameterDialog.class, "PositionalParameterDialog.numberMandatory")); // NOI18N
 
-        optLabel.setText("number possible parameters");
+        optLabel.setText(org.openide.util.NbBundle.getMessage(PositionalParameterDialog.class, "PositionalParameterDialog.numberPossible")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -153,7 +153,7 @@ public class PositionalParameterDialog extends javax.swing.JDialog
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(mandSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(mandLabel))
+                    .addComponent(mandLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(optSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -162,7 +162,7 @@ public class PositionalParameterDialog extends javax.swing.JDialog
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(okButton))
-                .addGap(0, 11, Short.MAX_VALUE))
+                .addGap(0, 10, Short.MAX_VALUE))
         );
 
         pack();

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -30,6 +29,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.openide.util.NbBundle;
 
 /**
  * Class to hold a set of defined executables.
@@ -43,7 +43,8 @@ public class ExeDefinitions
         implements Iterable<ExeDefinition>, Serializable
 {
 
-    private static final String CLASS_NAME = ExeDefinitions.class.getName();
+    private static final Class<ExeDefinitions> CLAZZ = ExeDefinitions.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private int activeDefinition = -1;
@@ -51,10 +52,10 @@ public class ExeDefinitions
 
     private final String[] theColumnNames =
     {
-        "Name",
-        "Executable",
-        "Path",
-        "Parameters",
+        NbBundle.getMessage(CLAZZ, "ExeDefinition.columnNames.name"),
+        NbBundle.getMessage(CLAZZ, "ExeDefinition.columnNames.executable"),
+        NbBundle.getMessage(CLAZZ, "ExeDefinition.columnNames.path"),
+        NbBundle.getMessage(CLAZZ, "ExeDefinition.columnNames.parameters"),
     };
 
     /**

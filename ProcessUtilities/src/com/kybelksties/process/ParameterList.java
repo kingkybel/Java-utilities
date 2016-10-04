@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -33,6 +32,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
+import org.openide.util.NbBundle;
 
 /**
  * A list of AbstractParameters for a command.
@@ -45,39 +45,40 @@ public class ParameterList
         implements Iterable<AbstractParameter>, Serializable
 {
 
-    private static final String CLASS_NAME = ParameterList.class.getName();
+    private static final Class CLAZZ = ParameterList.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private ModelMode theModelMode;
 
     private final String[] theColumnNamesPos =
     {
-        "Position",
-        "Mandatory",
-        "Value",
-        "Default"
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.position"),
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.mandatory"),
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.value"),
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.default")
     };
 
     private final String[] theColumnNamesLet =
     {
-        "Parameter",
-        "Has Argument",
-        "Mandatory",
-        "Value",
-        "Default"
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.parameter"),
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.hasArgument"),
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.mandatory"),
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.value"),
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.default")
     };
 
     private final String[] thePosEvalColumnNames =
     {
-        "UseParameter",
-        "PositionalArgument"
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.useParameter"),
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.positionalArgument")
     };
 
     private final String[] theParamLettEvalColumnNames =
     {
-        "UseParameter",
-        "ParameterLetter",
-        "Argument"
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.useParameter"),
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.parameterLetter"),
+        NbBundle.getMessage(CLAZZ, "ParameterList.column.argument")
     };
 
     Integer lastMandatoryPosition = -1;
@@ -93,6 +94,11 @@ public class ParameterList
      */
     protected EventListenerList nonTableListenerList = new EventListenerList();
 
+    /**
+     * Copy constructor.
+     *
+     * @param rhs
+     */
     public ParameterList(ParameterList rhs)
     {
         this.theModelMode = rhs.theModelMode;

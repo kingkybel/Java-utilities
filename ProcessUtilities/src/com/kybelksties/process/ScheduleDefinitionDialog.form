@@ -2,7 +2,9 @@
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <Properties>
-    <Property name="title" type="java.lang.String" value="Schedule Process"/>
+    <Property name="title" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+      <ResourceString bundle="com/kybelksties/process/Bundle.properties" key="ScheduleDefinitionDialog.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+    </Property>
     <Property name="alwaysOnTop" type="boolean" value="true"/>
     <Property name="bounds" type="java.awt.Rectangle" editor="org.netbeans.beaninfo.editors.RectangleEditor">
       <Rectangle value="[200, 200, 0, 0]"/>
@@ -47,7 +49,9 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="doneBtn">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Done"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="com/kybelksties/process/Bundle.properties" key="ScheduleDefinitionDialog.done" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="doneBtnActionPerformed"/>
@@ -60,7 +64,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="cancelBtn">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Cancel"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="com/kybelksties/process/Bundle.properties" key="ScheduleDefinitionDialog.cancel" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelBtnActionPerformed"/>
@@ -85,7 +91,9 @@
             </Component>
             <Component class="javax.swing.JLabel" name="sleepLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="seconds sleep"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="com/kybelksties/process/Bundle.properties" key="ScheduleDefinitionDialog.secondsSleep" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -95,7 +103,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="changeColorButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Change Window Background"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="com/kybelksties/process/Bundle.properties" key="ScheduleDefinitionDialog.changeWindowBackground" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changeColorButtonActionPerformed"/>
@@ -108,14 +118,16 @@
             </Component>
             <Component class="javax.swing.JButton" name="startInButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Start in..."/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="com/kybelksties/process/Bundle.properties" key="ScheduleDefinitionDialog.startIn" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startInButtonActionPerformed"/>
               </Events>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="0" y="70" width="-1" height="-1"/>
+                  <AbsoluteConstraints x="0" y="70" width="90" height="20"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -132,7 +144,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="reinitEnvButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Re-initialise environment variables"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="com/kybelksties/process/Bundle.properties" key="ScheduleDefinitionDialog.reinitVars" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reinitEnvButtonActionPerformed"/>
@@ -145,7 +159,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="addEnvButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Add environmentvariable ..."/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="com/kybelksties/process/Bundle.properties" key="ScheduleDefinitionDialog.addVar" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addEnvButtonActionPerformed"/>
@@ -201,6 +217,11 @@
           </SubComponents>
         </Container>
         <Container class="javax.swing.JTabbedPane" name="tablesPane">
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="com/kybelksties/process/Bundle.properties" key="ScheduleDefinitionDialog.parameters" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+          </AccessibilityProperties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
               <JSplitPaneConstraints position="right"/>

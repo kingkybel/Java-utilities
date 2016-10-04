@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -23,7 +22,7 @@ package com.kybelksties.process;
 import com.kybelksties.general.DateUtils;
 import com.kybelksties.general.FileUtilities;
 import com.kybelksties.general.StringUtils;
-import com.kybelksties.gui.ColorUtils;
+import com.kybelksties.gui.OutputPanel;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,10 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
@@ -45,6 +41,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 
 /**
  * A dialog that show the standard output and error output of a process.
@@ -54,82 +51,38 @@ import org.openide.util.Exceptions;
 public class ProcessDialog extends javax.swing.JDialog
 {
 
-    private static final String CLASS_NAME = ProcessDialog.class.getName();
+    private static final Class CLAZZ = ProcessDialog.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
-
-    static void appendToDocument(StyledDocument doc, Style style, String line)
-    {
-        try
-        {
-            doc.insertString(doc.getEndPosition().getOffset(), line, style);
-        }
-        catch (BadLocationException ex)
-        {
-            LOGGER.log(Level.INFO, ex.toString());
-        }
-    }
 
     static class StreamGobbler extends Thread
     {
 
         InputStream inStream;
         String fileName;
-        JScrollPane scrollPane;
-        JTextPane text;
-        Style style;
-        StyleContext styleContext;
         InstreamType type;
         final ScheduledProcess schedProcess;
         DefaultCaret caret;
         StyledDocument doc;
+        OutputPanel outputPanel;
 
         // reads everything from inStream until empty.
-        StreamGobbler(JScrollPane scrollPane,
-                      JTextPane text,
+        StreamGobbler(OutputPanel outputPanel,
                       ScheduledProcess schedProcess,
                       InstreamType type,
                       StyleContext styleContext)
         {
             // No checks for null, as we are the only user of the class and
             // we do everything right!
-            this.scrollPane = scrollPane;
-            this.text = text;
+            this.outputPanel = outputPanel;
             this.type = type;
             this.inStream = (this.type == null ||
                              this.type == InstreamType.InputStream) ?
                             schedProcess.getProcess().getInputStream() :
                             schedProcess.getProcess().getErrorStream();
-            Color fgColor = ColorUtils.getXtermColor(
-                  schedProcess.getWindowForeground());
-            Color bgColor = ColorUtils.getXtermColor(
-                  schedProcess.getWindowBackground());
-            if (this.type == InstreamType.InputStream)
-            {
-                scrollPane.setBackground(bgColor);
-                scrollPane.setForeground(fgColor);
-                text.setBackground(bgColor);
-                text.setForeground(fgColor);
-            }
-            this.style = type == null || type == InstreamType.InputStream ?
-                         addStyle(styleContext,
-                                  fgColor,
-                                  bgColor,
-                                  "courier",
-                                  10,
-                                  false) :
-                         addStyle(styleContext,
-                                  bgColor,
-                                  fgColor,
-                                  "courier",
-                                  10,
-                                  false);
 
-            this.styleContext = styleContext;
-            doc = text.getStyledDocument();
             this.fileName = schedProcess.getLogFileName();
             this.schedProcess = schedProcess;
-            caret = (DefaultCaret) text.getCaret();
-            caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         }
 
         @Override
@@ -144,32 +97,26 @@ public class ProcessDialog extends javax.swing.JDialog
                 {
                     if ((line = br.readLine()) != null)
                     {
-                        line = DateUtils.logTimestamp() +
-                               ": " +
-                               type +
-                               " :" +
-                               line +
-                               StringUtils.NEWLINE;
-                        appendToDocument(doc, style, line);
-                        scrollPane.getVerticalScrollBar().setValue(scrollPane.
-                                getVerticalScrollBar().getMaximum());
+                        line = DateUtils.logTimestamp() + ": " + type + " :" +
+                               line;
+                        outputPanel.writeln(line);
                     }
                 }
-                appendToDocument(doc,
-                                 metaStyle,
-                                 StringUtils.NEWLINE +
-                                 "Process finished producing output on stream" +
-                                 type +
-                                 "!" +
-                                 StringUtils.NEWLINE);
+                outputPanel.writelnMeta(
+                        NbBundle.getMessage(
+                                CLAZZ,
+                                "ProcessDialog.noMoreOutputOnStream",
+                                type));
             }
             catch (IOException ioe)
             {
-                appendToDocument(doc,
-                                 metaStyle,
-                                 "Stopped gobbling in StreamGobbler:" +
-                                 StringUtils.NEWLINE +
-                                 ioe);
+                outputPanel.writelnError(
+                        NbBundle.getMessage(
+                                CLAZZ,
+                                "ProcessDialog.exceptionOnOutputOnStream",
+                                DateUtils.logTimestamp(),
+                                StringUtils.NEWLINE,
+                                ioe));
             }
             try
             {
@@ -177,15 +124,13 @@ public class ProcessDialog extends javax.swing.JDialog
                 {
                     FileUtilities.saveText(schedProcess.getLogFileName() +
                                            DateUtils.file_now() + ".log",
-                                           doc.getText(0, doc.getLength()));
+                                           outputPanel.getText());
                 }
             }
             catch (IOException | BadLocationException ex)
             {
                 LOGGER.log(Level.INFO, ex.toString());
             }
-            scrollPane.getVerticalScrollBar().setValue(
-                    scrollPane.getVerticalScrollBar().getMaximum());
         }
 
         enum InstreamType
@@ -209,18 +154,12 @@ public class ProcessDialog extends javax.swing.JDialog
         super(parent, false);
         initComponents();
         setTitle(schedProcess.getExeDefinition().getName());
-        metaStyle = addStyle(styleContext,
-                             ColorUtils.getXtermColor("blue"),
-                             ColorUtils.getXtermColor("yellow"),
-                             "courier",
-                             10,
-                             true);
 
         this.schedProcess = schedProcess;
-        doc = processOutputArea.getStyledDocument();
-        // Define a default background color attribute
+        doc = outputPanel.getStyledDocument();
 
         startProcess();
+        // Define a default background color attribute
         Color backgroundColor = Color.red;
         SimpleAttributeSet background = new SimpleAttributeSet();
         StyleConstants.setBackground(background, backgroundColor);
@@ -229,40 +168,25 @@ public class ProcessDialog extends javax.swing.JDialog
                                    background,
                                    false);
 
-        // And remove default (white) margin
-        processOutputArea.setBorder(BorderFactory.createEmptyBorder());
-
-        appendToDocument(doc,
-                         metaStyle,
-                         schedProcess.toString() + StringUtils.NEWLINE);
-        doc.setParagraphAttributes(0,
-                                   processOutputArea.
-                                   getDocument().
-                                   getLength(),
-                                   background,
-                                   false);
+        outputPanel.writelnMeta(schedProcess.toString());
     }
 
     private void startProcess()
     {
-        appendToDocument(doc,
-                         metaStyle,
-                         "=====" +
-                         StringUtils.NEWLINE +
-                         "Start the process..." +
-                         StringUtils.NEWLINE +
-                         "=====" +
-                         StringUtils.NEWLINE);
+        outputPanel.writelnMeta(
+                NbBundle.getMessage(CLAZZ,
+                                    "ProcessDialog.startProcess",
+                                    StringUtils.NEWLINE,
+                                    StringUtils.NEWLINE,
+                                    StringUtils.NEWLINE));
         if (!schedProcess.isRunning())
         {
             schedProcess.getProcess().start();
-            instreamGobbler = new StreamGobbler(processOutputScrollPane,
-                                                processOutputArea,
+            instreamGobbler = new StreamGobbler(outputPanel,
                                                 this.schedProcess,
                                                 StreamGobbler.InstreamType.InputStream,
                                                 styleContext);
-            errstreamGobbler = new StreamGobbler(processOutputScrollPane,
-                                                 processOutputArea,
+            errstreamGobbler = new StreamGobbler(outputPanel,
                                                  this.schedProcess,
                                                  StreamGobbler.InstreamType.ErrorStream,
                                                  styleContext);
@@ -271,27 +195,23 @@ public class ProcessDialog extends javax.swing.JDialog
         }
         else
         {
-            appendToDocument(doc,
-                             metaStyle,
-                             "=====" +
-                             StringUtils.NEWLINE +
-                             "Already running!" +
-                             StringUtils.NEWLINE +
-                             "=====" +
-                             StringUtils.NEWLINE);
+            outputPanel.writelnMeta(
+                    NbBundle.getMessage(CLAZZ,
+                                        "ProcessDialog.alreadyRunning",
+                                        StringUtils.NEWLINE,
+                                        StringUtils.NEWLINE,
+                                        StringUtils.NEWLINE));
         }
     }
 
     private void stopProcess()
     {
-        appendToDocument(doc,
-                         metaStyle,
-                         "=====" +
-                         StringUtils.NEWLINE +
-                         "Stopping the process..." +
-                         StringUtils.NEWLINE +
-                         "=====" +
-                         StringUtils.NEWLINE);
+        outputPanel.writelnMeta(
+                NbBundle.getMessage(CLAZZ,
+                                    "ProcessDialog.stoppingProcess",
+                                    StringUtils.NEWLINE,
+                                    StringUtils.NEWLINE,
+                                    StringUtils.NEWLINE));
         schedProcess.getProcess().destroy();
     }
 
@@ -312,28 +232,6 @@ public class ProcessDialog extends javax.swing.JDialog
         return dlg;
     }
 
-    static Style addStyle(StyleContext sc,
-                          Color fgColor,
-                          Color bgColor,
-                          String fontFamily,
-                          Integer fontSize,
-                          boolean bold)
-    {
-        String stylename = fgColor + "_" +
-                           bgColor + "_" +
-                           fontFamily + "_" +
-                           fontSize.toString() + "_" +
-                           (bold ? "bold" : "normal");
-        Style newStyle = sc.addStyle(stylename, null);
-        newStyle.addAttribute(StyleConstants.Foreground, fgColor);
-        newStyle.addAttribute(StyleConstants.Background, bgColor);
-        newStyle.addAttribute(StyleConstants.FontSize, fontSize);
-        newStyle.addAttribute(StyleConstants.FontFamily, fontFamily);
-        newStyle.addAttribute(StyleConstants.Bold, bold);
-
-        return newStyle;
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -345,9 +243,7 @@ public class ProcessDialog extends javax.swing.JDialog
     {
 
         outputPane = new javax.swing.JTabbedPane();
-        outputPanel = new javax.swing.JPanel();
-        processOutputScrollPane = new javax.swing.JScrollPane();
-        processOutputArea = new javax.swing.JTextPane();
+        outputPanel = new com.kybelksties.gui.OutputPanel();
         jPanel2 = new javax.swing.JPanel();
         menyBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -360,13 +256,6 @@ public class ProcessDialog extends javax.swing.JDialog
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
 
-        outputPanel.setLayout(new javax.swing.BoxLayout(outputPanel, javax.swing.BoxLayout.LINE_AXIS));
-
-        processOutputArea.setBackground(new java.awt.Color(255, 51, 102));
-        processOutputScrollPane.setViewportView(processOutputArea);
-
-        outputPanel.add(processOutputScrollPane);
-
         outputPane.addTab(org.openide.util.NbBundle.getMessage(ProcessDialog.class, "ProcessDialog.outputPanel.TabConstraints.tabTitle"), outputPanel); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -377,7 +266,7 @@ public class ProcessDialog extends javax.swing.JDialog
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 261, Short.MAX_VALUE)
+            .addGap(0, 273, Short.MAX_VALUE)
         );
 
         outputPane.addTab(org.openide.util.NbBundle.getMessage(ProcessDialog.class, "ProcessDialog.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
@@ -474,10 +363,8 @@ public class ProcessDialog extends javax.swing.JDialog
     private javax.swing.JPanel jPanel2;
     private javax.swing.JMenuBar menyBar;
     private javax.swing.JTabbedPane outputPane;
-    private javax.swing.JPanel outputPanel;
+    private com.kybelksties.gui.OutputPanel outputPanel;
     private javax.swing.JMenu processMenu;
-    private javax.swing.JTextPane processOutputArea;
-    private javax.swing.JScrollPane processOutputScrollPane;
     private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JMenuItem startMenuItem;
     private javax.swing.JMenuItem stopMenuItem;

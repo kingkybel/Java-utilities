@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -28,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.table.TableColumnModel;
+import org.openide.util.NbBundle;
 
 /**
  * Dialog that enables the user to define an executable definition which
@@ -39,8 +39,8 @@ import javax.swing.table.TableColumnModel;
 public class ExeDefinitionsDialog extends javax.swing.JDialog
 {
 
-    private static final String CLASS_NAME =
-                                ExeDefinitionsDialog.class.getName();
+    private static final Class CLAZZ = ExeDefinitionsDialog.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     ParameterList theParameters;
@@ -58,6 +58,90 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
         theParameters = theExeDefinition.getParameters();
         exeDefinitionList.add(theExeDefinition);
         updateDialogFromModel();
+    }
+
+    enum TableMenuActions
+    {
+
+        Delete, Up, Down;
+
+        @Override
+        public String toString()
+        {
+            return this == Delete ?
+                   NbBundle.getMessage(
+                           CLAZZ,
+                           "ExeDefinitionsDialog.TableMenuActions.delete") :
+                   this == Up ?
+                   NbBundle.getMessage(
+                           CLAZZ,
+                           "ExeDefinitionsDialog.TableMenuActions.up") :
+                   this == Down ?
+                   NbBundle.getMessage(
+                           CLAZZ,
+                           "ExeDefinitionsDialog.TableMenuActions.down") :
+                   NbBundle.getMessage(
+                           CLAZZ,
+                           "ExeDefinitionsDialog.TableMenuActions.unknown");
+        }
+
+    }
+
+    class TableMenu extends JPopupMenu
+    {
+
+        class AugmentedMenuItem extends JMenuItem
+        {
+
+            TableMenuActions action;
+
+            AugmentedMenuItem(TableMenuActions action)
+            {
+                super(action.toString());
+                this.action = action;
+            }
+
+            TableMenuActions getMenuAction()
+            {
+                return action;
+            }
+        }
+
+        TableMenu()
+        {
+            ActionListener action = new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    TableMenuActions command =
+                                     ((AugmentedMenuItem) e.getSource()).
+                                     getMenuAction();
+                    switch (command)
+                    {
+                        case Delete:
+                            ExeDefinitionsDialog.this.
+                                    deleteButtonActionPerformed(e);
+                            break;
+                        case Up:
+                            ExeDefinitionsDialog.this.
+                                    upButtonActionPerformed(e);
+                            break;
+                        case Down:
+                            ExeDefinitionsDialog.this.
+                                    downButtonActionPerformed(e);
+                            break;
+                    }
+                }
+            };
+
+            for (TableMenuActions nma : TableMenuActions.values())
+            {
+                AugmentedMenuItem menuItem = new AugmentedMenuItem(nma);
+                menuItem.addActionListener(action);
+                add(menuItem);
+            }
+        }
     }
 
     /**
@@ -100,46 +184,7 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
         }
         this.lastExeDirectory = lastExeDirectory;
         setColumnWidths();
-        JMenuItem menuItem;
-        ActionListener action = new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                String command = e.getActionCommand().toUpperCase();
-                switch (command)
-                {
-                    case "MOVE UP":
-                        ExeDefinitionsDialog.this.
-                                upButtonActionPerformed(
-                                        e);
-                        break;
-                    case "MOVE DOWN":
-                        ExeDefinitionsDialog.this.
-                                downButtonActionPerformed(
-                                        e);
-                        break;
-                    case "DELETE":
-                        ExeDefinitionsDialog.this.
-                                deleteButtonActionPerformed(
-                                        e);
-                        break;
-                }
-            }
-        };
-        paramPopup = new JPopupMenu();
-
-        menuItem = new JMenuItem("Move up");
-        menuItem.addActionListener(action);
-        paramPopup.add(menuItem);
-
-        menuItem = new JMenuItem("Move Down");
-        menuItem.addActionListener(action);
-        paramPopup.add(menuItem);
-
-        menuItem = new JMenuItem("Delete");
-        menuItem.addActionListener(action);
-        paramPopup.add(menuItem);
+        paramPopup = new TableMenu();
         updateDialogFromModel();
     }
 
@@ -231,14 +276,15 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
         commandLineScrollPane = new javax.swing.JScrollPane();
         commandlineInput = new javax.swing.JTextArea();
 
-        setTitle("Commandline and Environment Variables");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/kybelksties/process/Bundle"); // NOI18N
+        setTitle(bundle.getString("ExeDefinitionsDialog.title")); // NOI18N
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
 
         exeDetailsSplit.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
         executableDefinitionPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        browseForExeBtn.setText("Browse for Executable...");
+        browseForExeBtn.setText(org.openide.util.NbBundle.getMessage(ExeDefinitionsDialog.class, "ExeDefinitionDialog.browseForExe")); // NOI18N
         browseForExeBtn.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -258,7 +304,7 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
         });
         executableDefinitionPanel.add(exePathInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 30, 570, -1));
 
-        paramPositionalCB.setText("Parameters are positional");
+        paramPositionalCB.setText(org.openide.util.NbBundle.getMessage(ExeDefinitionsDialog.class, "ExeDefinitionDialog.paramsArePositional")); // NOI18N
         paramPositionalCB.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -292,7 +338,7 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
 
         executableDefinitionPanel.add(paramPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 760, 140));
 
-        addParamBtn.setText("Add Parameter");
+        addParamBtn.setText(org.openide.util.NbBundle.getMessage(ExeDefinitionsDialog.class, "ExeDefinitionDialog.addParam")); // NOI18N
         addParamBtn.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -302,7 +348,7 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
         });
         executableDefinitionPanel.add(addParamBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, -1, -1));
 
-        closeBtn.setText("Accept and Close");
+        closeBtn.setText(org.openide.util.NbBundle.getMessage(ExeDefinitionsDialog.class, "ExeDefinitionDialog.accept")); // NOI18N
         closeBtn.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -312,7 +358,7 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
         });
         executableDefinitionPanel.add(closeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 300, 150, -1));
 
-        discardBtn.setText("Discard");
+        discardBtn.setText(org.openide.util.NbBundle.getMessage(ExeDefinitionsDialog.class, "ExeDefinitionDialog.discard")); // NOI18N
         discardBtn.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -334,7 +380,7 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
         });
         executableDefinitionPanel.add(exeNameCB, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, -1));
 
-        newBtn.setText("New");
+        newBtn.setText(org.openide.util.NbBundle.getMessage(ExeDefinitionsDialog.class, "ExeDefinitionDialog.new")); // NOI18N
         newBtn.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -348,7 +394,7 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
 
         commandLinePane.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        commandlineLabel.setText("Command line:");
+        commandlineLabel.setText(org.openide.util.NbBundle.getMessage(ExeDefinitionsDialog.class, "ExeDefinitionDialog.commandLine")); // NOI18N
         commandLinePane.add(commandlineLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         commandlineInput.setEditable(false);
@@ -542,10 +588,10 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
         boolean hasMoved = theParameters.down(row);
         if (hasMoved)
         {
-            paramTbl.setRowSelectionInterval(row > 1 ? row - 1 : 0, row > 1 ?
-                                                                    row - 1 : 0);
-            paramTbl.
-                    setColumnSelectionInterval(0, paramTbl.getColumnCount() - 1);
+            paramTbl.setRowSelectionInterval(row > 1 ? row - 1 : 0,
+                                             row > 1 ? row - 1 : 0);
+            paramTbl.setColumnSelectionInterval(0,
+                                                paramTbl.getColumnCount() - 1);
         }
     }
 

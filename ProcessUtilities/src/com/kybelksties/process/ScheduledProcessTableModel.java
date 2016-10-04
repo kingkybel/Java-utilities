@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -30,6 +29,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.openide.util.NbBundle;
 
 /**
  * A table model extension for a collection of scheduled processes.
@@ -44,22 +44,32 @@ public class ScheduledProcessTableModel extends AbstractTableModel
                    ConcreteProcess.StateEventListener
 {
 
-    private static final String CLASS_NAME =
-                                ScheduledProcessTableModel.class.getName();
+    private static final Class CLAZZ = ScheduledProcessTableModel.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private static final String[] theColumnNames =
     {
-        "State",
-        //        "ProcessType",
-        "Executable",
-        "WindowMode",
-        "StartDirectory",
-        "Parameters",
-        "LogFile",
-        "Sleep"//,
-//        "BG",
-//        "FG"
+        NbBundle.getMessage(CLAZZ,
+                            "ScheduledProcessTableModelcolumnHeader.state"),
+        // NbBundle.getMessage(CLAZZ,
+        //                    "ScheduledProcessTableModelcolumnHeader.procType"),
+        NbBundle.getMessage(CLAZZ,
+                            "ScheduledProcessTableModelcolumnHeader.executable"),
+        NbBundle.getMessage(CLAZZ,
+                            "ScheduledProcessTableModelcolumnHeader.windowMode"),
+        NbBundle.getMessage(CLAZZ,
+                            "ScheduledProcessTableModelcolumnHeader.startDir"),
+        NbBundle.getMessage(CLAZZ,
+                            "ScheduledProcessTableModelcolumnHeader.parameters"),
+        NbBundle.getMessage(CLAZZ,
+                            "ScheduledProcessTableModelcolumnHeader.logFile"),
+        NbBundle.getMessage(CLAZZ,
+                            "ScheduledProcessTableModelcolumnHeader.sleep"),//,
+    // NbBundle.getMessage(CLAZZ,
+    //                    "ScheduledProcessTableModelcolumnHeader.backGround"),
+    // NbBundle.getMessage(CLAZZ,
+    //                    "ScheduledProcessTableModelcolumnHeader.foreGround"),
     };
 
     static String getLongColumnName(int col)

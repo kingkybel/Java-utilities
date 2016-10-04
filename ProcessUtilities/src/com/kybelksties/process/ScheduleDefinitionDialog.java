@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2015 Dieter J Kybelksties
  *
@@ -23,9 +22,9 @@ package com.kybelksties.process;
 import com.kybelksties.general.EnvironmentVar;
 import com.kybelksties.general.EnvironmentVarDialog;
 import com.kybelksties.general.EnvironmentVarSets;
-import com.kybelksties.general.EnvironmentVarTable;
 import com.kybelksties.general.EnvironmentVarTableModel;
 import com.kybelksties.gui.ColorUtils;
+import com.kybelksties.gui.EnvironmentVarTable;
 import com.kybelksties.gui.ForegroundBackgroundColorChooser;
 import java.awt.Color;
 import java.io.File;
@@ -41,6 +40,7 @@ import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import org.openide.util.NbBundle;
 
 /**
  * A dialog to define the schedule of a process.
@@ -50,8 +50,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class ScheduleDefinitionDialog extends javax.swing.JDialog
 {
 
-    private static final String CLASS_NAME =
-                                ScheduleDefinitionDialog.class.getName();
+    private static final Class CLAZZ = ScheduleDefinitionDialog.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     ScheduledProcess theScheduledProcess;
@@ -239,7 +239,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         envVarsPane = new javax.swing.JPanel();
         envVarsTabsPane = new javax.swing.JTabbedPane();
 
-        setTitle("Schedule Process");
+        setTitle(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.title")); // NOI18N
         setAlwaysOnTop(true);
         setBounds(new java.awt.Rectangle(200, 200, 0, 0));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
@@ -248,7 +248,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
 
         detailsPane.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        doneBtn.setText("Done");
+        doneBtn.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.done")); // NOI18N
         doneBtn.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -258,7 +258,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         });
         detailsPane.add(doneBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 260, -1, -1));
 
-        cancelBtn.setText("Cancel");
+        cancelBtn.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.cancel")); // NOI18N
         cancelBtn.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -271,10 +271,10 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         sleepSpinner.setModel(new javax.swing.SpinnerNumberModel(Long.valueOf(0L), Long.valueOf(0L), Long.valueOf(3600L), Long.valueOf(1L)));
         detailsPane.add(sleepSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, 70, -1));
 
-        sleepLabel.setText("seconds sleep");
+        sleepLabel.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.secondsSleep")); // NOI18N
         detailsPane.add(sleepLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 100, -1, -1));
 
-        changeColorButton.setText("Change Window Background");
+        changeColorButton.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.changeWindowBackground")); // NOI18N
         changeColorButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -284,7 +284,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         });
         detailsPane.add(changeColorButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 260, -1));
 
-        startInButton.setText("Start in...");
+        startInButton.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.startIn")); // NOI18N
         startInButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -292,7 +292,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
                 startInButtonActionPerformed(evt);
             }
         });
-        detailsPane.add(startInButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, -1, -1));
+        detailsPane.add(startInButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 90, 20));
 
         startInDirInput.addActionListener(new java.awt.event.ActionListener()
         {
@@ -310,7 +310,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         });
         detailsPane.add(startInDirInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 70, 370, -1));
 
-        reinitEnvButton.setText("Re-initialise environment variables");
+        reinitEnvButton.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.reinitVars")); // NOI18N
         reinitEnvButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -320,7 +320,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         });
         detailsPane.add(reinitEnvButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 190, 260, -1));
 
-        addEnvButton.setText("Add environmentvariable ...");
+        addEnvButton.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.addVar")); // NOI18N
         addEnvButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -370,6 +370,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         tablesPane.addTab("Environment variables", envVarsPane);
 
         mainSplit.setRightComponent(tablesPane);
+        tablesPane.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.parameters")); // NOI18N
 
         getContentPane().add(mainSplit);
 
@@ -384,8 +385,10 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         }
         else
         {
-            String error = "Not all mandatory parameters are defined:" +
-                           theScheduledProcess.getMissingParameters();
+            String error = NbBundle.getMessage(
+                   CLAZZ,
+                   "ScheduleDefinitionDialog.notAllMandatoryParamsDefined",
+                   theScheduledProcess.getMissingParameters());
             JOptionPane.showMessageDialog(this, error);
         }
     }//GEN-LAST:event_doneBtnActionPerformed
