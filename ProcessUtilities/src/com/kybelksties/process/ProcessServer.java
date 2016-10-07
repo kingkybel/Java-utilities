@@ -123,10 +123,11 @@ public class ProcessServer
                 out = new ObjectOutputStream(this.socket.getOutputStream());
                 // Send a welcome message to the client.
                 ProcessMessage msg = ProcessMessage.makeChitChat(
-                               "New connection with client# " +
+                               "Hello client '" +
                                clientNumber +
-                               " at " +
-                               this.socket.getInetAddress().toString());
+                               "'! You are connected to server at " +
+                               this.socket.getInetAddress().
+                               getCanonicalHostName());
                 out.writeObject(msg);
                 logInfo("Wrote message " + msg.toString());
             }

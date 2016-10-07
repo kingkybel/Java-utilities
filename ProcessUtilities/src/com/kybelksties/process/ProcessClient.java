@@ -77,6 +77,17 @@ public class ProcessClient extends javax.swing.JFrame
         socket = new Socket(serverAddress, port);
         in = new ObjectInputStream(socket.getInputStream());
         out = new ObjectOutputStream(socket.getOutputStream());
+        ProcessMessage msg;
+        try
+        {
+            // read the welcome message from the server
+            msg = (ProcessMessage) in.readObject();
+            outputPanel.writeln(msg.toString());
+        }
+        catch (ClassNotFoundException ex)
+        {
+            outputPanel.writelnError(ex.toString());
+        }
     }
 
     /**
@@ -151,16 +162,17 @@ public class ProcessClient extends javax.swing.JFrame
     {//GEN-HEADEREND:event_sendButtonActionPerformed
         ProcessMessage.Type type = (ProcessMessage.Type) commandComboBox.
                             getSelectedItem();
-        ProcessMessage cmd = new ProcessMessage(type,
-                                                additionalParamsInput.getText().
-                                                split(" "));
+        ProcessMessage sendMsg = new ProcessMessage(type,
+                                                    additionalParamsInput.
+                                                    getText().
+                                                    split(" "));
         try
         {
-            out.writeObject(cmd);
+            out.writeObject(sendMsg);
         }
         catch (IOException ex)
         {
-            outputPanel.writelnError(ex.getLocalizedMessage());
+            outputPanel.writelnError(ex.toString());
         }
         Object response;
         try
@@ -175,7 +187,7 @@ public class ProcessClient extends javax.swing.JFrame
                 throw new IOException("Not a Process Command!");
             }
             ProcessMessage rcvdMsg = (ProcessMessage) response;
-            outputPanel.writeln("Sent command:" + cmd.toString());
+            outputPanel.writeln("Sent command:" + sendMsg.toString());
             outputPanel.writelnHighlight("Received response:" +
                                          rcvdMsg.toString());
 //            switch (cmd.getType())
