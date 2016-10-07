@@ -160,7 +160,20 @@ public class ExeDefinitions
      */
     public ExeDefinition[] allValues()
     {
-        return (ExeDefinition[]) getDefinitions().toArray();
+        ExeDefinition[] reval;
+        if (defArray != null)
+        {
+            reval = new ExeDefinition[defArray.size()];
+            for (int i = 0; i < reval.length; i++)
+            {
+                reval[i] = defArray.get(i);
+            }
+        }
+        else
+        {
+            reval = new ExeDefinition[0];
+        }
+        return reval;
     }
 
     /**
