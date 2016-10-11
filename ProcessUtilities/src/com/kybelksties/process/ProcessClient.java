@@ -75,12 +75,15 @@ public class ProcessClient extends javax.swing.JFrame
         }
         // Make connection and initialize streams
         socket = new Socket(serverAddress, port);
-        in = new ObjectInputStream(socket.getInputStream());
         out = new ObjectOutputStream(socket.getOutputStream());
+        out.flush();
+        in = new ObjectInputStream(socket.getInputStream());
         ProcessMessage msg;
         try
         {
             // read the welcome message from the server
+            msg = (ProcessMessage) in.readObject();
+            outputPanel.writeln(msg.toString());
             msg = (ProcessMessage) in.readObject();
             outputPanel.writeln(msg.toString());
         }

@@ -52,7 +52,6 @@ public class ProcessServer
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     static boolean keepRunning = true;
-    static ObjectOutputStream out = null;
 
     /**
      * Application method to run the server runs in an infinite loop listening
@@ -70,15 +69,15 @@ public class ProcessServer
         int port = (args == null || args.length == 0) ?
                    9898 :
                    Integer.parseInt(args[0]);
-        try (ServerSocket listener = new ServerSocket(port))
+        LOGGER.log(Level.INFO, "Starting Server");
+        ServerSocket listener = new ServerSocket(port);
+        while (keepRunning)
         {
-            LOGGER.log(Level.INFO, "Starting Server");
-            while (keepRunning)
-            {
-                new ServerLoop(listener.accept(), clientNumber++).start();
-            }
-            LOGGER.log(Level.INFO, "Finished Server");
+            Socket acceptedSocket = listener.accept();
+            // accept is blocking until incoming request received
+            new ServerLoop(acceptedSocket, clientNumber++).start();
         }
+        LOGGER.log(Level.INFO, "Finished Server");
     }
 
     public static List<ProcessInfo> list()
@@ -107,8 +106,10 @@ public class ProcessServer
     private static class ServerLoop extends Thread
     {
 
-        private Socket socket = null;
         private int clientNumber = 0;
+        private Socket socket = null;
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
 
         public ServerLoop(Socket socket, int clientNumber) throws Exception
         {
@@ -118,9 +119,14 @@ public class ProcessServer
                 {
                     throw new Exception("Socket cannot be null");
                 }
+                if (socket.isClosed())
+                {
+                    throw new Exception("Socket should not be closed but is!!");
+                }
                 this.socket = socket;
                 this.clientNumber = clientNumber;
                 out = new ObjectOutputStream(this.socket.getOutputStream());
+                out.flush();
                 // Send a welcome message to the client.
                 ProcessMessage msg = ProcessMessage.makeChitChat(
                                "Hello client '" +
@@ -129,27 +135,12 @@ public class ProcessServer
                                this.socket.getInetAddress().
                                getCanonicalHostName());
                 out.writeObject(msg);
+                out.flush();
                 logInfo("Wrote message " + msg.toString());
             }
             catch (IOException ex)
             {
                 logError("in ServerSocket: " + ex.toString());
-            }
-            finally
-            {
-                try
-                {
-                    logInfo("Trying to close out-stream");
-                    if (out != null)
-                    {
-                        out.close();
-                        logInfo("Out-stream closed");
-                    }
-                }
-                catch (IOException ex)
-                {
-                    logError("Closing faild: " + ex.toString());
-                }
             }
         }
 
@@ -165,20 +156,22 @@ public class ProcessServer
             {
 
                 out = new ObjectOutputStream(socket.getOutputStream());
+                in = new ObjectInputStream(socket.getInputStream());
 
                 // Send a welcome message to the client.
                 out.writeObject(
-                        ProcessMessage.makeChitChat("Hello, you are client #" +
-                                                    clientNumber + "."));
+                        ProcessMessage.makeChitChat(
+                                "Hello, you are client #" +
+                                clientNumber + "."));
+                out.flush();
                 out.writeObject(
                         ProcessMessage.makeChitChat(
                                 "Enter a line with only a period to quit\n"));
+                out.flush();
 
                 // Get message object from the client
                 while (true)
                 {
-                    ObjectInputStream in = new ObjectInputStream(
-                                      socket.getInputStream());
                     Object readObj = in.readObject();
                     ProcessMessage rcvdMsg = (ProcessMessage) readObj;
                     if (readObj == null || rcvdMsg.isStopCommand())
@@ -206,8 +199,9 @@ public class ProcessServer
                         case ListProcesses:
                             ProcessMessage msg = new ProcessMessage(
                                            ProcessMessage.Type.ProcessList,
-                                           (ArrayList) list());
+                                           (ArrayList<ProcessInfo>) list());
                             out.writeObject(msg);
+                            out.flush();
                             break;
                         case KillProcess:
                             System.exit(0);
@@ -228,17 +222,18 @@ public class ProcessServer
             }
             finally
             {
-//                try
-//                {
-//                    logInfo("trying to close socket");
-//                    socket.close();
-//                }
-//                catch (IOException e)
-//                {
-//                    logError("Couldn't close a socket, what's going on?" +
-//                             e.getLocalizedMessage());
-//                }
-//                logInfo("Connection with client# " + clientNumber + " closed");
+                try
+                {
+                    logInfo("trying to close socket");
+                    socket.close();
+                }
+                catch (IOException e)
+                {
+                    logError("Couldn't close a socket, what's going on?" +
+                             e.getLocalizedMessage());
+                }
+                logInfo("Connection with client '" + clientNumber +
+                        "' closed");
             }
         }
 

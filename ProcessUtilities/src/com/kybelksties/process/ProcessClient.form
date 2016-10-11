@@ -54,7 +54,6 @@
                       <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="outputPanel" pref="130" max="32767" attributes="0"/>
           </Group>
       </Group>
