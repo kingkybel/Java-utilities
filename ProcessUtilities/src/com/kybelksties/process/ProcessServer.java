@@ -138,7 +138,11 @@ public class ProcessServer
                                getCanonicalHostName());
                 out.writeObject(msg);
                 out.flush();
-                logInfo("Wrote message " + msg.toString());
+                out.writeObject(
+                        ProcessMessage.makeChitChat(
+                                "Enter a line with only a period to quit\n"));
+                out.flush();
+
             }
             catch (IOException ex)
             {
@@ -157,17 +161,6 @@ public class ProcessServer
             try
             {
 
-                // Send a welcome message to the client.
-                out.writeObject(
-                        ProcessMessage.makeChitChat(
-                                "Hello, you are client #" +
-                                clientNumber + "."));
-                out.flush();
-                out.writeObject(
-                        ProcessMessage.makeChitChat(
-                                "Enter a line with only a period to quit\n"));
-                out.flush();
-
                 // Get message object from the client
                 while (true)
                 {
@@ -178,10 +171,13 @@ public class ProcessServer
                         logInfo("the read object is invalid!!!");
                         break;
                     }
-                    ArrayList objs = rcvdMsg.getObjects();
 
+                    ArrayList objs = rcvdMsg.getObjects();
+                    logInfo(readObj.toString());
                     switch (rcvdMsg.getType())
                     {
+                        case Ack:
+                            break;
                         case ChitChat:
                             logInfo(ToString.make(objs));
                             break;
@@ -193,6 +189,10 @@ public class ProcessServer
                             logInfo("Connected to " + objs.get(0));
                             break;
                         case StartProcess:
+                            System.exit(0);
+                            break;
+                        case ProcessList:
+                            logInfo("ProcessList:");
                             System.exit(0);
                             break;
                         case ListProcesses:

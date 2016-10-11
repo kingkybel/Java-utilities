@@ -3,6 +3,7 @@ package com.kybelksties.process;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -166,12 +167,13 @@ public class ProcessClient extends javax.swing.JFrame
         ProcessMessage.Type type = (ProcessMessage.Type) commandComboBox.
                             getSelectedItem();
         ProcessMessage sendMsg = new ProcessMessage(type,
-                                                    additionalParamsInput.
+                                                    (Serializable[]) additionalParamsInput.
                                                     getText().
                                                     split(" "));
         try
         {
             out.writeObject(sendMsg);
+            out.flush();
         }
         catch (IOException ex)
         {

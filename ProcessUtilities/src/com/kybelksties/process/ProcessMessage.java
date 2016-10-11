@@ -82,6 +82,7 @@ public class ProcessMessage<T extends Serializable> implements Serializable
     public static enum Type implements Serializable
     {
 
+        Ack,
         ChitChat,
         StopServer,
         Identify,
