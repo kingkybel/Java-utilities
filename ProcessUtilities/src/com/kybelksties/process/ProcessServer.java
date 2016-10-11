@@ -51,6 +51,8 @@ public class ProcessServer
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
+    static ObjectOutputStream out = null;
+    static ObjectInputStream in = null;
     static boolean keepRunning = true;
 
     /**
@@ -74,6 +76,10 @@ public class ProcessServer
         while (keepRunning)
         {
             Socket acceptedSocket = listener.accept();
+            out = new ObjectOutputStream(acceptedSocket.getOutputStream());
+            out.flush();
+            in = new ObjectInputStream(acceptedSocket.getInputStream());
+
             // accept is blocking until incoming request received
             new ServerLoop(acceptedSocket, clientNumber++).start();
         }
@@ -108,8 +114,6 @@ public class ProcessServer
 
         private int clientNumber = 0;
         private Socket socket = null;
-        ObjectOutputStream out = null;
-        ObjectInputStream in = null;
 
         public ServerLoop(Socket socket, int clientNumber) throws Exception
         {
@@ -125,8 +129,6 @@ public class ProcessServer
                 }
                 this.socket = socket;
                 this.clientNumber = clientNumber;
-                out = new ObjectOutputStream(this.socket.getOutputStream());
-                out.flush();
                 // Send a welcome message to the client.
                 ProcessMessage msg = ProcessMessage.makeChitChat(
                                "Hello client '" +
@@ -154,9 +156,6 @@ public class ProcessServer
         {
             try
             {
-
-                out = new ObjectOutputStream(socket.getOutputStream());
-                in = new ObjectInputStream(socket.getInputStream());
 
                 // Send a welcome message to the client.
                 out.writeObject(
