@@ -19,6 +19,7 @@
  */
 package com.kybelksties.process;
 
+import com.kybelksties.general.SystemProperties;
 import com.kybelksties.general.ToString;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -38,10 +39,6 @@ import org.jutils.jprocesses.model.ProcessInfo;
  * interactive dialog in which the client sends in a command and the server
  * thread sends back the a response.
  *
- * The program is run in an infinite loop, so shutdown is platform dependent. If
- * you run it from a console window with the "java" interpreter, Ctrl+C
- * generally will shut it down.
- *
  * @author Dieter J Kybelksties
  */
 public class ProcessServer
@@ -54,13 +51,15 @@ public class ProcessServer
     static ObjectOutputStream out = null;
     static ObjectInputStream in = null;
     static boolean keepRunning = true;
+    final static String HOSTNAME = (String) SystemProperties.get("HOSTNAME");
 
     /**
-     * Application method to run the server runs in an infinite loop listening
-     * on a given port. When a connection is requested, it spawns a new thread
-     * to do the servicing and immediately returns to listening. The server
-     * keeps a unique client number for each client that connects just to show
-     * interesting logging messages. It is certainly not necessary to do this.
+     * Application method to run the server runs in an infinite (interuptable)
+     * loop listening on a given port. When a connection is requested, it spawns
+     * a new thread to do the servicing and immediately returns to listening.
+     * The server keeps a unique client number for each client that connects
+     * just to show interesting logging messages. It is certainly not necessary
+     * to do this.
      *
      * @param args first argument is the port
      * @throws java.lang.Exception
@@ -71,7 +70,7 @@ public class ProcessServer
         int port = (args == null || args.length == 0) ?
                    9898 :
                    Integer.parseInt(args[0]);
-        LOGGER.log(Level.INFO, "Starting Server");
+        logInfo("Starting Server");
         ServerSocket listener = new ServerSocket(port);
         while (keepRunning)
         {
@@ -83,25 +82,13 @@ public class ProcessServer
             // accept is blocking until incoming request received
             new ServerLoop(acceptedSocket, clientNumber++).start();
         }
-        LOGGER.log(Level.INFO, "Finished Server");
+        logInfo("Finished Server");
     }
 
     public static List<ProcessInfo> list()
     {
         List<ProcessInfo> processesList = JProcesses.getProcessList();
-
-//        for (final ProcessInfo processInfo : processesList)
-//        {
-//            System.out.println("Process PID: " + processInfo.getPid());
-//            System.out.println("Process Name: " + processInfo.getName());
-//            System.out.println("Process Used Time: " + processInfo.getTime());
-//            System.out.println("Process Used Time: " + processInfo.getTime());
-//            System.out.println(processInfo.toString());
-//            System.out.println("Process Used Time: " + processInfo.getTime());
-//        }
-        LOGGER.log(Level.INFO,
-                   "in list: {0} processes running.",
-                   processesList.size());
+        logInfo("in list: {0} processes running.", processesList.size());
         return processesList;
     }
 
@@ -138,11 +125,6 @@ public class ProcessServer
                                getCanonicalHostName());
                 out.writeObject(msg);
                 out.flush();
-                out.writeObject(
-                        ProcessMessage.makeChitChat(
-                                "Enter a line with only a period to quit\n"));
-                out.flush();
-
             }
             catch (IOException ex)
             {
@@ -162,18 +144,17 @@ public class ProcessServer
             {
 
                 // Get message object from the client
-                while (true)
+                while (keepRunning)
                 {
                     Object readObj = in.readObject();
                     ProcessMessage rcvdMsg = (ProcessMessage) readObj;
-                    if (readObj == null || rcvdMsg.isStopCommand())
+                    if (readObj == null)
                     {
                         logInfo("the read object is invalid!!!");
                         break;
                     }
 
                     ArrayList objs = rcvdMsg.getObjects();
-                    logInfo(readObj.toString());
                     switch (rcvdMsg.getType())
                     {
                         case Ack:
@@ -186,10 +167,16 @@ public class ProcessServer
                             keepRunning = false;
                             break;
                         case Identify:
-                            logInfo("Connected to " + objs.get(0));
+                            logInfo("Connected to port {0} on {1}",
+                                    objs.toArray());
                             break;
                         case StartProcess:
-                            System.exit(0);
+                            ScheduledProcess sp = (ScheduledProcess) objs.get(
+                                             0);
+                            if (HOSTNAME.equals(sp.getTargetMachine()))
+                            {
+                                ConcreteProcess process = sp.start();
+                            }
                             break;
                         case ProcessList:
                             logInfo("ProcessList:");
@@ -201,6 +188,7 @@ public class ProcessServer
                                            (ArrayList<ProcessInfo>) list());
                             out.writeObject(msg);
                             out.flush();
+                            logInfo("After flush");
                             break;
                         case KillProcess:
                             System.exit(0);
@@ -214,44 +202,45 @@ public class ProcessServer
             }
             catch (IOException | ClassNotFoundException e)
             {
-                logError("Error handling client '" +
-                         clientNumber +
-                         "': " +
-                         e.getLocalizedMessage());
+                logError("Error handling client {0}: {1}",
+                         clientNumber,
+                         ToString.make(e.toString()));
             }
             finally
             {
                 try
                 {
                     logInfo("trying to close socket");
+                    socket.shutdownInput();
+                    socket.shutdownOutput();
                     socket.close();
                 }
                 catch (IOException e)
                 {
-                    logError("Couldn't close a socket, what's going on?" +
+                    logError("Couldn't close the socket: {0}",
                              e.getLocalizedMessage());
                 }
-                logInfo("Connection with client '" + clientNumber +
-                        "' closed");
+                logInfo("Connection with client {0} closed", clientNumber);
             }
         }
 
-        /**
-         * Logs a simple message. In this case we just write the message to the
-         * server applications standard output.
-         */
-        private void logInfo(String message)
-        {
-            LOGGER.log(Level.INFO, message);
-        }
+    }
 
-        /**
-         * Logs a simple message. In this case we just write the message to the
-         * server applications standard output.
-         */
-        private void logError(String message)
-        {
-            LOGGER.log(Level.SEVERE, message);
-        }
+    /**
+     * Logs a simple message. In this case we just write the message to the
+     * server applications standard output.
+     */
+    static void logInfo(String message, Object... objs)
+    {
+        LOGGER.log(Level.INFO, message, objs);
+    }
+
+    /**
+     * Logs a simple message. In this case we just write the message to the
+     * server applications standard output.
+     */
+    static void logError(String message, Object... objs)
+    {
+        LOGGER.log(Level.SEVERE, message, objs);
     }
 }

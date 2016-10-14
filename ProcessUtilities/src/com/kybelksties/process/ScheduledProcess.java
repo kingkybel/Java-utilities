@@ -19,9 +19,17 @@
  */
 package com.kybelksties.process;
 
+import com.kybelksties.general.DateUtils;
 import com.kybelksties.general.EnvironmentVarSets;
 import com.kybelksties.general.ToString;
+import com.kybelksties.gui.ColorUtils;
+import java.awt.Color;
+import java.awt.Frame;
+import java.awt.Rectangle;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +43,7 @@ import org.openide.util.NbBundle;
  * @author kybelksd
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ScheduledProcess
+public class ScheduledProcess implements Serializable
 {
 
     private static final Class CLAZZ = ScheduledProcess.class;
@@ -50,6 +58,8 @@ public class ScheduledProcess
     private String startInDirectory = null;
     private WindowMode windowMode = WindowMode.XTERM;
     private String logFileName;
+    private String targetMachine = "localhost";
+    private Rectangle dimensions = null;
 
     /**
      * Default construct.
@@ -147,6 +157,46 @@ public class ScheduledProcess
         {
             process.directory(startInDirectory);
         }
+    }
+
+    /**
+     * Get the value of targetMachine
+     *
+     * @return the value of targetMachine
+     */
+    public String getTargetMachine()
+    {
+        return targetMachine;
+    }
+
+    /**
+     * Set the value of targetMachine
+     *
+     * @param targetMachine new value of targetMachine
+     */
+    public void setTargetMachine(String targetMachine)
+    {
+        this.targetMachine = targetMachine;
+    }
+
+    /**
+     * Get the value of dimensions.
+     *
+     * @return the value of dimensions
+     */
+    public Rectangle getDimensions()
+    {
+        return dimensions;
+    }
+
+    /**
+     * Set the value of dimensions.
+     *
+     * @param dimensions new value of dimensions
+     */
+    public void setDimensions(Rectangle dimensions)
+    {
+        this.dimensions = dimensions;
     }
 
     /**
@@ -430,8 +480,109 @@ public class ScheduledProcess
         {
             NbBundle.getMessage(
                     CLAZZ,
-                    "ScheduledProcess.cannotIninializeNoProcess",
+                    "ScheduledProcess.cannotInitializeNoProcess",
                     exeDefinition.getName());
         }
     }
+
+    public ConcreteProcess start()
+    {
+        String[] command = null;
+
+        switch (getWindowMode())
+        {
+            case XTERM:
+                command = makeXtermCommand(dimensions, windowBackground);
+                break;
+            case GUIFRAME:
+                Frame parent = new Frame(toString());
+                ProcessDialog.makeProcessDialog(parent, this);
+                command = makeStandAloneCommand();
+                break;
+            case BACKGROUND:
+            case BACKGROUND_FILE:
+                command = makeStandAloneCommand();
+                break;
+        }
+        process.command(command);
+
+        return process.start();
+
+    }
+
+    private List<String> buildParameterList()
+    {
+
+        List<String> params = new ArrayList<>();
+        for (AbstractParameter param : exeDefinition.getParameters())
+        {
+            if (exeDefinition.hasPositionalParameters())
+            {
+                params.add(param.getValue());
+            }
+            else
+            {
+                params.add(((LetterParameter) param).getParameterString());
+                if (param.hasArgument())
+                {
+                    params.add(param.getValue());
+                }
+            }
+
+        }
+        return params;
+    }
+
+    private String makeCommand()
+    {
+        List<String> params = buildParameterList();
+        String paramString = "";
+        for (String param : params)
+        {
+            paramString += param + " ";
+        }
+        String timeStamp = DateUtils.file_now();
+        return exeDefinition.getExecutableWithPath() + " " + paramString;
+    }
+
+    private String[] makeStandAloneCommand()
+    {
+        String[] reval = makeCommand().trim().split(" ");
+        LOGGER.log(Level.INFO, "THE COMMAND: ", ToString.make(reval));
+        return reval;
+    }
+
+    static private String makeGeometry(Rectangle dimensions)
+    {
+        return dimensions.width +
+               "x" +
+               dimensions.height +
+               "+" +
+               dimensions.x +
+               "+" +
+               dimensions.y;
+    }
+
+    private String[] makeXtermCommand(Rectangle dimensions,
+                                      String backColorString)
+    {
+        Color bgColor = ColorUtils.getXtermColor(backColorString);
+        Color fgColor = ColorUtils.contrastColorByComplement(bgColor);
+        String foreColorString = ColorUtils.xtermColorString(fgColor);
+        String[] reval = new String[]
+         {
+             "/usr/bin/xterm",
+             "-bg", backColorString,
+             "-fg", foreColorString,
+             "+cu", "-j", "-nb", "0", "-s",
+             "-title", exeDefinition.toString(),
+             "-sb", "-cr", foreColorString,
+             "-geometry", makeGeometry(dimensions),
+             "-e",
+             makeCommand()
+        };
+        LOGGER.log(Level.INFO, "THE COMMAND: ", ToString.make(reval));
+        return reval;
+    }
+
 }
