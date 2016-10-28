@@ -19,6 +19,8 @@
  */
 package com.kybelksties.process;
 
+import com.kybelksties.general.LogFormatter;
+import com.kybelksties.general.SystemProperties;
 import com.kybelksties.general.ToString;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -27,6 +29,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jutils.jprocesses.JProcesses;
@@ -37,10 +40,6 @@ import org.jutils.jprocesses.model.ProcessInfo;
  * processes. When clients connect, a new thread is started to handle an
  * interactive dialog in which the client sends in a command and the server
  * thread sends back the a response.
- *
- * The program is run in an infinite loop, so shutdown is platform dependent. If
- * you run it from a console window with the "java" interpreter, Ctrl+C
- * generally will shut it down.
  *
  * @author Dieter J Kybelksties
  */
@@ -54,13 +53,25 @@ public class ProcessServer
     static ObjectOutputStream out = null;
     static ObjectInputStream in = null;
     static boolean keepRunning = true;
+    final static String HOSTNAME = (String) SystemProperties.get("HOSTNAME");
+
+    static
+    {
+
+        LOGGER.setUseParentHandlers(false);
+        LogFormatter formatter = new LogFormatter();
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(formatter);
+        LOGGER.addHandler(handler);
+    }
 
     /**
-     * Application method to run the server runs in an infinite loop listening
-     * on a given port. When a connection is requested, it spawns a new thread
-     * to do the servicing and immediately returns to listening. The server
-     * keeps a unique client number for each client that connects just to show
-     * interesting logging messages. It is certainly not necessary to do this.
+     * Application method to run the server runs in an infinite (interuptable)
+     * loop listening on a given port. When a connection is requested, it spawns
+     * a new thread to do the servicing and immediately returns to listening.
+     * The server keeps a unique client number for each client that connects
+     * just to show interesting logging messages. It is certainly not necessary
+     * to do this.
      *
      * @param args first argument is the port
      * @throws java.lang.Exception
@@ -71,10 +82,11 @@ public class ProcessServer
         int port = (args == null || args.length == 0) ?
                    9898 :
                    Integer.parseInt(args[0]);
-        LOGGER.log(Level.INFO, "Starting Server");
+        logInfo("Starting Server");
         ServerSocket listener = new ServerSocket(port);
         while (keepRunning)
         {
+            // blocking here, waitng for incoming request, then accept
             Socket acceptedSocket = listener.accept();
             out = new ObjectOutputStream(acceptedSocket.getOutputStream());
             out.flush();
@@ -90,18 +102,7 @@ public class ProcessServer
     {
         List<ProcessInfo> processesList = JProcesses.getProcessList();
 
-//        for (final ProcessInfo processInfo : processesList)
-//        {
-//            System.out.println("Process PID: " + processInfo.getPid());
-//            System.out.println("Process Name: " + processInfo.getName());
-//            System.out.println("Process Used Time: " + processInfo.getTime());
-//            System.out.println("Process Used Time: " + processInfo.getTime());
-//            System.out.println(processInfo.toString());
-//            System.out.println("Process Used Time: " + processInfo.getTime());
-//        }
-        LOGGER.log(Level.INFO,
-                   "in list: {0} processes running.",
-                   processesList.size());
+        logInfo("in list: {0} processes running.", processesList.size());
         return processesList;
     }
 
@@ -129,18 +130,19 @@ public class ProcessServer
                 }
                 this.socket = socket;
                 this.clientNumber = clientNumber;
+                // Expecting an Identification from the client
+                ProcessMessage idMsg = (ProcessMessage) in.readObject();
+                logInfo(idMsg.toString());
                 // Send a welcome message to the client.
                 ProcessMessage msg = ProcessMessage.makeChitChat(
                                "Hello client '" +
                                clientNumber +
-                               "'! You are connected to server at " +
+                               "'. Received ID: " +
+                               ToString.make(idMsg.getObjects()) +
+                               ". You are connected to server at " +
                                this.socket.getInetAddress().
                                getCanonicalHostName());
                 out.writeObject(msg);
-                out.flush();
-                out.writeObject(
-                        ProcessMessage.makeChitChat(
-                                "Enter a line with only a period to quit\n"));
                 out.flush();
 
             }
@@ -240,18 +242,20 @@ public class ProcessServer
          * Logs a simple message. In this case we just write the message to the
          * server applications standard output.
          */
-        private void logInfo(String message)
-        {
-            LOGGER.log(Level.INFO, message);
-        }
-
-        /**
-         * Logs a simple message. In this case we just write the message to the
-         * server applications standard output.
-         */
-        private void logError(String message)
-        {
-            LOGGER.log(Level.SEVERE, message);
-        }
     }
+
+    static void logInfo(String message, Object... objs)
+    {
+        LOGGER.log(Level.INFO, message, objs);
+    }
+
+    /**
+     * Logs a simple message. In this case we just write the message to the
+     * server applications standard output.
+     */
+    static void logError(String message, Object... objs)
+    {
+        LOGGER.log(Level.SEVERE, message, objs);
+    }
+
 }

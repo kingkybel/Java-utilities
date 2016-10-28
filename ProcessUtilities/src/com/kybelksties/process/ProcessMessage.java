@@ -59,9 +59,9 @@ public class ProcessMessage<T extends Serializable> implements Serializable
         return new ProcessMessage(Type.ChitChat, message);
     }
 
-    public static ProcessMessage makeIdentify(int id)
+    public static ProcessMessage makeIdentify(String hostname, int port)
     {
-        return new ProcessMessage(Type.Identify, id);
+        return new ProcessMessage(Type.Identify, hostname, port);
     }
 
     public static ProcessMessage makeStartProcess(String stringID)
