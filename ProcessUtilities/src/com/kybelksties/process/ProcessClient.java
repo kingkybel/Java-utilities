@@ -1,15 +1,3 @@
-package com.kybelksties.process;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JOptionPane;
-
 /*
  * Copyright (C) 2016 Dieter J Kybelksties
  *
@@ -29,6 +17,20 @@ import javax.swing.JOptionPane;
  * @date: 2016-10-06
  * @author: Dieter J Kybelksties
  */
+package com.kybelksties.process;
+
+import com.kybelksties.general.SystemProperties;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Dieter J Kybelksties
@@ -43,13 +45,40 @@ public class ProcessClient extends javax.swing.JFrame
     Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private static final String LOCALHOST = localHostName();
+    String serverAddress = null;
+    int port = 9898;
+
+    static private String localHostName()
+    {
+        String reval = (String) SystemProperties.get("LOCALHOST");
+        return reval == null || reval.isEmpty() ? "localhost" : reval;
+    }
 
     /**
      * Creates new form ProcessClient
+     *
+     * @param serverAddress
+     * @param port
      */
-    public ProcessClient()
+    public ProcessClient(String serverAddress, int port)
     {
         initComponents();
+        this.serverAddress = serverAddress;
+        this.port = port;
+        if (this.serverAddress == null || this.serverAddress.isEmpty())
+        {
+            // Get the server address from a dialog box.
+            this.serverAddress = JOptionPane.showInputDialog(
+            this,
+            "Enter IP Address of the Server:",
+            "Welcome to the Process Client",
+            JOptionPane.QUESTION_MESSAGE);
+            if (this.serverAddress == null || this.serverAddress.isEmpty())
+            {
+                this.serverAddress = LOCALHOST;
+            }
+        }
     }
 
     /**
@@ -57,41 +86,32 @@ public class ProcessClient extends javax.swing.JFrame
      * server's IP address, connecting, setting up streams, and consuming the
      * welcome messages from the server.
      *
-     * @param port
-     * @throws java.io.IOException
+     * @return a (possibly empty, but not null) list of ProcessMessage s -
+     *         welcome frome the server
+     * @throws IOException            thrown if message cannot be read or the
+     *                                response message is garbled
+     * @throws ClassNotFoundException thrown when the read-operation from the
+     *                                socket's input-stream cannot be
+     *                                de-serialised
      */
-    public void connectToServer(int port) throws IOException
+    public ArrayList<ProcessMessage> connectToServer() throws IOException,
+                                                              ClassNotFoundException
     {
-
-        // Get the server address from a dialog box.
-        String serverAddress = JOptionPane.showInputDialog(
-               this,
-               "Enter IP Address of the Server:",
-               "Welcome to the Process Client",
-               JOptionPane.QUESTION_MESSAGE);
-
-        if (serverAddress.isEmpty())
-        {
-            serverAddress = "localhost";
-        }
+        ArrayList<ProcessMessage> reval = new ArrayList<>();
         // Make connection and initialize streams
         socket = new Socket(serverAddress, port);
         out = new ObjectOutputStream(socket.getOutputStream());
         out.flush();
         in = new ObjectInputStream(socket.getInputStream());
         ProcessMessage msg;
-        try
-        {
-            // read the welcome message from the server
-            msg = (ProcessMessage) in.readObject();
-            outputPanel.writeln(msg.toString());
-            msg = (ProcessMessage) in.readObject();
-            outputPanel.writeln(msg.toString());
-        }
-        catch (ClassNotFoundException ex)
-        {
-            outputPanel.writelnError(ex.toString());
-        }
+
+        // read the welcome message from the server
+        msg = (ProcessMessage) in.readObject();
+        reval.add(msg);
+        msg = (ProcessMessage) in.readObject();
+        reval.add(msg);
+
+        return reval;
     }
 
     /**
@@ -112,11 +132,14 @@ public class ProcessClient extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        commandComboBox.setModel(new DefaultComboBoxModel(com.kybelksties.process.ProcessMessage.values()));
+        commandComboBox.setModel(new DefaultComboBoxModel(
+                com.kybelksties.process.ProcessMessage.values()));
 
-        additionalParamsInput.setText(org.openide.util.NbBundle.getMessage(ProcessClient.class, "ProcessClient.additionalParamsInput.text")); // NOI18N
+        additionalParamsInput.setText(org.openide.util.NbBundle.getMessage(
+                ProcessClient.class, "ProcessClient.additionalParamsInput.text")); // NOI18N
 
-        sendButton.setText(org.openide.util.NbBundle.getMessage(ProcessClient.class, "ProcessClient.sendButton.text")); // NOI18N
+        sendButton.setText(org.openide.util.NbBundle.getMessage(
+                ProcessClient.class, "ProcessClient.sendButton.text")); // NOI18N
         sendButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -125,38 +148,66 @@ public class ProcessClient extends javax.swing.JFrame
             }
         });
 
-        replyLabel.setText(org.openide.util.NbBundle.getMessage(ProcessClient.class, "ProcessClient.replyLabel.text")); // NOI18N
+        replyLabel.setText(org.openide.util.NbBundle.getMessage(
+                ProcessClient.class, "ProcessClient.replyLabel.text")); // NOI18N
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
+                                getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(replyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
-                .addComponent(sendButton))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(commandComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(additionalParamsInput))
-            .addComponent(outputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(
+                        javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(replyLabel,
+                                      javax.swing.GroupLayout.PREFERRED_SIZE,
+                                      127,
+                                      javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(
+                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                73, Short.MAX_VALUE)
+                        .addComponent(sendButton))
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(commandComboBox,
+                                      javax.swing.GroupLayout.PREFERRED_SIZE,
+                                      115,
+                                      javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(additionalParamsInput))
+                .addComponent(outputPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                              javax.swing.GroupLayout.DEFAULT_SIZE,
+                              Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(commandComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(additionalParamsInput, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(sendButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(replyLabel)
-                        .addGap(4, 4, 4)))
-                .addGap(18, 18, 18)
-                .addComponent(outputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
+                layout.createParallelGroup(
+                        javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.BASELINE).
+                                addComponent(commandComboBox,
+                                             javax.swing.GroupLayout.PREFERRED_SIZE,
+                                             javax.swing.GroupLayout.DEFAULT_SIZE,
+                                             javax.swing.GroupLayout.PREFERRED_SIZE).
+                                addComponent(additionalParamsInput,
+                                             javax.swing.GroupLayout.PREFERRED_SIZE,
+                                             24,
+                                             javax.swing.GroupLayout.PREFERRED_SIZE)).
+                        addPreferredGap(
+                                javax.swing.LayoutStyle.ComponentPlacement.RELATED).
+                        addGroup(layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING).
+                                addGroup(layout.createSequentialGroup()
+                                        .addComponent(sendButton)
+                                        .addPreferredGap(
+                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)).
+                                addGroup(
+                                        javax.swing.GroupLayout.Alignment.TRAILING,
+                                        layout.createSequentialGroup()
+                                        .addComponent(replyLabel)
+                                        .addGap(4, 4, 4)))
+                        .addGap(18, 18, 18)
+                        .addComponent(outputPanel,
+                                      javax.swing.GroupLayout.DEFAULT_SIZE, 130,
+                                      Short.MAX_VALUE))
         );
 
         pack();
@@ -172,57 +223,10 @@ public class ProcessClient extends javax.swing.JFrame
                                                     split(" "));
         try
         {
-            out.writeObject(sendMsg);
-            out.flush();
-        }
-        catch (IOException ex)
-        {
-            outputPanel.writelnError(ex.toString());
-        }
-        Object response;
-        try
-        {
-            response = in.readObject();
-            if (response == null)
-            {
-                System.exit(0);
-            }
-            if (!(response instanceof ProcessMessage))
-            {
-                throw new IOException("Not a Process Command!");
-            }
-            ProcessMessage rcvdMsg = (ProcessMessage) response;
+            ProcessMessage rcvdMsg = sendMessage(sendMsg);
             outputPanel.writeln("Sent command:" + sendMsg.toString());
             outputPanel.writelnHighlight("Received response:" +
                                          rcvdMsg.toString());
-//            switch (cmd.getType())
-//            {
-//                case ChitChat:
-//                    System.exit(0);
-//                    break;
-//                case StopServer:
-//                    System.exit(0);
-//                    break;
-//                case Identify:
-//                    System.exit(0);
-//                    break;
-//                case StartProcess:
-//                    System.exit(0);
-//                    break;
-//                case ListProcesses:
-//                    System.exit(0);
-//                    break;
-//                case ProcessList:
-//                    System.exit(0);
-//                    break;
-//                case KillProcess:
-//                    System.exit(0);
-//                    break;
-//                case RestartProcess:
-//                    System.exit(0);
-//                    break;
-//            }
-
         }
         catch (IOException | ClassNotFoundException ex)
         {
@@ -230,6 +234,34 @@ public class ProcessClient extends javax.swing.JFrame
         }
 
     }//GEN-LAST:event_sendButtonActionPerformed
+
+    /**
+     * Send the given message serialised over the socket's output-stream.
+     *
+     * @param sendMsg the message to be sent
+     * @return response message from the server
+     * @throws IOException            thrown if message cannot be sent or the
+     *                                response message is garbled
+     * @throws ClassNotFoundException thrown when the read-operation from the
+     *                                socket's input-stream cannot be
+     *                                de-serialised
+     */
+    public ProcessMessage sendMessage(ProcessMessage sendMsg)
+            throws IOException,
+                   ClassNotFoundException
+    {
+        out.writeObject(sendMsg);
+        out.flush();
+        Object response;
+        response = in.readObject();
+        if (response == null || !(response instanceof ProcessMessage))
+        {
+            throw new IOException("Not a Process Command!");
+        }
+        ProcessMessage rcvdMsg = (ProcessMessage) response;
+
+        return rcvdMsg;
+    }
 
     /**
      * @param args the command line arguments
@@ -262,28 +294,27 @@ public class ProcessClient extends javax.swing.JFrame
         }
         //</editor-fold>
 
-        //</editor-fold>
-        final ProcessClient client = new ProcessClient();
-        client.setVisible(true);
         final int port = (args == null || args.length == 0) ?
                          9898 :
                          Integer.parseInt(args[0]);
+        final String serverAddress = (args == null || args.length < 2) ?
+                                     LOCALHOST :
+                                     args[1];
+        final ProcessClient client = new ProcessClient(serverAddress, port);
+        client.setVisible(true);
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable()
+        try
         {
-            @Override
-            public void run()
+            ArrayList<ProcessMessage> responses = client.connectToServer();
+            for (ProcessMessage response : responses)
             {
-                try
-                {
-                    client.connectToServer(port);
-                }
-                catch (IOException ex)
-                {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                }
+                client.outputPanel.writelnMeta(response.toString());
             }
-        });
+        }
+        catch (ClassNotFoundException | IOException ex)
+        {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
