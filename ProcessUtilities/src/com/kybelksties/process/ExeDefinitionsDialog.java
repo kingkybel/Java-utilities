@@ -47,8 +47,7 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
     ExeDefinition theExeDefinition;
     ExeDefinitions exeDefinitionList;
     String lastExeDirectory;
-    LetterParameterDialog paramLetterSelector = new LetterParameterDialog(this,
-                                                                          true);
+    LetterParameterDialog paramLetterSelector = null;
     PositionalParameterDialog paramPositionSelector =
                               new PositionalParameterDialog(this, true);
 
@@ -161,7 +160,7 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
         initComponents();
 
         this.exeDefinitionList = exeDefinitionList;
-
+        paramLetterSelector = new LetterParameterDialog(this, true);
         if (exeDefinitionList != null)
         {
             if (exeDefinitionList.size() > 0)

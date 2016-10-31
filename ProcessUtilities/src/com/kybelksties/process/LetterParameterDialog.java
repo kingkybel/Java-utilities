@@ -38,7 +38,7 @@ public class LetterParameterDialog extends javax.swing.JDialog
 
     static final String alpha = NbBundle.getMessage(
                         CLAZZ,
-                        "LetterParameterDialog.alpha");
+                        "LetterParameterDialog.alphaLow");
     static final String ALPHA = NbBundle.getMessage(
                         CLAZZ,
                         "LetterParameterDialog.alphaCap");

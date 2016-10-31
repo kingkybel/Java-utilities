@@ -95,7 +95,7 @@ public class ProcessServer
             // accept is blocking until incoming request received
             new ServerLoop(acceptedSocket, clientNumber++).start();
         }
-        LOGGER.log(Level.INFO, "Finished Server");
+        logInfo("Finished Server");
     }
 
     public static List<ProcessInfo> list()
@@ -164,18 +164,17 @@ public class ProcessServer
             {
 
                 // Get message object from the client
-                while (true)
+                while (keepRunning)
                 {
                     Object readObj = in.readObject();
                     ProcessMessage rcvdMsg = (ProcessMessage) readObj;
-                    if (readObj == null || rcvdMsg.isStopCommand())
+                    if (readObj == null)
                     {
                         logInfo("the read object is invalid!!!");
                         break;
                     }
 
                     ArrayList objs = rcvdMsg.getObjects();
-                    logInfo(readObj.toString());
                     switch (rcvdMsg.getType())
                     {
                         case Ack:
@@ -188,10 +187,16 @@ public class ProcessServer
                             keepRunning = false;
                             break;
                         case Identify:
-                            logInfo("Connected to " + objs.get(0));
+                            logInfo("Connected to port {0} on {1}",
+                                    objs.toArray());
                             break;
                         case StartProcess:
-                            System.exit(0);
+                            ScheduledProcess sp = (ScheduledProcess) objs.get(
+                                             0);
+                            if (HOSTNAME.equals(sp.getTargetMachine()))
+                            {
+                                ConcreteProcess process = sp.start();
+                            }
                             break;
                         case ProcessList:
                             logInfo("ProcessList:");
@@ -203,6 +208,7 @@ public class ProcessServer
                                            (ArrayList<ProcessInfo>) list());
                             out.writeObject(msg);
                             out.flush();
+                            logInfo("After flush");
                             break;
                         case KillProcess:
                             System.exit(0);
@@ -216,25 +222,25 @@ public class ProcessServer
             }
             catch (IOException | ClassNotFoundException e)
             {
-                logError("Error handling client '" +
-                         clientNumber +
-                         "': " +
-                         e.getLocalizedMessage());
+                logError("Error handling client {0}: {1}",
+                         clientNumber,
+                         ToString.make(e.toString()));
             }
             finally
             {
                 try
                 {
                     logInfo("trying to close socket");
+                    socket.shutdownInput();
+                    socket.shutdownOutput();
                     socket.close();
                 }
                 catch (IOException e)
                 {
-                    logError("Couldn't close a socket, what's going on?" +
+                    logError("Couldn't close the socket: {0}",
                              e.getLocalizedMessage());
                 }
-                logInfo("Connection with client '" + clientNumber +
-                        "' closed");
+                logInfo("Connection with client {0} closed", clientNumber);
             }
         }
 

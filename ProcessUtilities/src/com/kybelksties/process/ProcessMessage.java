@@ -49,6 +49,11 @@ public class ProcessMessage<T extends Serializable> implements Serializable
         this.objs = list;
     }
 
+    static ProcessMessage makeInvalid()
+    {
+        return new ProcessMessage(Type.Invalid);
+    }
+
     public static ProcessMessage makeStopServer()
     {
         return new ProcessMessage(Type.StopServer);
@@ -69,7 +74,12 @@ public class ProcessMessage<T extends Serializable> implements Serializable
         return new ProcessMessage(Type.StartProcess, stringID);
     }
 
-    static Object[] values()
+    static public Object[] allMessageTypes()
+    {
+        return Type.values();
+    }
+
+    static public Object[] instructionMessageTypes()
     {
         return Type.values();
     }
@@ -79,9 +89,15 @@ public class ProcessMessage<T extends Serializable> implements Serializable
         objs = (ArrayList<T>) Arrays.asList(params);
     }
 
+    boolean isInvalid()
+    {
+        return type.equals(Type.Invalid);
+    }
+
     public static enum Type implements Serializable
     {
 
+        Invalid,
         Ack,
         ChitChat,
         StopServer,

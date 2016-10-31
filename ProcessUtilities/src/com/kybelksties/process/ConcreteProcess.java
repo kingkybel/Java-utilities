@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Map;
@@ -44,10 +45,11 @@ import javax.xml.bind.annotation.XmlType;
  * @author kybelksd
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ConcreteProcess extends Process
+public class ConcreteProcess extends Process implements Serializable
 {
 
-    private static final String CLASS_NAME = ConcreteProcess.class.getName();
+    private static final Class CLAZZ = ConcreteProcess.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private String environmentVarFile;

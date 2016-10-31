@@ -102,7 +102,7 @@ public class ProcessClientFrame extends javax.swing.JFrame
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
-        commandComboBox.setModel(new DefaultComboBoxModel(com.kybelksties.process.ProcessMessage.values()));
+        commandComboBox.setModel(new DefaultComboBoxModel(com.kybelksties.process.ProcessMessage.instructionMessageTypes()));
 
         sendButton.setText(org.openide.util.NbBundle.getMessage(ProcessClientFrame.class, "ProcessClientFrame.sendButton.text")); // NOI18N
         sendButton.addActionListener(new java.awt.event.ActionListener()
