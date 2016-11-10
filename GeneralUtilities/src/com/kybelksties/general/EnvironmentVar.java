@@ -20,6 +20,7 @@
  */
 package com.kybelksties.general;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle;
@@ -29,7 +30,7 @@ import org.openide.util.NbBundle;
  *
  * @author kybelksd
  */
-public class EnvironmentVar implements Comparable
+public class EnvironmentVar implements Comparable, Serializable
 {
 
     private static final Class CLAZZ = EnvironmentVar.class;

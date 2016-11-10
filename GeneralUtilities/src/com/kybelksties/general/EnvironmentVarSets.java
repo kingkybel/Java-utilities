@@ -21,6 +21,7 @@
 package com.kybelksties.general;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,12 +40,13 @@ import javax.xml.bind.annotation.XmlElementWrapper;
  * @author kybelksd
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public final class EnvironmentVarSets
+public final class EnvironmentVarSets implements Serializable
 {
 
     private static final Class CLAZZ = EnvironmentVarSets.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    private static final long serialVersionUID = -8940196742313991701L;
 
     @XmlElementWrapper(name = "environmentVariables")
     ArrayList<EnvironmentVar> allEnvs = new ArrayList<>();

@@ -20,10 +20,12 @@
  */
 package com.kybelksties.general;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 import org.openide.util.NbBundle;
 
 /**
@@ -32,12 +34,14 @@ import org.openide.util.NbBundle;
  * @author kybelksd
  */
 @XmlAccessorType(value = XmlAccessType.FIELD)
-public class PodVariant
+public class PodVariant implements Serializable
 {
 
     private static final Class CLAZZ = PodVariant.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    private static final long serialVersionUID = -8940196742313991701L;
+
     public static final String[] BOOLEAN_SYNONYMS = NbBundle.getMessage(
                                  CLAZZ,
                                  "PodVariant.booleanSynonyms").split(",");
@@ -368,7 +372,8 @@ public class PodVariant
     /**
      * The POD types.
      */
-    public enum Type
+    @XmlType(name = "PodVariantType")
+    public enum Type implements Serializable
     {
 
         /**
@@ -396,6 +401,11 @@ public class PodVariant
          */
         PATH;
 
+        private static final Class CLAZZ = PodVariant.Type.class;
+        private static final String CLASS_NAME = CLAZZ.getName();
+        private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+        private static final long serialVersionUID = -8940196742313991701L;
+
         static Type fromString(String typeStr)
         {
             Type type = Type.UNDEFINED;
@@ -422,5 +432,23 @@ public class PodVariant
             }
             return type;
         }
+
+        @Override
+        public String toString()
+        {
+            return BOOLEAN.equals(this) ?
+                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.boolean") :
+                   STRING.equals(this) ?
+                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.string") :
+                   INTEGER.equals(this) ?
+                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.integer") :
+                   DOUBLE.equals(this) ?
+                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.double") :
+                   PATH.equals(this) ?
+                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.path") :
+                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.undefined");
+
+        }
+
     }
 }
