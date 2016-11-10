@@ -60,6 +60,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
     Color newForeColor;
     String newBackColorName;
     String newForeColorName;
+    ConnectionInfoList.ConnectionInfo connectionInfo;
 
     private ScheduleDefinitionDialog(java.awt.Frame parent,
                                      boolean modal,
@@ -113,6 +114,18 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         });
         parametersTbl.setModel(exeDef.getFilledParameterModel());
         startInDirInput.setText(theScheduledProcess.getStartInDirectory());
+
+        ConnectionInfoList.ConnectionInfo info =
+                                          theScheduledProcess.
+                                          getConnectionInfo();
+        if (info == null)
+        {
+            targetComboBox.setSelectedIndex(0);
+        }
+        else
+        {
+            targetComboBox.setSelectedItem(info);
+        }
     }
 
     /**
@@ -233,6 +246,8 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         windowModeComboBox = new javax.swing.JComboBox();
         exePathLbl = new javax.swing.JTextField();
         nameLbl = new javax.swing.JTextField();
+        targetComboBox = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
         tablesPane = new javax.swing.JTabbedPane();
         parametersPane = new javax.swing.JScrollPane();
         parametersTbl = new javax.swing.JTable();
@@ -256,7 +271,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
                 doneBtnActionPerformed(evt);
             }
         });
-        detailsPane.add(doneBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 260, -1, -1));
+        detailsPane.add(doneBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 270, -1, -1));
 
         cancelBtn.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.cancel")); // NOI18N
         cancelBtn.addActionListener(new java.awt.event.ActionListener()
@@ -266,13 +281,13 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
                 cancelBtnActionPerformed(evt);
             }
         });
-        detailsPane.add(cancelBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 260, 90, -1));
+        detailsPane.add(cancelBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 270, 90, -1));
 
         sleepSpinner.setModel(new javax.swing.SpinnerNumberModel(Long.valueOf(0L), Long.valueOf(0L), Long.valueOf(3600L), Long.valueOf(1L)));
-        detailsPane.add(sleepSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, 70, -1));
+        detailsPane.add(sleepSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 70, -1));
 
         sleepLabel.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.secondsSleep")); // NOI18N
-        detailsPane.add(sleepLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 100, -1, -1));
+        detailsPane.add(sleepLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 120, -1, -1));
 
         changeColorButton.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.changeWindowBackground")); // NOI18N
         changeColorButton.addActionListener(new java.awt.event.ActionListener()
@@ -282,7 +297,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
                 changeColorButtonActionPerformed(evt);
             }
         });
-        detailsPane.add(changeColorButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 260, -1));
+        detailsPane.add(changeColorButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, 260, -1));
 
         startInButton.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.startIn")); // NOI18N
         startInButton.addActionListener(new java.awt.event.ActionListener()
@@ -292,7 +307,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
                 startInButtonActionPerformed(evt);
             }
         });
-        detailsPane.add(startInButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 90, 20));
+        detailsPane.add(startInButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 90, 90, 20));
 
         startInDirInput.addActionListener(new java.awt.event.ActionListener()
         {
@@ -308,7 +323,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
                 startInDirInputFocusLost(evt);
             }
         });
-        detailsPane.add(startInDirInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 70, 370, -1));
+        detailsPane.add(startInDirInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 90, 370, -1));
 
         reinitEnvButton.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.reinitVars")); // NOI18N
         reinitEnvButton.addActionListener(new java.awt.event.ActionListener()
@@ -318,7 +333,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
                 reinitEnvButtonActionPerformed(evt);
             }
         });
-        detailsPane.add(reinitEnvButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 190, 260, -1));
+        detailsPane.add(reinitEnvButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 260, -1));
 
         addEnvButton.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.addVar")); // NOI18N
         addEnvButton.addActionListener(new java.awt.event.ActionListener()
@@ -328,7 +343,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
                 addEnvButtonActionPerformed(evt);
             }
         });
-        detailsPane.add(addEnvButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 260, -1));
+        detailsPane.add(addEnvButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, 260, -1));
 
         windowModeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         windowModeComboBox.addActionListener(new java.awt.event.ActionListener()
@@ -338,7 +353,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
                 windowModeComboBoxActionPerformed(evt);
             }
         });
-        detailsPane.add(windowModeComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 130, 150, -1));
+        detailsPane.add(windowModeComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 140, 150, -1));
 
         exePathLbl.setEditable(false);
         exePathLbl.setText("jTextField1");
@@ -347,6 +362,19 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         nameLbl.setEditable(false);
         nameLbl.setText("jTextField1");
         detailsPane.add(nameLbl, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 470, -1));
+
+        targetComboBox.setModel(ExeHarness.serverConfigs.getComboBoxModel());
+        targetComboBox.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                targetComboBoxActionPerformed(evt);
+            }
+        });
+        detailsPane.add(targetComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 60, 360, -1));
+
+        jLabel1.setText("target machine");
+        detailsPane.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, -1, -1));
 
         mainSplit.setTopComponent(detailsPane);
 
@@ -485,9 +513,16 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
 
     private void windowModeComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_windowModeComboBoxActionPerformed
     {//GEN-HEADEREND:event_windowModeComboBoxActionPerformed
-        theScheduledProcess.setUsesXterm(
+        theScheduledProcess.setWindowMode(
                 (WindowMode) windowModeComboBox.getSelectedItem());
     }//GEN-LAST:event_windowModeComboBoxActionPerformed
+
+    private void targetComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_targetComboBoxActionPerformed
+    {//GEN-HEADEREND:event_targetComboBoxActionPerformed
+        theScheduledProcess.setConnectionInfo(
+                (ConnectionInfoList.ConnectionInfo) targetComboBox.
+                getSelectedItem());
+    }//GEN-LAST:event_targetComboBoxActionPerformed
 
     /**
      * Retrieve the process definition object.
@@ -508,6 +543,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
     private javax.swing.JPanel envVarsPane;
     private javax.swing.JTabbedPane envVarsTabsPane;
     private javax.swing.JTextField exePathLbl;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JSplitPane mainSplit;
     private javax.swing.JTextField nameLbl;
     private javax.swing.JScrollPane parametersPane;
@@ -518,6 +554,7 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
     private javax.swing.JButton startInButton;
     private javax.swing.JTextField startInDirInput;
     private javax.swing.JTabbedPane tablesPane;
+    private javax.swing.JComboBox targetComboBox;
     private javax.swing.JComboBox windowModeComboBox;
     // End of variables declaration//GEN-END:variables
 }

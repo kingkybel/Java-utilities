@@ -24,26 +24,111 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Dieter J Kybelksties
  * @param <T>
  */
-public class ProcessMessage<T extends Serializable> implements Serializable
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso(
+        {
+            ScheduledProcess.class
+        })
+public class ProcessMessage<T /*extends Serializable*/>
+        implements Serializable
 {
-
-    @Override
-    public String toString()
-    {
-        return type + " " + ToString.make(objs);
-    }
 
     private static final Class CLAZZ = ProcessMessage.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    ProcessMessage(Type type, ArrayList<T> list)
+    @XmlType(name = "ProcessMessageType")
+    public static enum Type implements Serializable
+    {
+
+        Invalid,
+        Ack,
+        ChitChat,
+        StopServer,
+        Identify,
+        StartProcess,
+        ListProcesses,
+        ProcessList,
+        KillProcess,
+        RestartProcess;
+        private static final Class CLAZZ = Type.class;
+        private static final String CLASS_NAME = CLAZZ.getName();
+        private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+        private static final long serialVersionUID = -8940196742313991701L;
+
+        @Override
+        public String toString()
+        {
+            return this == Invalid ?
+                   NbBundle.getMessage(CLAZZ, "ProcessMessage.Type.Invalid") :
+                   this == Ack ?
+                   NbBundle.getMessage(CLAZZ, "ProcessMessage.Type.Ack") :
+                   this == ChitChat ?
+                   NbBundle.getMessage(CLAZZ, "ProcessMessage.Type.ChitChat") :
+                   this == StopServer ?
+                   NbBundle.getMessage(CLAZZ, "ProcessMessage.Type.StopServer") :
+                   this == Identify ?
+                   NbBundle.getMessage(CLAZZ, "ProcessMessage.Type.Identify") :
+                   this == StartProcess ?
+                   NbBundle.
+                   getMessage(CLAZZ, "ProcessMessage.Type.StartProcess") :
+                   this == ListProcesses ?
+                   NbBundle.getMessage(CLAZZ,
+                                       "ProcessMessage.Type.ListProcesses") :
+                   this == KillProcess ?
+                   NbBundle.getMessage(CLAZZ, "ProcessMessage.Type.KillProcess") :
+                   this == RestartProcess ?
+                   NbBundle.getMessage(CLAZZ,
+                                       "ProcessMessage.Type.RestartProcess") :
+                   NbBundle.getMessage(CLAZZ, "ProcessMessage.Type.Unknown");
+        }
+
+        boolean isInstruction()
+        {
+            return this == Ack ||
+                   this == ChitChat ||
+                   this == StopServer ||
+                   this == StartProcess ||
+                   this == ListProcesses ||
+                   this == KillProcess ||
+                   this == RestartProcess;
+        }
+
+        static Object[] instructions()
+        {
+            ArrayList<Type> revalList = new ArrayList<>();
+            for (Type type : Type.values())
+            {
+                if (type.isInstruction())
+                {
+                    revalList.add(type);
+                }
+            }
+            return revalList.toArray();
+        }
+
+    }
+
+    public ProcessMessage()
+    {
+        this.type = Type.Invalid;
+        this.objs = null;
+    }
+
+    public ProcessMessage(Type type, ArrayList<T> list)
     {
         this.type = type;
         this.objs = list;
@@ -52,6 +137,16 @@ public class ProcessMessage<T extends Serializable> implements Serializable
     static ProcessMessage makeInvalid()
     {
         return new ProcessMessage(Type.Invalid);
+    }
+
+    static ProcessMessage makeInvalid(String str)
+    {
+        return new ProcessMessage(Type.Invalid, str);
+    }
+
+    static ProcessMessage makeAcknowledge(Object... object)
+    {
+        return new ProcessMessage(Type.Ack, object);
     }
 
     public static ProcessMessage makeStopServer()
@@ -81,7 +176,7 @@ public class ProcessMessage<T extends Serializable> implements Serializable
 
     static public Object[] instructionMessageTypes()
     {
-        return Type.values();
+        return Type.instructions();
     }
 
     void setAdditionalPrameters(T[] params)
@@ -94,19 +189,20 @@ public class ProcessMessage<T extends Serializable> implements Serializable
         return type.equals(Type.Invalid);
     }
 
-    public static enum Type implements Serializable
+    public boolean isInstruction()
     {
+        return type.isInstruction();
+    }
 
-        Invalid,
-        Ack,
-        ChitChat,
-        StopServer,
-        Identify,
-        StartProcess,
-        ListProcesses,
-        ProcessList,
-        KillProcess,
-        RestartProcess
+    public boolean isAcknowledgement()
+    {
+        return type == Type.Ack;
+    }
+
+    @Override
+    public String toString()
+    {
+        return type + " " + ToString.make(objs);
     }
 
     private final Type type;

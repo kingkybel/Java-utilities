@@ -36,6 +36,7 @@ public class ExeDefinition implements Serializable, Comparable<Object>
     private static final Class CLAZZ = ExeDefinition.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    private static final long serialVersionUID = -8940196742313991701L;
 
     static Integer creationCounter = 0;
     private String name = "";

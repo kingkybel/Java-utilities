@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
+import org.openide.util.NbBundle;
 
 /**
  * Wrapper around Process that encapsulates process state, environment variables
@@ -51,19 +52,19 @@ public class ConcreteProcess extends Process implements Serializable
     private static final Class CLAZZ = ConcreteProcess.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
-
+    private static final long serialVersionUID = -8940196742313991701L;
     private String environmentVarFile;
 
     /**
      * List of listeners to state event changes.
      */
-    protected EventListenerList stateChangeListenerList =
-                                new EventListenerList();
+    transient protected EventListenerList stateChangeListenerList =
+                                          new EventListenerList();
 
     transient private Process process = null;
-    transient private final ProcessBuilder builder;
+    transient private ProcessBuilder builder = null;
 
-    transient State state = null;
+    State state = null;
     private String[] command = null;
     private EnvironmentVarSets environmentVarSets = new EnvironmentVarSets();
 
@@ -118,6 +119,15 @@ public class ConcreteProcess extends Process implements Serializable
         cloneEnvironment(environmentVarSets);
     }
 
+    private Object readResolve()
+    {
+        stateChangeListenerList = new EventListenerList();
+        builder = new ProcessBuilder();
+        // 'process' needs not be be read
+
+        return this;
+    }
+
     /**
      * Add a listener to receive update messages.
      *
@@ -125,6 +135,10 @@ public class ConcreteProcess extends Process implements Serializable
      */
     public void addStateChangeEventListener(StateEventListener listener)
     {
+//        if (stateChangeListenerList == null)
+//        {
+//            stateChangeListenerList = new EventListenerList();
+//        }
         stateChangeListenerList.add(StateEventListener.class, listener);
     }
 
@@ -135,6 +149,10 @@ public class ConcreteProcess extends Process implements Serializable
 
     void fireProcessStateEvent(StateEvent evt)
     {
+//        if (stateChangeListenerList == null)
+//        {
+//            stateChangeListenerList = new EventListenerList();
+//        }
         Object[] listeners = stateChangeListenerList.getListenerList();
         for (int i = 0; i < listeners.length; i += 2)
         {
@@ -256,6 +274,10 @@ public class ConcreteProcess extends Process implements Serializable
     public void command(String command)
     {
         this.command = command.split(" ");
+//        if (builder == null)
+//        {
+//            builder = new ProcessBuilder();
+//        }
         builder.command(this.command);
     }
 
@@ -267,6 +289,10 @@ public class ConcreteProcess extends Process implements Serializable
     public void command(String[] command)
     {
         this.command = command;
+//        if (builder == null)
+//        {
+//            builder = new ProcessBuilder();
+//        }
         builder.command(command);
     }
 
@@ -500,7 +526,7 @@ public class ConcreteProcess extends Process implements Serializable
      * An EventObject extension that triggers changes in the running state of
      * the process.
      */
-    public static class StateEvent extends EventObject
+    public static class StateEvent extends EventObject implements Serializable
     {
 
         /**
@@ -534,7 +560,7 @@ public class ConcreteProcess extends Process implements Serializable
      */
     @XmlType
     @XmlEnum(value = String.class)
-    public enum State
+    public enum State implements Serializable
     {
 
         /**
@@ -556,6 +582,32 @@ public class ConcreteProcess extends Process implements Serializable
         /**
          * Process has finished.
          */
-        Finished
+        Finished;
+
+        private static final Class CLAZZ = State.class;
+        private static final String CLASS_NAME = CLAZZ.getName();
+        private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
+        @Override
+        public String toString()
+        {
+            return this == NotStarted ?
+                   NbBundle.
+                   getMessage(CLAZZ, "ConcreteProcess.State.NotStarted") :
+                   this == Running ?
+                   NbBundle.
+                   getMessage(CLAZZ, "ConcreteProcess.State.Running") :
+                   this == StartFailed ?
+                   NbBundle.
+                   getMessage(CLAZZ, "ConcreteProcess.State.StartFailed") :
+                   this == Terminated ?
+                   NbBundle.
+                   getMessage(CLAZZ, "ConcreteProcess.State.Terminated") :
+                   this == Finished ?
+                   NbBundle.
+                   getMessage(CLAZZ, "ConcreteProcess.State.Finished") :
+                   NbBundle.
+                   getMessage(CLAZZ, "ConcreteProcess.State.Unkown");
+        }
     }
 }

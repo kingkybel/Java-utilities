@@ -19,11 +19,13 @@
  */
 package com.kybelksties.process;
 
+import com.kybelksties.general.StringUtils;
 import com.kybelksties.general.SystemProperties;
 import java.awt.Component;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -33,6 +35,10 @@ import javax.swing.JOptionPane;
  */
 public class ProcessClientFrame extends javax.swing.JFrame
 {
+
+    private static final Class CLAZZ = ProcessClientFrame.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     ProcessClient client;
     private static final String LOCALHOST = localHostName();
@@ -72,7 +78,7 @@ public class ProcessClientFrame extends javax.swing.JFrame
         }
         try
         {
-            client = new ProcessClient(parent, serverAddress, port);
+            client = new ProcessClient(serverAddress, port);
         }
         catch (IOException ex)
         {
@@ -157,8 +163,18 @@ public class ProcessClientFrame extends javax.swing.JFrame
         {
             ProcessMessage rcvdMsg = client.sendMessage(sendMsg);
             outputPanel.writeln("Sent command:" + sendMsg.toString());
-            outputPanel.writelnHighlight("Received response:" +
+            if (rcvdMsg.isInvalid())
+            {
+                outputPanel.writelnError("Received error:" +
+                                         StringUtils.NEWLINE +
                                          rcvdMsg.toString());
+            }
+            else
+            {
+                outputPanel.writelnHighlight("Received valid response:" +
+                                             StringUtils.NEWLINE +
+                                             rcvdMsg.toString());
+            }
         }
         catch (IOException | ClassNotFoundException ex)
         {

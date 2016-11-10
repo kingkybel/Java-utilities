@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class PositionalParameter extends AbstractParameter
 {
 
-    private static final String CLASS_NAME = PositionalParameter.class.getName();
+    private static final Class CLAZZ = PositionalParameter.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**
@@ -43,7 +44,7 @@ public class PositionalParameter extends AbstractParameter
      */
     public PositionalParameter()
     {
-        super();
+        this(null);
     }
 
     /**
@@ -53,7 +54,7 @@ public class PositionalParameter extends AbstractParameter
      */
     public PositionalParameter(String value)
     {
-        super(value, null);
+        this(value, null);
     }
 
     /**

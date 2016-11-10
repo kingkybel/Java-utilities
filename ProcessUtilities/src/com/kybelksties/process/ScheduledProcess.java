@@ -40,7 +40,7 @@ import org.openide.util.NbBundle;
 /**
  * Class to encapsulate executables and processes of these executables.
  *
- * @author kybelksd
+ * @author Dieter J Kybelksties
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ScheduledProcess implements Serializable
@@ -49,6 +49,7 @@ public class ScheduledProcess implements Serializable
     private static final Class CLAZZ = ScheduledProcess.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    private static final long serialVersionUID = -8940196742313991701L;
 
     private ConcreteProcess process = null;
     private ExeDefinition exeDefinition = null;
@@ -58,14 +59,19 @@ public class ScheduledProcess implements Serializable
     private String startInDirectory = null;
     private WindowMode windowMode = WindowMode.XTERM;
     private String logFileName;
-    private String targetMachine = "localhost";
+    ConnectionInfoList.ConnectionInfo connectionInfo =
+                                      new ConnectionInfoList.ConnectionInfo();
     private Rectangle dimensions = null;
+    private static ArrayList<Rectangle> defaultGeometries =
+                                        makeDefaultGeometries();
+    private static int defaultGeometryNumber = 0;
 
     /**
      * Default construct.
      */
     public ScheduledProcess()
     {
+        process = new ConcreteProcess();
     }
 
     /**
@@ -166,17 +172,38 @@ public class ScheduledProcess implements Serializable
      */
     public String getTargetMachine()
     {
-        return targetMachine;
+        return connectionInfo.serverIP;
     }
 
     /**
-     * Set the value of targetMachine
+     * Get the value of targetMachine
      *
-     * @param targetMachine new value of targetMachine
+     * @return the value of targetMachine
      */
-    public void setTargetMachine(String targetMachine)
+    public int getPort()
     {
-        this.targetMachine = targetMachine;
+        return connectionInfo.port;
+    }
+
+    /**
+     * Retrieve the connection information.
+     *
+     * @return the connection information
+     */
+    public ConnectionInfoList.ConnectionInfo getConnectionInfo()
+    {
+        return connectionInfo;
+    }
+
+    /**
+     * Set the connection information
+     *
+     * @param connectionInfo the new connection information
+     */
+    public void setConnectionInfo(
+            ConnectionInfoList.ConnectionInfo connectionInfo)
+    {
+        this.connectionInfo = connectionInfo;
     }
 
     /**
@@ -238,7 +265,7 @@ public class ScheduledProcess implements Serializable
      *
      * @param windowMode the new value
      */
-    public void setUsesXterm(WindowMode windowMode)
+    public void setWindowMode(WindowMode windowMode)
     {
         this.windowMode = windowMode;
     }
@@ -384,7 +411,8 @@ public class ScheduledProcess implements Serializable
     }
 
     /**
-     * Retrieve the directory the process is going to use as start directory.
+     * Retrieve the directory the process is going to use as
+     * sendStartInstruction directory.
      *
      * @return the directory as string
      */
@@ -394,7 +422,7 @@ public class ScheduledProcess implements Serializable
     }
 
     /**
-     * Set the directory in which the process should start
+     * Set the directory in which the process should sendStartInstruction
      *
      * @param startInDirectory the new directory
      */
@@ -485,6 +513,52 @@ public class ScheduledProcess implements Serializable
         }
     }
 
+    /**
+     * Send this scheduled process information to the target machine where the
+     * server runs. The server will take care of starting the process and return
+     * a message stating the success.
+     *
+     * @return the returned message from the server
+     */
+    public ProcessMessage sendStartInstruction()
+    {
+        ProcessMessage msg = new ProcessMessage(
+                       ProcessMessage.Type.StartProcess,
+                       this);
+        ProcessMessage response;
+        try
+        {
+            ProcessClient client = new ProcessClient(
+                          connectionInfo.serverIP,
+                          connectionInfo.port);
+            response = client.sendMessage(msg);
+            if (response.isAcknowledgement())
+            {
+                ConcreteProcess.State state =
+                                      (ConcreteProcess.State) response.
+                                      getObjects().get(0);
+                process.setState(state);
+            }
+            else
+            {
+                process.setState(ConcreteProcess.State.StartFailed);
+                throw new Exception("Failed to start");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            response = ProcessMessage.makeInvalid(ex.toString());
+        }
+
+        return response;
+    }
+
+    /**
+     * Start the execution of the scheduled process.
+     *
+     * @return the wrapped process
+     */
     public ConcreteProcess start()
     {
         String[] command = null;
@@ -548,8 +622,32 @@ public class ScheduledProcess implements Serializable
     private String[] makeStandAloneCommand()
     {
         String[] reval = makeCommand().trim().split(" ");
-        LOGGER.log(Level.INFO, "THE COMMAND: ", ToString.make(reval));
         return reval;
+    }
+
+    private static ArrayList<Rectangle> makeDefaultGeometries()
+    {
+        ArrayList<Rectangle> reval = new ArrayList<>();
+        reval.add(new Rectangle(0, 0, 60, 22));
+        reval.add(new Rectangle(200, 0, 60, 22));
+        reval.add(new Rectangle(400, 0, 60, 22));
+        reval.add(new Rectangle(600, 0, 60, 22));
+        reval.add(new Rectangle(0, 350, 60, 22));
+        reval.add(new Rectangle(200, 350, 60, 22));
+        reval.add(new Rectangle(400, 350, 60, 22));
+        reval.add(new Rectangle(600, 350, 60, 22));
+        reval.add(new Rectangle(0, 700, 60, 22));
+        reval.add(new Rectangle(200, 700, 60, 22));
+        reval.add(new Rectangle(400, 700, 60, 22));
+        reval.add(new Rectangle(600, 700, 60, 22));
+
+        return reval;
+    }
+
+    static private String makeGeometry()
+    {
+        return makeGeometry(defaultGeometries.get(
+                (defaultGeometryNumber++) % defaultGeometries.size()));
     }
 
     static private String makeGeometry(Rectangle dimensions)
@@ -577,11 +675,11 @@ public class ScheduledProcess implements Serializable
              "+cu", "-j", "-nb", "0", "-s",
              "-title", exeDefinition.toString(),
              "-sb", "-cr", foreColorString,
-             "-geometry", makeGeometry(dimensions),
+             "-geometry",
+             (dimensions == null ? makeGeometry() : makeGeometry(dimensions)),
              "-e",
              makeCommand()
         };
-        LOGGER.log(Level.INFO, "THE COMMAND: ", ToString.make(reval));
         return reval;
     }
 

@@ -19,12 +19,16 @@
  */
 package com.kybelksties.process;
 
+import java.io.Serializable;
+import java.util.logging.Logger;
+import org.openide.util.NbBundle;
+
 /**
  * Window mode in which the process will be executed.
  *
  * @author kybelksd
  */
-public enum WindowMode
+public enum WindowMode implements Serializable
 {
 
     /**
@@ -42,5 +46,23 @@ public enum WindowMode
     /**
      * Write output to file whilst running in background.
      */
-    BACKGROUND_FILE
+    BACKGROUND_FILE;
+
+    private static final Class CLAZZ = WindowMode.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
+    @Override
+    public String toString()
+    {
+        return this.equals(XTERM) ?
+               NbBundle.getMessage(CLAZZ, "WindowMode.XTERM") :
+               this.equals(GUIFRAME) ?
+               NbBundle.getMessage(CLAZZ, "WindowMode.GUIFRAME") :
+               this.equals(BACKGROUND) ?
+               NbBundle.getMessage(CLAZZ, "WindowMode.BACKGROUND") :
+               this.equals(BACKGROUND_FILE) ?
+               NbBundle.getMessage(CLAZZ, "WindowMode.BACKGROUND_FILE") :
+               NbBundle.getMessage(CLAZZ, "WindowMode.UNKNOWN");
+    }
 }

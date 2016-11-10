@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlTransient;
 public abstract class AbstractParameter
 {
 
-    private static final String CLASS_NAME = AbstractParameter.class.getName();
+    private static final Class CLAZZ = AbstractParameter.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private boolean mandatory = false;
@@ -90,16 +91,16 @@ public abstract class AbstractParameter
     /**
      * Copy the members from another AbstractParameter
      *
-     * @param from
+     * @param rhs right hand side object to copy from
      */
-    protected void copyMembers(AbstractParameter from)
+    protected void copyMembers(AbstractParameter rhs)
     {
-        mandatory = from.mandatory;
-        value = from.value;
-        defaultValue = from.defaultValue;
-        fixed = from.fixed;
-        optionallySelected = from.optionallySelected;
-        multipleInstances = from.multipleInstances;
+        mandatory = rhs.mandatory;
+        value = rhs.value;
+        defaultValue = rhs.defaultValue;
+        fixed = rhs.fixed;
+        optionallySelected = rhs.optionallySelected;
+        multipleInstances = rhs.multipleInstances;
     }
 
     /**
@@ -238,12 +239,12 @@ public abstract class AbstractParameter
         return value == null ? "" : value;
     }
 
-    String getDefault()
+    public String getDefault()
     {
         return defaultValue == null ? "" : defaultValue;
     }
 
-    String getDefaultedValue()
+    public String getDefaultedValue()
     {
         return value != null && !value.isEmpty() ? value :
                defaultValue == null ? "" : defaultValue;

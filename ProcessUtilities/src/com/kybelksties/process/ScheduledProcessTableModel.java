@@ -141,7 +141,7 @@ public class ScheduledProcessTableModel extends AbstractTableModel
     public void setRow(int row, ScheduledProcess modifiedDef)
     {
         theScheduledProcesses.set(row, modifiedDef);
-        fireTableDataChanged();
+        fireTableRowsUpdated(row, row);
     }
 
     /**
@@ -238,7 +238,7 @@ public class ScheduledProcessTableModel extends AbstractTableModel
                 newInfo.setParameters((String) value);
                 break;
             case 3:
-                newInfo.setUsesXterm((WindowMode) value);
+                newInfo.setWindowMode((WindowMode) value);
                 break;
             case 4:
                 newInfo.setStartInDirectory((String) value);

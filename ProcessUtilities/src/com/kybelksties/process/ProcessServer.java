@@ -28,7 +28,10 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,10 +53,12 @@ public class ProcessServer
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    static ObjectOutputStream out = null;
-    static ObjectInputStream in = null;
     static boolean keepRunning = true;
     final static String HOSTNAME = (String) SystemProperties.get("HOSTNAME");
+    static int port;
+    static Map<Integer, ServerLoop> map = new HashMap<>();
+    static Map<String, ConcreteProcess> monitoredProcesses = new TreeMap<>();
+    static long processNumber = 0;
 
     static
     {
@@ -79,21 +84,29 @@ public class ProcessServer
     public static void main(String[] args) throws Exception
     {
         int clientNumber = 0;
-        int port = (args == null || args.length == 0) ?
-                   9898 :
-                   Integer.parseInt(args[0]);
+        port = (args == null || args.length == 0) ?
+               9898 :
+               Integer.parseInt(args[0]);
         logInfo("Starting Server");
         ServerSocket listener = new ServerSocket(port);
         while (keepRunning)
         {
-            // blocking here, waitng for incoming request, then accept
+            // blocking here, waiting for incoming request, then accept
             Socket acceptedSocket = listener.accept();
-            out = new ObjectOutputStream(acceptedSocket.getOutputStream());
-            out.flush();
-            in = new ObjectInputStream(acceptedSocket.getInputStream());
 
-            // accept is blocking until incoming request received
-            new ServerLoop(acceptedSocket, clientNumber++).start();
+            if (keepRunning)
+            {
+                ServerLoop s = new ServerLoop(acceptedSocket, clientNumber);
+                map.put(clientNumber, s);
+                s.start();
+                clientNumber++;
+            }
+        }
+        for (Integer s : map.keySet())
+        {
+            ServerLoop loop = map.remove(s);
+            loop.interrupt();
+            logInfo(loop.getName() + " interrupted and removed.");
         }
         logInfo("Finished Server");
     }
@@ -113,11 +126,20 @@ public class ProcessServer
     private static class ServerLoop extends Thread
     {
 
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
         private int clientNumber = 0;
         private Socket socket = null;
+        private String clientServerAddress = "";
+        private int clientPort = 0;
 
         public ServerLoop(Socket socket, int clientNumber) throws Exception
         {
+            setName("'ServerLoop for client " + clientNumber + "'");
+            out = new ObjectOutputStream(socket.getOutputStream());
+            out.flush();
+            in = new ObjectInputStream(socket.getInputStream());
+
             try
             {
                 if (socket == null)
@@ -133,6 +155,9 @@ public class ProcessServer
                 // Expecting an Identification from the client
                 ProcessMessage idMsg = (ProcessMessage) in.readObject();
                 logInfo(idMsg.toString());
+                clientServerAddress = (String) idMsg.getObjects().get(0);
+                clientPort = (Integer) idMsg.getObjects().get(1);
+
                 // Send a welcome message to the client.
                 ProcessMessage msg = ProcessMessage.makeChitChat(
                                "Hello client '" +
@@ -140,8 +165,7 @@ public class ProcessServer
                                "'. Received ID: " +
                                ToString.make(idMsg.getObjects()) +
                                ". You are connected to server at " +
-                               this.socket.getInetAddress().
-                               getCanonicalHostName());
+                               HOSTNAME);
                 out.writeObject(msg);
                 out.flush();
 
@@ -162,65 +186,99 @@ public class ProcessServer
         {
             try
             {
+                ProcessMessage msg = new ProcessMessage(ProcessMessage.Type.Ack);
 
-                // Get message object from the client
                 while (keepRunning)
                 {
+                    logInfo("In While {0}", getName());
+                    // Get message object from the client
                     Object readObj = in.readObject();
-                    ProcessMessage rcvdMsg = (ProcessMessage) readObj;
                     if (readObj == null)
                     {
                         logInfo("the read object is invalid!!!");
+                        keepRunning = false;
                         break;
                     }
 
+                    ProcessMessage rcvdMsg = (ProcessMessage) readObj;
                     ArrayList objs = rcvdMsg.getObjects();
-                    switch (rcvdMsg.getType())
+                    if (rcvdMsg.isInstruction())
                     {
-                        case Ack:
-                            break;
-                        case ChitChat:
-                            logInfo(ToString.make(objs));
-                            break;
-                        case StopServer:
-                            logInfo("Bye, bye!");
-                            keepRunning = false;
-                            break;
-                        case Identify:
-                            logInfo("Connected to port {0} on {1}",
-                                    objs.toArray());
-                            break;
-                        case StartProcess:
-                            ScheduledProcess sp = (ScheduledProcess) objs.get(
-                                             0);
-                            if (HOSTNAME.equals(sp.getTargetMachine()))
-                            {
-                                ConcreteProcess process = sp.start();
-                            }
-                            break;
-                        case ProcessList:
-                            logInfo("ProcessList:");
-                            System.exit(0);
-                            break;
-                        case ListProcesses:
-                            ProcessMessage msg = new ProcessMessage(
-                                           ProcessMessage.Type.ProcessList,
-                                           (ArrayList<ProcessInfo>) list());
-                            out.writeObject(msg);
-                            out.flush();
-                            logInfo("After flush");
-                            break;
-                        case KillProcess:
-                            System.exit(0);
-                            break;
-                        case RestartProcess:
-                            System.exit(0);
-                            break;
+                        switch (rcvdMsg.getType())
+                        {
+                            case Ack:
+                                break;
+                            case ChitChat:
+                                logInfo(ToString.make(objs));
+                                break;
+                            case StopServer:
+                                logInfo("Bye, bye!");
+                                keepRunning = false;
+                                msg = new ProcessMessage(
+                                ProcessMessage.Type.Ack);
+                                break;
+                            case Identify:
+                                logInfo("Connected to port {0} on {1}",
+                                        objs.toArray());
+                                break;
+                            case StartProcess:
+                                try
+                                {
+                                    ScheduledProcess sp =
+                                                     (ScheduledProcess) objs.
+                                                     get(0);
+
+                                    if (HOSTNAME.equals(sp.getTargetMachine()))
+                                    {
+                                        String ID =
+                                               "(" + processNumber++ + ") " +
+                                               clientServerAddress +
+                                               ":" + clientPort + "-" +
+                                               sp.getExeDefinition().
+                                               getName();
+                                        ConcreteProcess ps = sp.start();
+                                        msg = ProcessMessage.makeAcknowledge(
+                                        ps.state);
+                                        monitoredProcesses.put(ID,
+                                                               sp.getProcess());
+//                                        msg = new ProcessMessage(
+//                                        ProcessMessage.Type.Ack,
+//                                        ID,
+//                                        sp.getProcess().state);
+                                    }
+                                }
+                                catch (ClassCastException e)
+                                {
+                                    msg = ProcessMessage.makeInvalid(
+                                    e.toString());
+                                }
+                                break;
+                            case ProcessList:
+                                logInfo("ProcessList:");
+                                System.exit(0);
+                                break;
+                            case ListProcesses:
+                                msg = new ProcessMessage(
+                                ProcessMessage.Type.ProcessList,
+                                (ArrayList<ProcessInfo>) list());
+                                break;
+                            case KillProcess:
+                                System.exit(0);
+                                break;
+                            case RestartProcess:
+                                System.exit(0);
+                                break;
+                        }
+                        out.writeObject(msg);
+                        out.flush();
                     }
+                    logInfo("End of While {0}: keepRunning={1}",
+                            getName(),
+                            keepRunning);
 
                 }
             }
-            catch (IOException | ClassNotFoundException e)
+            catch (IOException | ClassNotFoundException | ClassCastException e)
             {
                 logError("Error handling client {0}: {1}",
                          clientNumber,
@@ -228,6 +286,24 @@ public class ProcessServer
             }
             finally
             {
+                logInfo("In finally {0}: keepRunning={1}",
+                        getName(),
+                        keepRunning);
+                if (!keepRunning)
+                {
+//                    try
+//                    {
+//                        logInfo("trying to write message to self...");
+//                        ProcessClient self = new ProcessClient(HOSTNAME, port);
+//                        self.sendMessage(ProcessMessage.makeInvalid());
+//                        logInfo("...done");
+//                    }
+//                    catch (IOException | ClassNotFoundException ex)
+//                    {
+//                        logError(ex.toString());
+//                    }
+                    interrupt();
+                }
                 try
                 {
                     logInfo("trying to close socket");
@@ -238,26 +314,40 @@ public class ProcessServer
                 catch (IOException e)
                 {
                     logError("Couldn't close the socket: {0}",
-                             e.getLocalizedMessage());
+                             e.toString());
                 }
-                logInfo("Connection with client {0} closed", clientNumber);
+                logInfo("Connection with client {0} ({1}:{2}) closed",
+                        clientNumber,
+                        clientServerAddress,
+                        clientPort);
             }
+            logInfo("Finished finally {0}: keepRunning={1}",
+                    getName(),
+                    keepRunning);
         }
 
-        /**
-         * Logs a simple message. In this case we just write the message to the
-         * server applications standard output.
-         */
     }
 
+    /**
+     * Logs an info-style simple message.
+     *
+     * @param message message(-format): can have ordinal replacement
+     *                place-holders "{0}, {1},..."
+     * @param objs    possibly empty list of objects used to replace
+     *                place-holders
+     */
     static void logInfo(String message, Object... objs)
     {
         LOGGER.log(Level.INFO, message, objs);
     }
 
     /**
-     * Logs a simple message. In this case we just write the message to the
-     * server applications standard output.
+     * Logs an error-style simple message.
+     *
+     * @param message message(-format): can have ordinal replacement
+     *                place-holders "{0}, {1},..."
+     * @param objs    possibly empty list of objects used to replace
+     *                place-holders
      */
     static void logError(String message, Object... objs)
     {

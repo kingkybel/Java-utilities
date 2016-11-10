@@ -19,6 +19,7 @@
  */
 package com.kybelksties.process;
 
+import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,20 +33,25 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LetterParameter extends AbstractParameter
+public class LetterParameter
+        extends AbstractParameter
+        implements Serializable
 {
 
-    private static final String CLASS_NAME = LetterParameter.class.getName();
+    private static final Class CLAZZ = LetterParameter.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    private static final long serialVersionUID = -8940196742313991701L;
 
-    private Character letter;
-    private boolean hasArg;
+    private Character letter = null;
+    private boolean hasArg = false;
 
     /**
      * Default constructor.
      */
     public LetterParameter()
     {
+        this(null);
     }
 
     /**
@@ -55,9 +61,8 @@ public class LetterParameter extends AbstractParameter
      */
     public LetterParameter(Character letter)
     {
-        super();
+        this(letter, null);
         this.letter = letter;
-        this.hasArg = false;
     }
 
     /**
@@ -68,7 +73,7 @@ public class LetterParameter extends AbstractParameter
      */
     public LetterParameter(Character letter, String value)
     {
-        super(value, null);
+        this(letter, value, null);
         this.letter = letter;
         this.hasArg = true;
     }

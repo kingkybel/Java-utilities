@@ -20,7 +20,6 @@
 package com.kybelksties.process;
 
 import com.kybelksties.general.SystemProperties;
-import java.awt.Component;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -46,6 +45,7 @@ public class ProcessClient
     private static final String LOCALHOST = localHostName();
     String serverAddress = null;
     int port = 9898;
+    private boolean connected = false;
 
     static private String localHostName()
     {
@@ -56,12 +56,11 @@ public class ProcessClient
     /**
      * Creates new form ProcessClient
      *
-     * @param parent
      * @param serverAddress
      * @param port
      * @throws java.io.IOException
      */
-    public ProcessClient(Component parent, String serverAddress, int port)
+    public ProcessClient(String serverAddress, int port)
             throws IOException
     {
         this.serverAddress = serverAddress;
@@ -78,15 +77,16 @@ public class ProcessClient
      * welcome messages from the server.
      *
      * @return a (possibly empty, but not null) list of ProcessMessage s -
-     *         welcome frome the server
+     *         welcome from the server
      * @throws IOException            thrown if message cannot be read or the
      *                                response message is garbled
      * @throws ClassNotFoundException thrown when the read-operation from the
      *                                socket's input-stream cannot be
      *                                de-serialised
      */
-    public ArrayList<ProcessMessage> connectToServer() throws IOException,
-                                                              ClassNotFoundException
+    public ArrayList<ProcessMessage> connectToServer()
+            throws IOException,
+                   ClassNotFoundException
     {
         ArrayList<ProcessMessage> reval = new ArrayList<>();
         // Make connection and initialize streams
@@ -95,13 +95,13 @@ public class ProcessClient
         out.flush();
         in = new ObjectInputStream(socket.getInputStream());
 
-        out.writeObject(ProcessMessage.makeIdentify(serverAddress, port));
+        out.writeObject(ProcessMessage.makeIdentify(LOCALHOST, port));
         ProcessMessage msg;
 
         // read the welcome messages from the server
         msg = (ProcessMessage) in.readObject();
         reval.add(msg);
-
+        connected = true;
         return reval;
     }
 
@@ -120,15 +120,27 @@ public class ProcessClient
             throws IOException,
                    ClassNotFoundException
     {
+        Object response;
+        ProcessMessage rcvdMsg = null;
+        if (!connected)
+        {
+            connectToServer();
+        }
         out.writeObject(sendMsg);
         out.flush();
-        Object response;
-        response = in.readObject();
-        if (response == null || !(response instanceof ProcessMessage))
+        try
         {
-            throw new IOException("Not a Process Command!");
+            response = in.readObject();
+            if (response == null || !(response instanceof ProcessMessage))
+            {
+                throw new IOException("Not a Process Command!");
+            }
+            rcvdMsg = (ProcessMessage) response;
         }
-        ProcessMessage rcvdMsg = (ProcessMessage) response;
+        catch (IOException | ClassNotFoundException ex)
+        {
+            rcvdMsg = ProcessMessage.makeInvalid(ex.toString());
+        }
 
         return rcvdMsg;
     }

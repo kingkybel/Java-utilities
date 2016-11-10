@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 public class ParamTableUpdatedEvent extends EventObject
 {
 
-    private static final String CLASS_NAME =
-                                ParamTableUpdatedEvent.class.getName();
+    private static final Class CLAZZ = ParamTableUpdatedEvent.class;
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     /**

@@ -674,6 +674,8 @@ public class ParameterList
         /**
          * Evaluate the parameter-list as letter parameters.
          */
-        PARAMLETTER_EVALUATED
+        PARAMLETTER_EVALUATED;
+        private static final long serialVersionUID = -8940196742313991701L;
+
     }
 }
