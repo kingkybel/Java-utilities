@@ -42,13 +42,14 @@ import org.openide.util.NbBundle;
         {
             ScheduledProcess.class
         })
-public class ProcessMessage<T /*extends Serializable*/>
+public class ProcessMessage<T extends Serializable>
         implements Serializable
 {
 
     private static final Class CLAZZ = ProcessMessage.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    private static final long serialVersionUID = -8940196742313991701L;
 
     @XmlType(name = "ProcessMessageType")
     public static enum Type implements Serializable
@@ -64,6 +65,7 @@ public class ProcessMessage<T /*extends Serializable*/>
         ProcessList,
         KillProcess,
         RestartProcess;
+
         private static final Class CLAZZ = Type.class;
         private static final String CLASS_NAME = CLAZZ.getName();
         private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
@@ -96,7 +98,7 @@ public class ProcessMessage<T /*extends Serializable*/>
                    NbBundle.getMessage(CLAZZ, "ProcessMessage.Type.Unknown");
         }
 
-        boolean isInstruction()
+        public boolean isInstruction()
         {
             return this == Ack ||
                    this == ChitChat ||
@@ -107,7 +109,7 @@ public class ProcessMessage<T /*extends Serializable*/>
                    this == RestartProcess;
         }
 
-        static Object[] instructions()
+        public static Object[] instructions()
         {
             ArrayList<Type> revalList = new ArrayList<>();
             for (Type type : Type.values())

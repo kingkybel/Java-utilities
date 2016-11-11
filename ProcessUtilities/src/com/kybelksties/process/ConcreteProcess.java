@@ -53,6 +53,7 @@ public class ConcreteProcess extends Process implements Serializable
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     private static final long serialVersionUID = -8940196742313991701L;
+
     private String environmentVarFile;
 
     /**
@@ -135,10 +136,6 @@ public class ConcreteProcess extends Process implements Serializable
      */
     public void addStateChangeEventListener(StateEventListener listener)
     {
-//        if (stateChangeListenerList == null)
-//        {
-//            stateChangeListenerList = new EventListenerList();
-//        }
         stateChangeListenerList.add(StateEventListener.class, listener);
     }
 
@@ -149,10 +146,6 @@ public class ConcreteProcess extends Process implements Serializable
 
     void fireProcessStateEvent(StateEvent evt)
     {
-//        if (stateChangeListenerList == null)
-//        {
-//            stateChangeListenerList = new EventListenerList();
-//        }
         Object[] listeners = stateChangeListenerList.getListenerList();
         for (int i = 0; i < listeners.length; i += 2)
         {
@@ -274,10 +267,6 @@ public class ConcreteProcess extends Process implements Serializable
     public void command(String command)
     {
         this.command = command.split(" ");
-//        if (builder == null)
-//        {
-//            builder = new ProcessBuilder();
-//        }
         builder.command(this.command);
     }
 
@@ -289,10 +278,6 @@ public class ConcreteProcess extends Process implements Serializable
     public void command(String[] command)
     {
         this.command = command;
-//        if (builder == null)
-//        {
-//            builder = new ProcessBuilder();
-//        }
         builder.command(command);
     }
 
@@ -404,7 +389,11 @@ public class ConcreteProcess extends Process implements Serializable
                     waitFor();
                     if (state == State.Running)
                     {
-                        exitValue();
+                        int prcReval = exitValue();
+                        setState((prcReval == 0) ?
+                                 State.FinishedSuccess :
+                                 State.FinishedError);
+
                     }
                 }
                 catch (IOException | InterruptedException ex)
@@ -445,7 +434,7 @@ public class ConcreteProcess extends Process implements Serializable
     public int exitValue()
     {
         int reval = process.exitValue();
-        setState(reval == 0 ? State.Finished : State.Terminated);
+        setState(reval == 0 ? State.FinishedSuccess : State.FinishedError);
         return reval;
     }
 
@@ -580,13 +569,18 @@ public class ConcreteProcess extends Process implements Serializable
          */
         Terminated,
         /**
-         * Process has finished.
+         * Process has finished successfully.
          */
-        Finished;
+        FinishedSuccess,
+        /**
+         * Process has finished with error.
+         */
+        FinishedError;
 
         private static final Class CLAZZ = State.class;
         private static final String CLASS_NAME = CLAZZ.getName();
         private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+        private static final long serialVersionUID = -8940196742313991701L;
 
         @Override
         public String toString()
@@ -603,9 +597,12 @@ public class ConcreteProcess extends Process implements Serializable
                    this == Terminated ?
                    NbBundle.
                    getMessage(CLAZZ, "ConcreteProcess.State.Terminated") :
-                   this == Finished ?
+                   this == FinishedSuccess ?
                    NbBundle.
-                   getMessage(CLAZZ, "ConcreteProcess.State.Finished") :
+                   getMessage(CLAZZ, "ConcreteProcess.State.FinishedSuccess") :
+                   this == FinishedError ?
+                   NbBundle.
+                   getMessage(CLAZZ, "ConcreteProcess.State.FinishedError") :
                    NbBundle.
                    getMessage(CLAZZ, "ConcreteProcess.State.Unkown");
         }

@@ -534,6 +534,7 @@ public class ScheduledProcess implements Serializable
             response = client.sendMessage(msg);
             if (response.isAcknowledgement())
             {
+                LOGGER.log(Level.INFO, response.getObjects().get(0).toString());
                 ConcreteProcess.State state =
                                       (ConcreteProcess.State) response.
                                       getObjects().get(0);

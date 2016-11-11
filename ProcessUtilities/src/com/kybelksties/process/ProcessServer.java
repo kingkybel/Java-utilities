@@ -214,8 +214,7 @@ public class ProcessServer
                             case StopServer:
                                 logInfo("Bye, bye!");
                                 keepRunning = false;
-                                msg = new ProcessMessage(
-                                ProcessMessage.Type.Ack);
+                                msg = ProcessMessage.makeAcknowledge();
                                 break;
                             case Identify:
                                 logInfo("Connected to port {0} on {1}",
@@ -241,10 +240,6 @@ public class ProcessServer
                                         ps.state);
                                         monitoredProcesses.put(ID,
                                                                sp.getProcess());
-//                                        msg = new ProcessMessage(
-//                                        ProcessMessage.Type.Ack,
-//                                        ID,
-//                                        sp.getProcess().state);
                                     }
                                 }
                                 catch (ClassCastException e)
@@ -272,9 +267,6 @@ public class ProcessServer
                         out.writeObject(msg);
                         out.flush();
                     }
-                    logInfo("End of While {0}: keepRunning={1}",
-                            getName(),
-                            keepRunning);
 
                 }
             }
@@ -286,27 +278,12 @@ public class ProcessServer
             }
             finally
             {
-                logInfo("In finally {0}: keepRunning={1}",
-                        getName(),
-                        keepRunning);
                 if (!keepRunning)
                 {
-//                    try
-//                    {
-//                        logInfo("trying to write message to self...");
-//                        ProcessClient self = new ProcessClient(HOSTNAME, port);
-//                        self.sendMessage(ProcessMessage.makeInvalid());
-//                        logInfo("...done");
-//                    }
-//                    catch (IOException | ClassNotFoundException ex)
-//                    {
-//                        logError(ex.toString());
-//                    }
                     interrupt();
                 }
                 try
                 {
-                    logInfo("trying to close socket");
                     socket.shutdownInput();
                     socket.shutdownOutput();
                     socket.close();
@@ -316,14 +293,7 @@ public class ProcessServer
                     logError("Couldn't close the socket: {0}",
                              e.toString());
                 }
-                logInfo("Connection with client {0} ({1}:{2}) closed",
-                        clientNumber,
-                        clientServerAddress,
-                        clientPort);
             }
-            logInfo("Finished finally {0}: keepRunning={1}",
-                    getName(),
-                    keepRunning);
         }
 
     }
