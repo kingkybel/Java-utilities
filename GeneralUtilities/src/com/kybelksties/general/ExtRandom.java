@@ -53,6 +53,12 @@ public class ExtRandom extends java.util.Random
         super(seed);
     }
 
+    @Override
+    protected int next(int bits)
+    {
+        return super.next(bits);
+    }
+
     /**
      * Retrieve an integer value between low and high values. The interval is
      * always interpreted between the actually lower value to the actually
@@ -112,6 +118,7 @@ public class ExtRandom extends java.util.Random
         {
             reval %= high;
         }
+
         return reval;
     }
 
@@ -174,6 +181,7 @@ public class ExtRandom extends java.util.Random
         {
             reval %= high;
         }
+
         return reval;
     }
 
@@ -204,10 +212,8 @@ public class ExtRandom extends java.util.Random
             high = low;
             low = tmp;
         }
-        double reval = low.equals(high) ? low : nextDouble(high - low) + low;
 
-        return reval;
-
+        return low.equals(high) ? low : nextDouble(high - low) + low;
     }
 
     /**
@@ -236,6 +242,7 @@ public class ExtRandom extends java.util.Random
         {
             reval %= high;
         }
+
         return reval;
     }
 
@@ -266,9 +273,8 @@ public class ExtRandom extends java.util.Random
             high = low;
             low = tmp;
         }
-        float reval = low.equals(high) ? low : nextFloat(high - low) + low;
 
-        return reval;
+        return low.equals(high) ? low : nextFloat(high - low) + low;
 
     }
 

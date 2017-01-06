@@ -55,6 +55,7 @@ public class FileUtilities
     private static final Class CLAZZ = FileUtilities.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
     public static final String FILE_SEPARATOR = System.getProperty(
                                "file.separator");
     public static final String PATH_SEPARATOR = System.getProperty(
