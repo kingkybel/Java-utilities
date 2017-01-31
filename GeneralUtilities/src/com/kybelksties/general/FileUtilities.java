@@ -360,7 +360,8 @@ public class FileUtilities
     {
         BufferedWriter out = null;
         File file = new File(fileName == null ? "" : fileName);
-        File path = new File(file.getParent());
+        String parent = file.getParent();
+        File path = new File(parent != null ? parent : "");
         if (force && !path.exists())
         {
             (new File(path.getAbsolutePath())).mkdirs();
@@ -533,7 +534,8 @@ public class FileUtilities
     {
         BufferedWriter out = null;
         File file = new File(fileName);
-        File path = new File(file.getParent());
+        String parent = file.getParent();
+        File path = new File(parent != null ? parent : "");
         if (!path.exists())
         {
             (new File(path.getAbsolutePath())).mkdirs();

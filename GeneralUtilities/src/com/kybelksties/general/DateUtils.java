@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -444,21 +443,15 @@ public class DateUtils
      *
      * @param dateString
      * @return the epoch-number if parseable, zero (0) otherwise
+     * @throws java.text.ParseException if given string cannot be parsed as date
      */
-    public static long toEpoch(String dateString)
+    public static long toEpoch(String dateString) throws ParseException
     {
         long reval = 0L;
-        if (!dateString.isEmpty())
+        if (dateString != null && !dateString.isEmpty())
         {
-            try
-            {
-                Date dt = DateFormat.parse(dateString);
-                reval = dt.getTime();
-            }
-            catch (ParseException ex)
-            {
-                LOGGER.log(Level.SEVERE, null, ex);
-            }
+            Date dt = DateFormat.parse(dateString);
+            reval = dt.getTime();
         }
         return reval;
     }

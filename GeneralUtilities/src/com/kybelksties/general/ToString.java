@@ -256,6 +256,153 @@ public class ToString
     }
 
     /**
+     * Make a string of an array of chars.
+     *
+     * @param ar the char array
+     * @return the delimited string of the objects
+     */
+    static public String make(char[] ar)
+    {
+        if (ar == null)
+        {
+            return "";
+        }
+        Character[] arChar = new Character[ar.length];
+        for (int i = 0; i < ar.length; i++)
+        {
+            arChar[i] = ar[i];
+        }
+
+        return make(arChar);
+    }
+
+    /**
+     * Make a string of an array of chars.
+     *
+     * @param ar the char array
+     * @return the delimited string of the objects
+     */
+    static public String make(byte[] ar)
+    {
+        if (ar == null)
+        {
+            return "";
+        }
+        Byte[] arByte = new Byte[ar.length];
+        for (int i = 0; i < ar.length; i++)
+        {
+            arByte[i] = ar[i];
+        }
+
+        return make(arByte);
+    }
+
+    /**
+     * Make a string of an array of shorts.
+     *
+     * @param ar the short array
+     * @return the delimited string of the objects
+     */
+    static public String make(short[] ar)
+    {
+        if (ar == null)
+        {
+            return "";
+        }
+        Short[] arShort = new Short[ar.length];
+        for (int i = 0; i < ar.length; i++)
+        {
+            arShort[i] = ar[i];
+        }
+
+        return make(arShort);
+    }
+
+    /**
+     * Make a string of an array of integers.
+     *
+     * @param ar the int array
+     * @return the delimited string of the objects
+     */
+    static public String make(int[] ar)
+    {
+        if (ar == null)
+        {
+            return "";
+        }
+        Integer[] arInt = new Integer[ar.length];
+        for (int i = 0; i < ar.length; i++)
+        {
+            arInt[i] = ar[i];
+        }
+
+        return make(arInt);
+    }
+
+    /**
+     * Make a string of an array of longs.
+     *
+     * @param ar the int array
+     * @return the delimited string of the objects
+     */
+    static public String make(long[] ar)
+    {
+        if (ar == null)
+        {
+            return "";
+        }
+        Long[] arLong = new Long[ar.length];
+        for (int i = 0; i < ar.length; i++)
+        {
+            arLong[i] = ar[i];
+        }
+
+        return make(arLong);
+    }
+
+    /**
+     * Make a string of an array of doubles.
+     *
+     * @param ar the double array
+     * @return the delimited string of the objects
+     */
+    static public String make(double[] ar)
+    {
+        if (ar == null)
+        {
+            return "";
+        }
+        Double[] arDbl = new Double[ar.length];
+        for (int i = 0; i < ar.length; i++)
+        {
+            arDbl[i] = ar[i];
+        }
+
+        return make(arDbl);
+    }
+
+    /**
+     * Make a string of an array of floats.
+     *
+     * @param ar the float array
+     * @return the delimited string of the objects
+     */
+    static public String make(float[] ar)
+    {
+        if (ar == null)
+        {
+            return "";
+        }
+        Float[] arFloat = new Float[ar.length];
+        for (int i = 0; i < ar.length; i++)
+        {
+            arFloat[i] = ar[i];
+        }
+
+        return make(arFloat);
+    }
+
+    /**
      * Make a string of an array of objects.
      *
      * @param <T> generic type of array elements
