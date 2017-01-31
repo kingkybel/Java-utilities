@@ -22,6 +22,8 @@ package com.kybelksties.gui;
 
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +31,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -42,7 +46,7 @@ import org.openide.util.NbBundle;
  */
 public class OutputPanel extends javax.swing.JPanel
 {
-    
+
     private static final Class CLAZZ = OutputPanel.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
@@ -58,19 +62,18 @@ public class OutputPanel extends javax.swing.JPanel
         public String toString()
         {
             return this == NORMAL ?
-                        NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.normal") :
+                   NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.normal") :
                    this == HIGHLIGHT ?
-                        NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.highlight") : 
-                   this == META ? 
-                        NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.meta") :
+                   NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.highlight") :
+                   this == META ?
+                   NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.meta") :
                    this == ERROR ?
-                        NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.error")  : 
-                        NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.undefined") ;
+                   NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.error") :
+                   NbBundle.getMessage(CLAZZ, "OutputPanel.Styles.undefined");
         }
     }
     private StyleContext styleContext = new StyleContext();
     private StyledDocument doc;
-//    private TreeMap<String, Style> styles = new TreeMap<>();
     private boolean verbose = true;
     private String defaultFontFamily = (String) fontFamilyModel.getElementAt(0);
     private Integer defaultFontSize = 10;
@@ -92,6 +95,24 @@ public class OutputPanel extends javax.swing.JPanel
         initComponents();
         reset();
         resetDocument();
+        textScrollPane.getVerticalScrollBar().addAdjustmentListener(
+                new AdjustmentListener()
+                {
+                    int prevMax = 0;
+
+                    @Override
+                    public void adjustmentValueChanged(AdjustmentEvent e)
+                    {
+                        if (e.getAdjustable().getMaximum() != prevMax)
+                        {
+                            e.getAdjustable().setValue(
+                                    e.getAdjustable().getMaximum());
+                            prevMax = e.getAdjustable().getMaximum();
+                        }
+                    }
+                });
+        DefaultCaret caret = (DefaultCaret) textPane.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
     /**
@@ -223,7 +244,8 @@ public class OutputPanel extends javax.swing.JPanel
         if (fontFamilyModel.getIndexOf(defaultFontFamily) == -1)
         {
             LOGGER.log(Level.INFO,
-                       NbBundle.getMessage(CLAZZ, "OutputPanel.noSuchFontFamily"),
+                       NbBundle.
+                       getMessage(CLAZZ, "OutputPanel.noSuchFontFamily"),
                        defaultFontFamily);
             boolean found = false;
             for (int i = 0; i < fontFamilyModel.getSize() && !found; i++)
@@ -239,23 +261,39 @@ public class OutputPanel extends javax.swing.JPanel
                                NbBundle.getMessage(CLAZZ,
                                                    "OutputPanel.fontFamilySetTo",
                                                    defaultFontFamily)
-                               );
+                    );
                     found = true;
                 }
             }
             if (!found)
             {
                 defaultFontFamily = (String) fontFamilyModel.getElementAt(0);
-                    LOGGER.log(Level.INFO,
-                               NbBundle.getMessage(CLAZZ,
-                                                   "OutputPanel.fontFamilySetTo",
-                                                   defaultFontFamily)
-                               );
+                LOGGER.log(Level.INFO,
+                           NbBundle.getMessage(CLAZZ,
+                                               "OutputPanel.fontFamilySetTo",
+                                               defaultFontFamily)
+                );
             }
 
         }
         this.defaultFontFamily = defaultFontFamily;
         reset();
+    }
+
+    /**
+     * Retrieve the text on this panel as string.
+     *
+     * @return the text
+     */
+    public String getText() throws BadLocationException
+    {
+        String reval = "";
+        Document doc = textPane.getDocument();
+        if (doc != null)
+        {
+            reval = doc.getText(0, doc.getLength());
+        }
+        return reval;
     }
 
     /**
@@ -544,8 +582,8 @@ public class OutputPanel extends javax.swing.JPanel
     }
 
     /**
-     * Append the text to the end of the document in the default style. Do NOT
-     * add a line-break at the end.
+     * Append the text to the end of the document in the default style. Add a
+     * line-break at the end.
      *
      * @param text the text to append
      */
@@ -632,6 +670,7 @@ public class OutputPanel extends javax.swing.JPanel
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
+        textPane.setEditable(false);
         textScrollPane.setViewportView(textPane);
 
         add(textScrollPane);

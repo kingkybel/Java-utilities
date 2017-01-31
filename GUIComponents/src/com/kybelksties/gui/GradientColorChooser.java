@@ -52,7 +52,6 @@ public class GradientColorChooser extends javax.swing.JPanel
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     JPopupMenu colorTablePopup;
-    IndividualCellEditor ice;
 
     /**
      * Creates new form ForegroundBackgroundColorChooser.

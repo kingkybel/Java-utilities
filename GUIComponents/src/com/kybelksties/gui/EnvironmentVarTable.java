@@ -41,7 +41,7 @@ public class EnvironmentVarTable extends javax.swing.JTable
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    IndividualCellEditor ice;
+    transient IndividualCellEditor ice;
 
     /**
      * Construct using a table model.
@@ -99,8 +99,8 @@ public class EnvironmentVarTable extends javax.swing.JTable
         Object[] types = PodVariant.Type.values();
         ice.insertCheckboxEditor("DefineCheck");
         ice.insertComboEditor("TypeCombo", types);
-        ice.insertSpinnerEditor("IntValueSpinner", 1, -10000, 10000, 1);
-        ice.insertSpinnerEditor("DoubleValueSpinner", 1.0, -10000.0, 10000.0,
+        ice.insertSpinnerEditor("IntValueSpinner", 1, -99999, 99999, 1);
+        ice.insertSpinnerEditor("DoubleValueSpinner", 1.0, -99999.9, 99999.9,
                                 1.0);
         ice.insertCheckboxEditor("BoolValueCheck");
 

@@ -21,16 +21,11 @@
 package com.kybelksties.gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.Point;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
-import javax.swing.JPanel;
 
 /**
  * A class to be used for debugging of visual components of this package.
@@ -55,24 +50,25 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         initComponents();
         outputPanel1.showStyleSamples();
         outputPanel2.showStyleSamples();
-        outputPanel1.setVisible(false);
-        outputPanel2.setVisible(false);
-        JPanel panel = new JPanel()
-        {
-            @Override
-            public void paintComponent(Graphics g)
-            {
-                ((Graphics2D) g).setPaint(
-                        new ColorUtils.RandomGridGradientPaint(new Point(0, 0),
-                                                               new Point(30, 40),
-                                                               10,
-                                                               20,
-                                                               7));
-                g.fillOval(0, 0, 40, 50);
-            }
-        };
-        panel.setPreferredSize(new Dimension(50, 50));
-        add(panel);
+        gradientTypeComboBox1.setVisible(false);
+//        outputPanel1.setVisible(false);
+//        outputPanel2.setVisible(false);
+//        JPanel panel = new JPanel()
+//        {
+//            @Override
+//            public void paintComponent(Graphics g)
+//            {
+//                ((Graphics2D) g).setPaint(
+//                        new ColorUtils.RandomGridGradientPaint(new Point(0, 0),
+//                                                               new Point(30, 40),
+//                                                               10,
+//                                                               20,
+//                                                               7));
+//                g.fillOval(0, 0, 40, 50);
+//            }
+//        };
+//        panel.setPreferredSize(new Dimension(50, 50));
+//        add(panel);
     }
 
     /**

@@ -59,7 +59,7 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
 
     ColorUtils.ContrastColorSet colorSet = new ColorUtils.ContrastColorSet();
     JPopupMenu colorTablePopup;
-    IndividualCellEditor ice;
+    transient IndividualCellEditor ice;
 
     private void deleteRows(int[] rows)
     {
@@ -657,10 +657,10 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
     private void hintButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_hintButtonActionPerformed
     {//GEN-HEADEREND:event_hintButtonActionPerformed
         Color color = JColorChooser.showDialog(
-                hintButton,
-                NbBundle.getMessage(CLAZZ,
-                                    "ForegroundBackgroundColorChooser.foreground"),
-                Color.BLACK);
+              hintButton,
+              NbBundle.getMessage(CLAZZ,
+                                  "ForegroundBackgroundColorChooser.foreground"),
+              Color.BLACK);
         if (!colorSet.addHintContrast(color))
         {
             String message = NbBundle.getMessage(

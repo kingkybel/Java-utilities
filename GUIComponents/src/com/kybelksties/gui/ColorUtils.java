@@ -2358,14 +2358,12 @@ public class ColorUtils
                 double ratio_w_l = 1.0 -
                                    (double) (x - topLeft.getX()) /
                                    (double) colorDistanceX;
-                double ratio_w_r = 1.0 - (double) (x + w - topLeft.
-                                                   getX()) /
+                double ratio_w_r = 1.0 - (double) (x + w - topLeft.getX()) /
                                          (double) colorDistanceX;
                 double ratio_h_t = 1.0 -
                                    (double) (y - topLeft.getY()) /
                                    (double) colorDistanceY;
-                double ratio_h_b = 1.0 - (double) (y + h - topLeft.
-                                                   getY()) /
+                double ratio_h_b = 1.0 - (double) (y + h - topLeft.getY()) /
                                          (double) colorDistanceY;
                 Color tl = ratioAvgColor(ratio_w_l, ratio_h_t);
                 Color tr = ratioAvgColor(ratio_w_r, ratio_h_t);
@@ -2630,8 +2628,7 @@ public class ColorUtils
         public Raster getRaster(int x, int y, int w, int h)
         {
             WritableRaster raster =
-                           getColorModel().createCompatibleWritableRaster(w,
-                                                                          h);
+                           getColorModel().createCompatibleWritableRaster(w, h);
 
             int[] data = new int[w * h * 4];
 
@@ -2690,36 +2687,36 @@ public class ColorUtils
                                       bottomRightColor.getRed(),
                                       ratio_w,
                                       ratio_h);
-                    data[base + 1] = fourCornerAverage(topLeftColor.
-                    getGreen(),
-                                                       topRightColor.
-                                                       getGreen(),
-                                                       bottomLeftColor.
-                                                       getGreen(),
-                                                       bottomRightColor.
-                                                       getGreen(),
-                                                       ratio_w,
-                                                       ratio_h);
-                    data[base + 2] = fourCornerAverage(topLeftColor.
-                    getBlue(),
-                                                       topRightColor.
-                                                       getBlue(),
-                                                       bottomLeftColor.
-                                                       getBlue(),
-                                                       bottomRightColor.
-                                                       getBlue(),
-                                                       ratio_w,
-                                                       ratio_h);
-                    data[base + 3] = fourCornerAverage(topLeftColor.
-                    getAlpha(),
-                                                       topRightColor.
-                                                       getAlpha(),
-                                                       bottomLeftColor.
-                                                       getAlpha(),
-                                                       bottomRightColor.
-                                                       getAlpha(),
-                                                       ratio_w,
-                                                       ratio_h);
+                    data[base + 1] =
+                    fourCornerAverage(topLeftColor.getGreen(),
+                                      topRightColor.
+                                      getGreen(),
+                                      bottomLeftColor.
+                                      getGreen(),
+                                      bottomRightColor.
+                                      getGreen(),
+                                      ratio_w,
+                                      ratio_h);
+                    data[base + 2] =
+                    fourCornerAverage(topLeftColor.getBlue(),
+                                      topRightColor.
+                                      getBlue(),
+                                      bottomLeftColor.
+                                      getBlue(),
+                                      bottomRightColor.
+                                      getBlue(),
+                                      ratio_w,
+                                      ratio_h);
+                    data[base + 3] =
+                    fourCornerAverage(topLeftColor.getAlpha(),
+                                      topRightColor.
+                                      getAlpha(),
+                                      bottomLeftColor.
+                                      getAlpha(),
+                                      bottomRightColor.
+                                      getAlpha(),
+                                      ratio_w,
+                                      ratio_h);
                 }
             }
             raster.setPixels(0, 0, w, h, data);
