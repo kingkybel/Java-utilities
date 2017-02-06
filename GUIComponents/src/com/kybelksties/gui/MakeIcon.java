@@ -15,8 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * @date: 2017-02-01
- * @author: Dieter J Kybelksties
+ * @date Feb 01, 2017
+ * @author Dieter J Kybelksties
  */
 package com.kybelksties.gui;
 
@@ -44,8 +44,8 @@ public class MakeIcon
     private static final String USAGE =
                                 "Usage:\n" +
                                 "java -jar \"/home/kybelksd/NetBeansProjects/MakeIcon/dist/MakeIcon.jar\" " +
-                                "\n\t\t-c <command> -p <pictureFile> [-o <out-file>]" +
-                                "\n\t\t[-a <alpha-file>] [-t <top-number>] [-s <smugde-width>]" +
+                                "\n\t\t-f <format> -p <pictureFile> [-o <out-file>]" +
+                                "\n\t\t[-a <alpha-file>] [-c <cap-number>] [-s <smugde-width>]" +
                                 "\n\t\t[-j <jig-number>] [-?|-h|-help|--help]";
     private static final Random rand = new Random();
     private static int cap;
@@ -99,10 +99,9 @@ public class MakeIcon
         {
             for (int i = 0; i < reval.length; i++)
             {
-                reval[i] += pass.charAt(i % pass.length()) % rem;
+                reval[i] += (pass.charAt(i % pass.length()) % rem);
             }
         }
-
         return reval;
     }
 
@@ -112,12 +111,11 @@ public class MakeIcon
         int asc = 0;
         for (int i = 0; i < smudged.length; i++)
         {
-            asc += cap - smudged[i];
-            if (!pass.isEmpty())
-            {
-                asc += pass.charAt(i % pass.length()) % rem;
-            }
-            if (i % width == width - 1)
+
+            asc += cap -
+                   smudged[i] +
+                   ((pass.isEmpty()) ? 0 : pass.charAt(i % pass.length()) % rem);
+            if ((i % width) == (width - 1))
             {
                 reval += (char) asc;
                 asc = 0;
@@ -157,7 +155,8 @@ public class MakeIcon
         return reval;
     }
 
-    private static void saveIcon(String sourceFilename,
+    private static void saveIcon(String fmt,
+                                 String sourceFilename,
                                  String waterFilename,
                                  String dest,
                                  int width,
@@ -172,11 +171,13 @@ public class MakeIcon
                 destFilename += sourceFilename.substring(
                 sourceFilename.lastIndexOf('/') + 1);
             }
-            if (destFilename.endsWith(".jpg") || destFilename.endsWith(".JPG"))
+            if (destFilename.contains("."))
             {
-                destFilename = destFilename.replaceAll(".jpg", ".png");
-                destFilename = destFilename.replaceAll(".JPG", ".png");
+                int dotPos = destFilename.lastIndexOf('.');
+                destFilename = destFilename.substring(0, dotPos);
             }
+            destFilename += fmt.equals("argb") ? ".png" : "." + fmt;
+
             FileUtilities.saveText(destFilename, "", true);
             File fileDest = new File(destFilename);
             String strWater = "";
@@ -202,9 +203,13 @@ public class MakeIcon
 
             BufferedImage img = shrink(ImageIO.read(new File(sourceFilename)),
                                        waterArray.length);
+            int imageType = fmt.equals("argb") ? BufferedImage.TYPE_4BYTE_ABGR :
+                            fmt.equals("png") ? BufferedImage.TYPE_4BYTE_ABGR :
+                            fmt.equals("wbmp") ? BufferedImage.TYPE_BYTE_BINARY :
+                            BufferedImage.TYPE_3BYTE_BGR;
             BufferedImage newImage = new BufferedImage(img.getWidth(),
                                                        img.getHeight(),
-                                                       BufferedImage.TYPE_4BYTE_ABGR);
+                                                       imageType);
             for (int x = 0; x < img.getWidth(); x++)
             {
                 for (int y = 0; y < img.getHeight(); y++)
@@ -229,19 +234,39 @@ public class MakeIcon
                     newImage.setRGB(x, y, c.getRGB());
                 }
             }
-            ImageIO.write(newImage, "PNG", fileDest);
+            if (!ImageIO.write(newImage,
+                               fmt.equals("argb") ? "PNG" : fmt.toUpperCase(),
+                               fileDest))
+            {
+                throw new Exception("Could not write image to '" +
+                                    fileDest +
+                                    "' in Format '" +
+                                    fmt.toUpperCase() +
+                                    "'. Probably no appropriate file-writer?");
+            }
+
         }
         catch (Exception e)
         {
-            // ignore
+            LOGGER.log(Level.WARNING, e.toString());
         }
     }
 
-    private static void extractAlpha(BufferedImage img,
+    private static void extractAlpha(String picFile,
                                      int width,
                                      String pass,
                                      String dir)
     {
+        BufferedImage img;
+        try
+        {
+            img = ImageIO.read(new File(picFile));
+        }
+        catch (IOException ex)
+        {
+            return;
+        }
+
         int[] asc = new int[img.getWidth() * img.getWidth()];
         int waterInd = 0;
         for (int x = 0; x < img.getWidth(); x++)
@@ -282,7 +307,7 @@ public class MakeIcon
      */
     public static void main(String[] args)
     {
-        String cmd = "";
+        String fmt = "";
         String pass = "";
         String picFile = "";
         String topStr = "";
@@ -290,121 +315,144 @@ public class MakeIcon
         String alphaFile = "";
         String smudgeWidthStr = "";
         String jigStr = "";
-
         for (int c = 0; c < args.length; c++)
         {
             switch (args[c])
             {
-                case "-c":
+                case "-f":
                     if (c < args.length - 1)
                     {
-                        cmd = args[c + 1].substring(0, 1);
+                        fmt = args[c + 1].substring(0, 1).toLowerCase();
+                        fmt = "j".equals(fmt) ? "jpg" :
+                              "b".equals(fmt) ? "bmp" :
+                              "g".equals(fmt) ? "gif" :
+                              "p".equals(fmt) ? "png" :
+                              "w".equals(fmt) ? "wbmp" :
+                              "a".equals(fmt) ? "argb" :
+                              "";
                         pass = args[c + 1].substring(1);
+                        c++;
                     }
-                    c++;
                     break;
                 case "-p":
                     if (c < args.length - 1)
                     {
                         picFile = args[c + 1];
+                        c++;
                     }
-                    c++;
                     break;
                 case "-o":
                     if (c < args.length - 1)
                     {
                         outFile = args[c + 1];
+                        c++;
                     }
-                    c++;
                     break;
                 case "-a":
                     if (c < args.length - 1)
                     {
                         alphaFile = args[c + 1];
+                        c++;
                     }
-                    c++;
                     break;
-                case "-t":
+                case "-c":
                     if (c < args.length - 1)
                     {
                         topStr = args[c + 1];
+                        c++;
                     }
-                    c++;
                     break;
                 case "-s":
                     if (c < args.length - 1)
                     {
                         smudgeWidthStr = args[c + 1];
+                        c++;
                     }
-                    c++;
                     break;
                 case "-j":
                     if (c < args.length - 1)
                     {
                         jigStr = args[c + 1];
+                        c++;
                     }
-                    c++;
                     break;
                 case "-?":
                 case "-h":
                 case "-help":
                 case "--help":
+                    System.out.println(USAGE);
+                    System.exit(0);
+                    break;
                 default:
                     System.out.println(
                             "unknown parameter '" + args[c] + "'!!\n" +
                             USAGE);
+                    System.exit(-1);
                     break;
             }
         }
 
+        setCap(topStr);
+        int width = getSmudgeWidth(smudgeWidthStr);
+        if (fmt.isEmpty())
+        {
+            extractAlpha(picFile, width, pass, outFile);
+        }
+        else
+        {
+            saveIcon(fmt,
+                     picFile,
+                     alphaFile,
+                     outFile,
+                     width,
+                     getJig(jigStr),
+                     pass);
+        }
+    }
+
+    private static void setCap(String topStr)
+    {
         try
         {
-            int width;
-            int jig;
-            try
-            {
-                cap = Integer.parseInt(topStr);
-            }
-            catch (NumberFormatException e)
-            {
-                cap = 245;
-            }
-            if (cap < 0 || cap > 255)
-            {
-                cap = 245;
-            }
-            rem = 255 - cap;
-            try
-            {
-                width = Integer.parseInt(smudgeWidthStr);
-            }
-            catch (NumberFormatException e)
-            {
-                width = 7;
-            }
-            if (cmd.startsWith("m"))
-            {
-                try
-                {
-                    jig = Integer.parseInt(jigStr);
-                }
-                catch (NumberFormatException e)
-                {
-                    jig = 7;
-                }
-                saveIcon(picFile, alphaFile, outFile, width, jig, pass);
-            }
-            else
-            {
-                BufferedImage img = ImageIO.read(new File(picFile));
-                extractAlpha(img, width, pass, outFile);
-            }
+            cap = Integer.parseInt(topStr);
         }
-        catch (IOException ex)
+        catch (NumberFormatException e)
         {
-            System.out.println(USAGE);
-            LOGGER.log(Level.SEVERE, ex.toString());
+            cap = 245;
         }
+        if (cap < 0 || cap > 255)
+        {
+            cap = 245;
+        }
+        rem = 255 - cap;
+    }
+
+    private static int getSmudgeWidth(String smudgeWidthStr)
+    {
+        int width;
+        try
+        {
+            width = Integer.parseInt(smudgeWidthStr);
+        }
+        catch (NumberFormatException e)
+        {
+            width = 7;
+        }
+        return width;
+    }
+
+    private static int getJig(String jigStr)
+    {
+        int jig;
+        try
+        {
+            jig = Integer.parseInt(jigStr);
+        }
+        catch (NumberFormatException e)
+        {
+            jig = 7;
+        }
+        return jig;
     }
 
 }
