@@ -1503,7 +1503,7 @@ public class ColorUtils
                    col == 3 ? contrast.shift : "";
         }
 
-        boolean up(int row)
+        public boolean up(int row)
         {
             if (row < 1)
             {
@@ -1517,7 +1517,7 @@ public class ColorUtils
             return true;
         }
 
-        boolean down(int row)
+        public boolean down(int row)
         {
             if (row > contrastColors.size() - 2)
             {
@@ -1531,7 +1531,7 @@ public class ColorUtils
             return true;
         }
 
-        void up(int[] rows)
+        public void up(int[] rows)
         {
             for (int i = 0; i < rows.length; i++)
             {
@@ -1539,7 +1539,7 @@ public class ColorUtils
             }
         }
 
-        void down(int[] rows)
+        public void down(int[] rows)
         {
             for (int i = rows.length - 1; i > -1; i--)
             {
@@ -1548,7 +1548,7 @@ public class ColorUtils
         }
 
         /**
-         *
+         * Class to create a contrasting color.
          */
         public static class Contrast implements Comparable<Contrast>
         {
@@ -1618,8 +1618,7 @@ public class ColorUtils
             Color hintColor = null;
             Integer shift = -1;
 
-            private Contrast(Color bg,
-                             Type type, Object... params)
+            private Contrast(Color bg, Type type, Object... params)
             {
                 this.type = type;
                 if (type == Type.COMPLEMENT)
@@ -1643,13 +1642,10 @@ public class ColorUtils
                     if (type == Type.EXACT)
                     {
                         electedContrast = hintColor;
-
                     }
                     else if (type == Type.HINT)
                     {
-                        electedContrast = contrastColorByHint(bg,
-                                                              hintColor);
-
+                        electedContrast = contrastColorByHint(bg, hintColor);
                     }
                 }
             }
