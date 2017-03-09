@@ -512,7 +512,7 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
                 shiftSpinnerStateChanged(evt);
             }
         });
-        add(shiftSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 370, 60, -1));
+        add(shiftSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 410, 60, -1));
 
         suitableForegroundButton.setText(org.openide.util.NbBundle.getMessage(ForegroundBackgroundColorChooser.class, "ForegroundBackgroundColorChooser.suitableForegroundButton.text")); // NOI18N
         suitableForegroundButton.addActionListener(new java.awt.event.ActionListener()
@@ -522,7 +522,7 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
                 suitableForegroundButtonActionPerformed(evt);
             }
         });
-        add(suitableForegroundButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 370, 210, -1));
+        add(suitableForegroundButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 410, 210, -1));
 
         colorChooser.setMaximumSize(new java.awt.Dimension(612, 305));
         add(colorChooser, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 650, 330));
@@ -535,7 +535,7 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
                 exactForegroundButtonActionPerformed(evt);
             }
         });
-        add(exactForegroundButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 340, 190, -1));
+        add(exactForegroundButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 380, 190, -1));
 
         greyForegroundButton.setText(org.openide.util.NbBundle.getMessage(ForegroundBackgroundColorChooser.class, "ForegroundBackgroundColorChooser.greyForegroundButton.text")); // NOI18N
         greyForegroundButton.addActionListener(new java.awt.event.ActionListener()
@@ -545,7 +545,7 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
                 greyForegroundButtonActionPerformed(evt);
             }
         });
-        add(greyForegroundButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 340, 220, -1));
+        add(greyForegroundButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 380, 220, -1));
 
         shiftButton.setText(org.openide.util.NbBundle.getMessage(ForegroundBackgroundColorChooser.class, "ForegroundBackgroundColorChooser.shiftButton.text")); // NOI18N
         shiftButton.addActionListener(new java.awt.event.ActionListener()
@@ -555,7 +555,7 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
                 shiftButtonActionPerformed(evt);
             }
         });
-        add(shiftButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 370, 200, -1));
+        add(shiftButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 410, 200, -1));
 
         hintButton.setText(org.openide.util.NbBundle.getMessage(ForegroundBackgroundColorChooser.class, "ForegroundBackgroundColorChooser.hintButton.text")); // NOI18N
         hintButton.addActionListener(new java.awt.event.ActionListener()
@@ -565,7 +565,7 @@ public class ForegroundBackgroundColorChooser extends javax.swing.JPanel
                 hintButtonActionPerformed(evt);
             }
         });
-        add(hintButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 340, -1, -1));
+        add(hintButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 380, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void shiftSpinnerStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_shiftSpinnerStateChanged

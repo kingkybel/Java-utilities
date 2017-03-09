@@ -20,11 +20,16 @@
 package com.kybelksties.gui;
 
 import java.awt.Color;
+import java.awt.MultipleGradientPaint;
+import java.awt.MultipleGradientPaint.CycleMethod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
+ * A list of colors. Derived from ArrayList, hence inherits the methods of
+ * ArrayList. The class is intended to reduce the number of members variables
+ * when defining (multi-color) paints.
  *
  * @author Dieter J Kybelksties
  */
@@ -35,16 +40,29 @@ public class ColorList extends ArrayList<Color>
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    GradientType type = GradientType.UNIFORM;
-    float[] ratios = null;
+    private GradientType gradientType = GradientType.UNIFORM;
+    private float[] ratios = null;
+    private CycleMethod cycleMethod = null;
 
+    /**
+     * Exception derivative to be thrown when preconditions for different
+     * gradient types are not met.
+     */
     public class Exception extends java.lang.Exception
     {
 
+        /**
+         * Default constructor.
+         */
         public Exception()
         {
         }
 
+        /**
+         * Construct with a message.
+         *
+         * @param message error message describing the exception
+         */
         public Exception(String message)
         {
             super(message);
@@ -63,6 +81,19 @@ public class ColorList extends ArrayList<Color>
     }
 
     /**
+     * Default constructor.
+     *
+     * @param other the color list to copy from.
+     * @throws com.kybelksties.gui.ColorList.Exception
+     */
+    public ColorList(ColorList other) throws Exception
+    {
+        super(other);
+        this.gradientType = other.gradientType;
+        System.arraycopy(other.ratios, 0, this.ratios, 0, other.ratios.length);
+    }
+
+    /**
      * Construct with one or more colors.
      *
      * @param color  First color in the list
@@ -75,24 +106,29 @@ public class ColorList extends ArrayList<Color>
     }
 
     /**
-     * Construct color list of specific type.
+     * Construct color list of specific gradientType.
      *
-     * @param type   gradient type
-     * @param colors variable list of colors, that will be defaulted if
-     *               necessary
+     * @param gradientType type of gradient
+     * @param colors       variable list of colors, that will be defaulted if
+     *                     necessary
      * @throws com.kybelksties.gui.ColorList.Exception
      */
-    public ColorList(GradientType type, Color... colors) throws Exception
+    public ColorList(GradientType gradientType, Color... colors)
+            throws Exception
     {
-        this.type = type == null ? GradientType.UNIFORM : type;
-        int minNum = type == GradientType.UNIFORM ? 1 :
-                     type == GradientType.TOP_TO_BOTTOM ? 2 :
-                     type == GradientType.LEFT_TO_RIGHT ? 2 :
-                     type == GradientType.DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM ? 2 :
-                     type == GradientType.DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM ? 2 :
-                     type == GradientType.CIRCULAR ? 2 :
-                     type == GradientType.FOUR_COLOR_RECTANGULAR ? 4 :
-                     type == GradientType.RANDOM_RASTER ? 5 : 1;
+        this.gradientType = gradientType == null ?
+                            GradientType.UNIFORM :
+                            gradientType;
+        int minNum = gradientType == GradientType.UNIFORM ? 1 :
+                     gradientType == GradientType.TOP_TO_BOTTOM ? 2 :
+                     gradientType == GradientType.LEFT_TO_RIGHT ? 2 :
+                     gradientType ==
+                     GradientType.DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM ? 2 :
+                     gradientType ==
+                     GradientType.DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM ? 2 :
+                     gradientType == GradientType.CIRCULAR ? 2 :
+                     gradientType == GradientType.FOUR_COLOR_RECTANGULAR ? 4 :
+                     gradientType == GradientType.RANDOM_RASTER ? 5 : 1;
 
         if (colors != null)
         {
@@ -106,72 +142,76 @@ public class ColorList extends ArrayList<Color>
                 add(ColorUtils.randomColor());
             }
         }
-        setRatios(type);
-    }
-
-    private void setRatios(GradientType type, float... ratios) throws Exception
-    {
-        if (type == GradientType.TOP_TO_BOTTOM ||
-            type == GradientType.LEFT_TO_RIGHT ||
-            type == GradientType.DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM ||
-            type == GradientType.DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM ||
-            type == GradientType.CIRCULAR)
-        {
-            if (size() == 0)
-            {
-                throw new Exception(
-                        "Cannot set ratios if number of colors is 0.");
-            }
-            if (ratios == null)
-            {
-                this.ratios = new float[size()];
-                for (int i = 0; i < this.ratios.length; i++)
-                {
-                    this.ratios[i] = 1.0F / ((float) this.ratios.length);
-                }
-            }
-            else
-            {
-                this.ratios = new float[size()];
-                float sum = 0.0F;
-                for (int i = 0; i < Math.min(size(), ratios.length); i++)
-                {
-                    this.ratios[i] = Math.abs(ratios[i]);
-                    sum += this.ratios[i];
-                }
-                if (sum == 0.0F)
-                {
-                    for (int i = 0; i < size(); i++)
-                    {
-                        this.ratios[i] = 1.0f / ((float) size());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < size(); i++)
-                    {
-                        this.ratios[i] /= sum;
-                    }
-                }
-
-            }
-        }
-    }
-
-    public ColorList(GradientType type,
-                     ArrayList<Color> colors,
-                     ArrayList<Float> ratios) throws Exception
-    {
-        this(type, (Color[]) colors.toArray());
+        setRatios(gradientType);
+        setCycleMethod(CycleMethod.NO_CYCLE);
     }
 
     /**
+     * Constructor for a gradient with non-equidistant ratios.
      *
-     * @return @throws com.kybelksties.gui.ColorList.Exception
+     * @param gradientType type of gradient
+     * @param colors       array list of colors, that will be defaulted if
+     *                     necessary
+     * @param ratios       distance ratios for gradients
+     * @throws com.kybelksties.gui.ColorList.Exception
+     */
+    public ColorList(GradientType gradientType,
+                     ArrayList<Color> colors,
+                     ArrayList<Float> ratios) throws Exception
+    {
+        this(gradientType, (Color[]) colors.toArray());
+    }
+
+    /**
+     * Set the distance ratios for a gradient.
+     *
+     * @param gradientType type of gradient
+     * @param ratios       new distance ratios for the gradient
+     * @throws com.kybelksties.gui.ColorList.Exception the number of colors in
+     *                                                 the list is 0 or
+     *                                                 gradientType is not a
+     *                                                 gradient
+     */
+    final void setRatios(GradientType gradientType, float... ratios) throws
+            Exception
+    {
+        setType(gradientType);
+        setRatiosByAccumulation(ratios);
+    }
+
+    /**
+     * Set the transparency of all colors in the list to the alpha value.
+     *
+     * @param alpha a value between 0 and 1, will be defaulted if outside the
+     *              range
+     * @return an identical list with alpha values changed to alpha
+     * @throws com.kybelksties.gui.ColorList.Exception
+     */
+    public ColorList setTransparency(float alpha) throws Exception
+    {
+        ColorList reval = new ColorList(this);
+        if (alpha < 0.0F || alpha > 1.0F)
+        {
+            alpha = 1.0F;
+        }
+        for (int i = 0; i < size(); i++)
+        {
+            float rgb[] = get(i).getColorComponents(null);
+            set(i, new Color(rgb[0], rgb[1], rgb[2], alpha));
+        }
+        return reval;
+    }
+
+    /**
+     * Get the color for a uniform "gradient".
+     *
+     * @return the color
+     * @throws com.kybelksties.gui.ColorList.Exception if gradientType is not a
+     *                                                 uniform color
      */
     public Color getColor() throws ColorList.Exception
     {
-        if (!type.equals(GradientType.UNIFORM))
+        if (!gradientType.equals(GradientType.UNIFORM))
         {
             throw new Exception(
                     "Single color only defined for uniform color list.");
@@ -180,19 +220,238 @@ public class ColorList extends ArrayList<Color>
     }
 
     /**
+     * Retrieve the gradient gradientType.
      *
-     * @return @throws com.kybelksties.gui.ColorList.Exception
+     * @return the gradient gradientType
      */
-    public Color getAlternateColor() throws Exception
+    public GradientType getType()
     {
-        if (!type.equals(GradientType.UNIFORM))
+        return gradientType;
+    }
+
+    /**
+     * Set the gradient gradientType.
+     *
+     * @param type the new gradient gradientType
+     */
+    public void setType(GradientType type)
+    {
+        this.gradientType = (type == null) ? GradientType.UNIFORM : type;
+        if (this.gradientType.equals(GradientType.UNIFORM) ||
+            this.gradientType.equals(GradientType.RANDOM_RASTER))
         {
-            throw new Exception(
-                    "Alternate color only defined for uniform color list.");
+            this.ratios = null;
         }
-        return size() > 1 ?
-               get(1) :
-               ColorUtils.contrastColorByComplement(get(0));
+    }
+
+    /**
+     * Retrieve the ratios.
+     *
+     * @return the ratios as float array
+     */
+    public float[] getRatios()
+    {
+        return ratios;
+    }
+
+    static boolean floatsAreStrictlyMonotone(float[] values)
+    {
+        // values need to be strictly monotone
+        if (values == null || values.length == 0 || values.length == 1)
+        {
+            return true;
+        }
+        for (int i = 1; i < values.length; i++)
+        {
+            if (values[i] < values[i - 1])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static boolean floatsAreStrictlyPositive(float[] values)
+    {
+        // values need to be strictly monotone
+        if (values == null || values.length == 0)
+        {
+            return true;
+        }
+        for (int i = 0; i < values.length; i++)
+        {
+            if (values[i] <= 0.0F)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Set the ratios. Depending on number of values the list might be defaulted
+     * or truncated . Then it will be fit into the interval [0.0 .. 1.0].
+     *
+     * @param ratios the new ratios as float array. Only restriction is that all
+     *               values are all > 0
+     * @throws com.kybelksties.gui.ColorList.Exception if gradientType is not a
+     *                                                 gradient
+     */
+    public void setRatiosByAccumulation(float[] ratios) throws Exception
+    {
+        if (gradientType == GradientType.TOP_TO_BOTTOM ||
+            gradientType == GradientType.LEFT_TO_RIGHT ||
+            gradientType == GradientType.DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM ||
+            gradientType == GradientType.DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM ||
+            gradientType == GradientType.CIRCULAR)
+        {
+            if (size() == 0)
+            {
+                throw new Exception(
+                        "Cannot set ratios if number of colors is 0.");
+            }
+            // if the ratios array is null then make equidistant
+            if (ratios == null)
+            {
+                this.ratios = new float[size()];
+                this.ratios[0] = 1.0F / ((float) this.ratios.length);
+                for (int i = 1; i < this.ratios.length - 1; i++)
+                {
+                    this.ratios[i] = this.ratios[i - 1] +
+                                     1.0F / ((float) this.ratios.length);
+                }
+            }
+            else
+            {
+                if (!floatsAreStrictlyPositive(ratios))
+                {
+                    throw new Exception(
+                            "Can only create ratios with strictly posive values.");
+                }
+                // make an array of floats matching the number of colors
+                this.ratios = new float[size()];
+                float sum = 0.0F;
+                for (int i = 0; i < size(); i++)
+                {
+                    // use the given ratio value if possible or default if not
+                    this.ratios[i] = sum +
+                                     ((i < ratios.length) ?
+                                      ratios[i] :
+                                      sum / (float) i);
+                    sum += this.ratios[i];
+                }
+
+                if (this.ratios[this.ratios.length - 1] > 1.0F)
+                {
+                    // normalise the ratio-values to be monotone from 0.0 to 1.0
+                    for (int i = 0; i < size(); i++)
+                    {
+                        this.ratios[i] /= this.ratios[this.ratios.length - 1];
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            throw new Exception("Cannot define ratios for non-gradients.");
+        }
+    }
+
+    /**
+     * Set the ratios. Depending on number of values the list might be defaulted
+     * or truncated . Then it will be fit into the interval [0.0 .. 1.0].
+     *
+     * @param ratios the new ratios as float array. Only restriction is that all
+     *               values are all > 0
+     * @throws com.kybelksties.gui.ColorList.Exception if gradientType is not a
+     *                                                 gradient
+     */
+    public void setRatiosFromMonotoneList(float[] ratios) throws Exception
+    {
+        if (gradientType == GradientType.TOP_TO_BOTTOM ||
+            gradientType == GradientType.LEFT_TO_RIGHT ||
+            gradientType == GradientType.DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM ||
+            gradientType == GradientType.DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM ||
+            gradientType == GradientType.CIRCULAR)
+        {
+            if (size() == 0)
+            {
+                throw new Exception(
+                        "Cannot set ratios if number of colors is 0.");
+            }
+            // if the ratios array is null then make equidistant
+            if (ratios == null)
+            {
+                this.ratios = new float[size()];
+                this.ratios[0] = 1.0F / ((float) this.ratios.length);
+                for (int i = 1; i < this.ratios.length - 1; i++)
+                {
+                    this.ratios[i] = this.ratios[i - 1] +
+                                     1.0F / ((float) this.ratios.length);
+                }
+            }
+            else
+            {
+                if (!floatsAreStrictlyPositive(ratios))
+                {
+                    throw new Exception(
+                            "Can only create ratios with strictly posive values.");
+                }
+                // make an array of floats matching the number of colors
+                this.ratios = new float[size()];
+                float sum = 0.0F;
+                if (!floatsAreStrictlyMonotone(ratios))
+                {
+                    throw new Exception(
+                            "Can only create ratios from monotone list if the " +
+                            "given list is strictly monotone.");
+                }
+                for (int i = 0; i < size(); i++)
+                {
+                    // use the given ratio value if possible or default if not
+                    this.ratios[i] = ((i < ratios.length) ?
+                                      ratios[i] :
+                                      sum / (float) i);
+                    sum += this.ratios[i];
+                }
+
+                if (this.ratios[this.ratios.length - 1] > 1.0F)
+                {
+                    // normalise the ratio-values to be monotone from 0.0 to 1.0
+                    for (int i = 0; i < size(); i++)
+                    {
+                        this.ratios[i] /= this.ratios[this.ratios.length - 1];
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            throw new Exception("Cannot define ratios for non-gradients.");
+        }
+    }
+
+    /**
+     * Retrieve the cycle-method of gradients.
+     *
+     * @return the cycle-method
+     */
+    public MultipleGradientPaint.CycleMethod getCycleMethod()
+    {
+        return cycleMethod;
+    }
+
+    /**
+     * Set the cycle-method of gradients.
+     *
+     * @param cycleMethod the new cycle-method
+     */
+    public final void setCycleMethod(
+            MultipleGradientPaint.CycleMethod cycleMethod)
+    {
+        this.cycleMethod = cycleMethod;
     }
 
 }

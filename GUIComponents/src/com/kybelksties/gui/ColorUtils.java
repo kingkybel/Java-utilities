@@ -775,9 +775,9 @@ public class ColorUtils
         g = (g < 0.0F) ? 0.0F : g;
         g = (g > 1.0F) ? 1.0F : g;
         b = (b < 0.0F) ? 0.0F : b;
-        b = (b > 1.0F) ? 255 : b;
+        b = (b > 1.0F) ? 1.0F : b;
         a = (a < 0.0F) ? 0.0F : a;
-        a = (a > 1.0F) ? 255 : a;
+        a = (a > 1.0F) ? 1.0F : a;
         return new Color(r, g, b, a);
     }
 
@@ -833,24 +833,25 @@ public class ColorUtils
      */
     public static Color contrastColorByComplement(Color color)
     {
+        float alpha = (color == null) ? 1.0F : color.getAlpha() / 256.0F;
         if (color == null)
         {
             color = Color.BLACK;
         }
 
-        int r1 = color.getRed();
-        int g1 = color.getGreen();
-        int b1 = color.getBlue();
-        int r2 = 255 - r1;
-        int g2 = 255 - g1;
-        int b2 = 255 - b1;
-        Color reval = makeColor(r2, g2, b2);
-        if (colorDifference(color, reval) < 150)
+        float rgb1[] = color.getColorComponents(null);
+        float[] rgb2 = new float[rgb1.length];
+        for (int i = 0; i < rgb1.length; i++)
         {
-            r2 = (r2 + (r2 < 128 ? -70 : 70)) % 256;
-            g2 = (g2 + (g2 < 128 ? -70 : 70)) % 256;
-            b2 = (b2 + (b2 < 128 ? -70 : 70)) % 256;
-            reval = makeColor(r2, g2, b2);
+            rgb2[i] = 1.0F - rgb1[i];
+        }
+        Color reval = makeColor(rgb2[0], rgb2[1], rgb2[2], alpha);
+        if (colorDifference(color, reval) < MINCONTRAST) // 150 is heuristic
+        {
+            rgb2[0] += rgb2[0] < 0.5F ? +0.2F : -0.2F;
+            rgb2[1] += rgb2[1] < 0.5F ? +0.2F : -0.2F;
+            rgb2[2] += rgb2[2] < 0.5F ? +0.2F : -0.2F;
+            reval = makeColor(rgb2[0], rgb2[1], rgb2[2], rgb2[3]);
         }
         int colIntensDiff = colorIntensityDifference(color, reval);
         if (colIntensDiff < MINCONTRAST)
@@ -860,19 +861,19 @@ public class ColorUtils
             {
                 while (intensityToDistribute > 0)
                 {
-                    if (r2 < 255 && r2 > r1)
+                    if (rgb2[0] < 1.0F && rgb2[0] > rgb1[0])
                     {
-                        r2++;
+                        rgb2[0] += 1.0F / 256.0F;
                         intensityToDistribute--;
                     }
-                    else if (g2 < 255 && g2 > g1)
+                    else if (rgb2[1] < 1.0F && rgb2[1] > rgb1[1])
                     {
-                        g2++;
+                        rgb2[0] += 1.0F / 256.0F;
                         intensityToDistribute--;
                     }
-                    else if (b2 < 255 && b2 > b1)
+                    else if (rgb2[2] < 1.0F && rgb2[2] > rgb1[2])
                     {
-                        b2++;
+                        rgb2[2] += 1.0F / 256.0F;
                         intensityToDistribute--;
                     }
                     else
@@ -880,25 +881,25 @@ public class ColorUtils
                         intensityToDistribute = 0;
                     }
                 }
-                reval = makeColor(r2, g2, b2);
+                reval = makeColor(rgb2[0], rgb2[1], rgb2[2], alpha);
             }
             else
             {
                 while (intensityToDistribute > 0)
                 {
-                    if (r2 > 0 && r2 < r1)
+                    if (rgb2[0] > 0.0F && rgb2[0] < rgb1[0])
                     {
-                        r2--;
+                        rgb2[0] -= 1.0F / 256.0F;
                         intensityToDistribute--;
                     }
-                    else if (g2 > 0 && g2 < g1)
+                    else if (rgb2[1] > 0.0F && rgb2[1] < rgb1[1])
                     {
-                        g2--;
+                        rgb2[1] -= 1.0F / 256.0F;
                         intensityToDistribute--;
                     }
-                    else if (b2 > 0 && b2 < b1)
+                    else if (rgb2[2] > 0.0F && rgb2[2] < rgb1[2])
                     {
-                        b2--;
+                        rgb2[2] -= 1.0F / 256.0F;
                         intensityToDistribute--;
                     }
                     else
@@ -906,7 +907,7 @@ public class ColorUtils
                         intensityToDistribute = 0;
                     }
                 }
-                reval = makeColor(r2, g2, b2);
+                reval = makeColor(rgb2[0], rgb2[1], rgb2[2], alpha);
             }
         }
         return reval;
@@ -923,6 +924,7 @@ public class ColorUtils
      */
     public static Color contrastColorByShift(Color color, int shift)
     {
+        float alpha = (color == null) ? 1.0F : color.getAlpha() / 256.0F;
         if (color == null)
         {
             color = Color.BLACK;
@@ -936,11 +938,11 @@ public class ColorUtils
         int r1 = color.getRed();
         int g1 = color.getGreen();
         int b1 = color.getBlue();
-        int r2 = (r1 + shift) % 256;
-        int g2 = (g1 + shift) % 256;
-        int b2 = (b1 + shift) % 256;
+        float r2 = (float) ((r1 + shift) % 256) / 256.0F;
+        float g2 = (float) ((g1 + shift) % 256) / 256.0F;
+        float b2 = (float) ((b1 + shift) % 256) / 256.0F;
 
-        Color reval = makeColor(r2, g2, b2);
+        Color reval = makeColor(r2, g2, b2, alpha);
 
         return reval;
     }
@@ -955,14 +957,15 @@ public class ColorUtils
      */
     public static Color contrastColorGrey(Color color)
     {
+        float alpha = (color == null) ? 1.0F : color.getAlpha() / 256.0F;
         if (color == null)
         {
             color = Color.BLACK;
         }
 
-        int grey = ((colorIntensity(color) / 3) + 128) % 256;
+        float grey = ((colorIntensity(color) / 3) + 128) % 256;
 
-        Color reval = makeColor(grey, grey, grey);
+        Color reval = makeColor(grey, grey, grey, alpha);
 
         return reval;
     }
@@ -979,6 +982,7 @@ public class ColorUtils
      */
     public static Color contrastColorByHint(Color color, Color hintColor)
     {
+        float alpha = (color == null) ? 1.0F : color.getAlpha() / 256.0F;
         if (color == null)
         {
             color = Color.BLACK;
@@ -1058,7 +1062,7 @@ public class ColorUtils
 
                 }
             }
-            reval = makeColor(r2, g2, b2);
+            reval = makeColor(r2 / 256.0F, g2 / 256.0F, b2 / 256.0F, alpha);
 
         }
 
