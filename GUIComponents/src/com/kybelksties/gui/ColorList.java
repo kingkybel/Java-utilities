@@ -20,6 +20,7 @@
 package com.kybelksties.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.MultipleGradientPaint;
 import java.awt.MultipleGradientPaint.CycleMethod;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class ColorList extends ArrayList<Color>
     private GradientType gradientType = GradientType.UNIFORM;
     private float[] ratios = null;
     private CycleMethod cycleMethod = null;
+    Dimension dimension = null;
 
     /**
      * Exception derivative to be thrown when preconditions for different
@@ -77,7 +79,7 @@ public class ColorList extends ArrayList<Color>
      */
     public ColorList() throws Exception
     {
-        this(GradientType.UNIFORM);
+        this(GradientType.UNIFORM, null, null);
     }
 
     /**
@@ -90,6 +92,8 @@ public class ColorList extends ArrayList<Color>
     {
         super(other);
         this.gradientType = other.gradientType;
+        this.cycleMethod = other.cycleMethod;
+        this.dimension = other.dimension;
         System.arraycopy(other.ratios, 0, this.ratios, 0, other.ratios.length);
     }
 
@@ -102,18 +106,23 @@ public class ColorList extends ArrayList<Color>
      */
     public ColorList(Color color, Color... colors) throws Exception
     {
-        this(GradientType.UNIFORM, colors);
+        this(GradientType.UNIFORM, null, null, colors);
     }
 
     /**
      * Construct color list of specific gradientType.
      *
      * @param gradientType type of gradient
+     * @param cycleMethod
+     * @param dimension
      * @param colors       variable list of colors, that will be defaulted if
      *                     necessary
      * @throws com.kybelksties.gui.ColorList.Exception
      */
-    public ColorList(GradientType gradientType, Color... colors)
+    public ColorList(GradientType gradientType,
+                     CycleMethod cycleMethod,
+                     Dimension dimension,
+                     Color... colors)
             throws Exception
     {
         this.gradientType = gradientType == null ?
@@ -159,7 +168,13 @@ public class ColorList extends ArrayList<Color>
                      ArrayList<Color> colors,
                      ArrayList<Float> ratios) throws Exception
     {
-        this(gradientType, (Color[]) colors.toArray());
+        this(gradientType, null, null, (Color[]) colors.toArray());
+        float[] ratioArray = new float[ratios.size()];
+        for (int i = 0; i < ratios.size(); i++)
+        {
+            ratioArray[i] = ratios.get(i);
+        }
+        setRatios(gradientType, ratioArray);
     }
 
     /**
@@ -172,8 +187,8 @@ public class ColorList extends ArrayList<Color>
      *                                                 gradientType is not a
      *                                                 gradient
      */
-    final void setRatios(GradientType gradientType, float... ratios) throws
-            Exception
+    final void setRatios(GradientType gradientType, float... ratios)
+            throws Exception
     {
         setType(gradientType);
         setRatiosByAccumulation(ratios);
