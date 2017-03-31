@@ -51,18 +51,28 @@ public class ColorButton extends JButton
                                               "ColorButton.colorButton.text"));
     }
 
+    @Override
+    final public void addActionListener(ActionListener l)
+    {
+        if (l == null)
+        {
+            l = new ActionListener()
+            {
+                @Override
+                final public void actionPerformed(ActionEvent e)
+                {
+                    setChosenColor(JColorChooser.showDialog(getParent(),
+                                                            COLORDIALOG_HEADER,
+                                                            chosenColor));
+                }
+            };
+            super.addActionListener(l);
+        }
+    }
+
     private void initializeHandler(String text)
     {
-        addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                setChosenColor(JColorChooser.showDialog(getParent(),
-                                                        COLORDIALOG_HEADER,
-                                                        chosenColor));
-            }
-        });
+        addActionListener(null);
         setText(text);
     }
 

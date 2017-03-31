@@ -25,16 +25,24 @@ import java.awt.MultipleGradientPaint;
 import java.awt.MultipleGradientPaint.CycleMethod;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.logging.Logger;
+import javax.swing.table.AbstractTableModel;
 
 /**
- * A list of colors. Derived from ArrayList, hence inherits the methods of
- * ArrayList. The class is intended to reduce the number of members variables
- * when defining (multi-color) paints.
+ * A list of colors. Derived from List, hence implements the methods of List.
+ * The class is intended to reduce the number of members variables when defining
+ * (multi-color) paints. Also extends AbstractTableModel in order to be able to
+ * create the list using a table.
  *
  * @author Dieter J Kybelksties
  */
-public class ColorList extends ArrayList<Color>
+public final class ColorList
+        extends AbstractTableModel
+        implements List<Color>
 {
 
     private static final Class CLAZZ = ColorList.class;
@@ -44,7 +52,8 @@ public class ColorList extends ArrayList<Color>
     private GradientType gradientType = GradientType.UNIFORM;
     private float[] ratios = null;
     private CycleMethod cycleMethod = null;
-    Dimension dimension = null;
+    private Dimension dimension = null;
+    ArrayList<Color> colors = null;
 
     /**
      * Exception derivative to be thrown when preconditions for different
@@ -90,7 +99,6 @@ public class ColorList extends ArrayList<Color>
      */
     public ColorList(ColorList other) throws Exception
     {
-        super(other);
         this.gradientType = other.gradientType;
         this.cycleMethod = other.cycleMethod;
         this.dimension = other.dimension;
@@ -367,10 +375,6 @@ public class ColorList extends ArrayList<Color>
 
             }
         }
-        else
-        {
-            throw new Exception("Cannot define ratios for non-gradients.");
-        }
     }
 
     /**
@@ -467,6 +471,196 @@ public class ColorList extends ArrayList<Color>
             MultipleGradientPaint.CycleMethod cycleMethod)
     {
         this.cycleMethod = cycleMethod;
+    }
+
+    @Override
+    public int getRowCount()
+    {
+        return gradientType == null ? 0 :
+               (gradientType == GradientType.UNIFORM ||
+                gradientType == GradientType.UNIFORM_2_COLOR) ? 1 :
+               2;
+    }
+
+    @Override
+    public int getColumnCount()
+    {
+        return gradientType == null ? 0 :
+               (gradientType == GradientType.UNIFORM ||
+                gradientType == GradientType.UNIFORM_2_COLOR) ? 1 :
+               colors.size();
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex)
+    {
+        if (rowIndex < 0 ||
+            rowIndex >= getRowCount() ||
+            columnIndex < 0 ||
+            columnIndex >= getColumnCount())
+        {
+            return null;
+        }
+        return rowIndex == 0 ? colors.get(columnIndex) :
+               ratios[columnIndex];
+
+    }
+
+    @Override
+    public int size()
+    {
+        return colors == null ? 0 : colors.size();
+    }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return size() == 0;
+    }
+
+    @Override
+    public boolean contains(Object o)
+    {
+        return colors.contains(o);
+    }
+
+    @Override
+    public Iterator<Color> iterator()
+    {
+        return colors.iterator();
+    }
+
+    @Override
+    public Object[] toArray()
+    {
+        return colors.toArray();
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a)
+    {
+        return colors.toArray(a);
+    }
+
+    @Override
+    public boolean add(Color e)
+    {
+        return colors.add(e);
+    }
+
+    @Override
+    public boolean remove(Object o)
+    {
+
+        return colors.remove(o);
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c)
+    {
+
+        return colors.containsAll(c);
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Color> c)
+    {
+
+        return colors.addAll(c);
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends Color> c)
+    {
+
+        return colors.addAll(index, c);
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c)
+    {
+        boolean reval = colors.removeAll(c);
+        float[] newRatios = new float[colors.size()];
+        System.arraycopy(ratios, 0, newRatios, 0, newRatios.length);
+        ratios = newRatios;
+        return reval;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c)
+    {
+
+        boolean reval = colors.retainAll(c);
+        float[] newRatios = new float[colors.size()];
+        System.arraycopy(ratios, 0, newRatios, 0, newRatios.length);
+        ratios = newRatios;
+        return reval;
+    }
+
+    @Override
+    public void clear()
+    {
+        colors.clear();
+    }
+
+    @Override
+    public Color get(int index)
+    {
+
+        return colors.get(index);
+    }
+
+    @Override
+    public Color set(int index, Color element)
+    {
+
+        return colors.set(index, element);
+    }
+
+    @Override
+    public void add(int index, Color element)
+    {
+        colors.add(index, element);
+    }
+
+    @Override
+    public Color remove(int index)
+    {
+        Color reval = colors.remove(index);
+        float[] newRatios = new float[colors.size()];
+        System.arraycopy(ratios, 0, newRatios, 0, newRatios.length);
+        ratios = newRatios;
+        return reval;
+    }
+
+    @Override
+    public int indexOf(Object o)
+    {
+        return colors.indexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o)
+    {
+        return colors.lastIndexOf(o);
+    }
+
+    @Override
+    public ListIterator<Color> listIterator()
+    {
+        return colors.listIterator();
+    }
+
+    @Override
+    public ListIterator<Color> listIterator(int index)
+    {
+        return colors.listIterator(index);
+    }
+
+    @Override
+    public List<Color> subList(int fromIndex, int toIndex)
+    {
+        return colors.subList(fromIndex, toIndex);
     }
 
 }

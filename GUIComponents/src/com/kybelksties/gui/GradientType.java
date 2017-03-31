@@ -36,6 +36,10 @@ public enum GradientType
      */
     UNIFORM,
     /**
+     * No gradient, used to model single color.
+     */
+    UNIFORM_2_COLOR,
+    /**
      * 2-color gradient that changes from top to bottom.
      */
     TOP_TO_BOTTOM,
@@ -75,6 +79,10 @@ public enum GradientType
     {
 
         return NbBundle.getMessage(CLAZZ,
+                                   this == UNIFORM ?
+                                   "GradientType.uniform" :
+                                   this == UNIFORM_2_COLOR ?
+                                   "GradientType.uniform2Color" :
                                    this == TOP_TO_BOTTOM ?
                                    "GradientType.topToBottom" :
                                    this == LEFT_TO_RIGHT ?

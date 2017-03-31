@@ -22,10 +22,10 @@ package com.kybelksties.gui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Paint;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  * A class to be used for debugging of visual components of this package.
@@ -93,6 +93,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         timePicker1 = new com.kybelksties.gui.TimePicker();
         gradButton = new javax.swing.JButton();
         gradientTypeComboBox1 = new com.kybelksties.gui.GradientTypeComboBox();
+        colorButton1 = new com.kybelksties.gui.ColorButton();
         tablePanel = new javax.swing.JPanel();
         tableScrollPane = new javax.swing.JScrollPane();
         colorTable = new javax.swing.JTable();
@@ -161,7 +162,17 @@ public class DebugComponentsFrame extends javax.swing.JFrame
 
         gradButton.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.gradButton.text")); // NOI18N
         controlPanel.add(gradButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 70, 130, 60));
-        controlPanel.add(gradientTypeComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, -1, -1));
+        controlPanel.add(gradientTypeComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 260, 40));
+
+        colorButton1.setText(org.openide.util.NbBundle.getMessage(DebugComponentsFrame.class, "DebugComponentsFrame.colorButton1.text")); // NOI18N
+        colorButton1.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                colorButton1ActionPerformed(evt);
+            }
+        });
+        controlPanel.add(colorButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 280, -1, -1));
 
         mainSplitPane.setBottomComponent(controlPanel);
 
@@ -220,12 +231,17 @@ public class DebugComponentsFrame extends javax.swing.JFrame
 
     private void gradientButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_gradientButtonActionPerformed
     {//GEN-HEADEREND:event_gradientButtonActionPerformed
-        Paint gradient = GradientColorChooser.showDialog(this,
-                                                         Color.CYAN,
-                                                         Color.MAGENTA);
+        PaintChooser.showDialog(this,
+                                Color.CYAN,
+                                Color.MAGENTA);
 
         repaint();
     }//GEN-LAST:event_gradientButtonActionPerformed
+
+    private void colorButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_colorButton1ActionPerformed
+    {//GEN-HEADEREND:event_colorButton1ActionPerformed
+        JOptionPane.showMessageDialog(this, "Hi");
+    }//GEN-LAST:event_colorButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -269,6 +285,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.kybelksties.gui.ColorButton colorButton1;
     private javax.swing.JTable colorTable;
     private javax.swing.JPanel controlPanel;
     private javax.swing.JButton dateButton;
