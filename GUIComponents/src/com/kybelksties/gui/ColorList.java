@@ -185,6 +185,12 @@ public final class ColorList
         setRatios(gradientType, ratioArray);
     }
 
+    @Override
+    public String getColumnName(int column)
+    {
+        return super.getColumnName(column);
+    }
+
     /**
      * Set the distance ratios for a gradient.
      *
@@ -374,6 +380,7 @@ public final class ColorList
                 }
 
             }
+            fireTableDataChanged();
         }
     }
 
@@ -445,6 +452,7 @@ public final class ColorList
                 }
 
             }
+            fireTableDataChanged();
         }
         else
         {
@@ -473,17 +481,9 @@ public final class ColorList
         this.cycleMethod = cycleMethod;
     }
 
+    // overrides AbstractTableModel
     @Override
     public int getRowCount()
-    {
-        return gradientType == null ? 0 :
-               (gradientType == GradientType.UNIFORM ||
-                gradientType == GradientType.UNIFORM_2_COLOR) ? 1 :
-               2;
-    }
-
-    @Override
-    public int getColumnCount()
     {
         return gradientType == null ? 0 :
                (gradientType == GradientType.UNIFORM ||
@@ -491,6 +491,17 @@ public final class ColorList
                colors.size();
     }
 
+    // overrides AbstractTableModel
+    @Override
+    public int getColumnCount()
+    {
+        return gradientType == null ? 0 :
+               (gradientType == GradientType.UNIFORM ||
+                gradientType == GradientType.UNIFORM_2_COLOR) ? 1 :
+               2;
+    }
+
+    // overrides AbstractTableModel
     @Override
     public Object getValueAt(int rowIndex, int columnIndex)
     {
@@ -507,75 +518,111 @@ public final class ColorList
     }
 
     @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+    {
+        super.setValueAt(aValue, rowIndex, columnIndex);
+        fireTableCellUpdated(rowIndex, columnIndex);
+    }
+
+    // implements List
+    @Override
     public int size()
     {
         return colors == null ? 0 : colors.size();
     }
 
+    // implements List
     @Override
     public boolean isEmpty()
     {
         return size() == 0;
     }
 
+    // implements List
     @Override
     public boolean contains(Object o)
     {
         return colors.contains(o);
     }
 
+    // implements List
     @Override
     public Iterator<Color> iterator()
     {
         return colors.iterator();
     }
 
+    // implements List
     @Override
     public Object[] toArray()
     {
         return colors.toArray();
     }
 
+    // implements List
     @Override
     public <T> T[] toArray(T[] a)
     {
         return colors.toArray(a);
     }
 
+    // implements List
     @Override
     public boolean add(Color e)
     {
-        return colors.add(e);
+        boolean reval = colors.add(e);
+        float[] newRatios = new float[colors.size()];
+        System.arraycopy(ratios, 0, newRatios, 0, ratios.length);
+        ratios = newRatios;
+        fireTableDataChanged();
+        return reval;
     }
 
+    // implements List
     @Override
     public boolean remove(Object o)
     {
-
-        return colors.remove(o);
+        boolean reval = colors.remove(o);
+        float[] newRatios = new float[colors.size()];
+        System.arraycopy(ratios, 0, newRatios, 0, newRatios.length);
+        ratios = newRatios;
+        fireTableDataChanged();
+        return reval;
     }
 
+    // implements List
     @Override
     public boolean containsAll(Collection<?> c)
     {
-
         return colors.containsAll(c);
     }
 
+    // implements List
     @Override
     public boolean addAll(Collection<? extends Color> c)
     {
-
-        return colors.addAll(c);
+        boolean reval = colors.addAll(c);
+        float[] newRatios = new float[colors.size()];
+        System.arraycopy(ratios, 0, newRatios, 0, ratios.length);
+        ratios = newRatios;
+        fireTableDataChanged();
+        return reval;
     }
 
+    // implements List
     @Override
     public boolean addAll(int index, Collection<? extends Color> c)
     {
 
-        return colors.addAll(index, c);
+        boolean reval = colors.addAll(index, c);
+        float[] newRatios = new float[colors.size()];
+        System.arraycopy(ratios, 0, newRatios, 0, ratios.length);
+        ratios = newRatios;
+        fireTableDataChanged();
+        return reval;
     }
 
+    // implements List
     @Override
     public boolean removeAll(Collection<?> c)
     {
@@ -583,9 +630,11 @@ public final class ColorList
         float[] newRatios = new float[colors.size()];
         System.arraycopy(ratios, 0, newRatios, 0, newRatios.length);
         ratios = newRatios;
+        fireTableDataChanged();
         return reval;
     }
 
+    // implements List
     @Override
     public boolean retainAll(Collection<?> c)
     {
@@ -594,13 +643,17 @@ public final class ColorList
         float[] newRatios = new float[colors.size()];
         System.arraycopy(ratios, 0, newRatios, 0, newRatios.length);
         ratios = newRatios;
+        fireTableDataChanged();
         return reval;
     }
 
+    // implements List
     @Override
     public void clear()
     {
+        ratios = new float[0];
         colors.clear();
+        fireTableDataChanged();
     }
 
     @Override
@@ -610,19 +663,24 @@ public final class ColorList
         return colors.get(index);
     }
 
+    // implements List
     @Override
     public Color set(int index, Color element)
     {
-
-        return colors.set(index, element);
+        Color reval = colors.set(index, element);
+        fireTableDataChanged();
+        return reval;
     }
 
+    // implements List
     @Override
     public void add(int index, Color element)
     {
         colors.add(index, element);
+        fireTableDataChanged();
     }
 
+    // implements List
     @Override
     public Color remove(int index)
     {
@@ -630,33 +688,39 @@ public final class ColorList
         float[] newRatios = new float[colors.size()];
         System.arraycopy(ratios, 0, newRatios, 0, newRatios.length);
         ratios = newRatios;
+        fireTableDataChanged();
         return reval;
     }
 
+    // implements List
     @Override
     public int indexOf(Object o)
     {
         return colors.indexOf(o);
     }
 
+    // implements List
     @Override
     public int lastIndexOf(Object o)
     {
         return colors.lastIndexOf(o);
     }
 
+    // implements List
     @Override
     public ListIterator<Color> listIterator()
     {
         return colors.listIterator();
     }
 
+    // implements List
     @Override
     public ListIterator<Color> listIterator(int index)
     {
         return colors.listIterator(index);
     }
 
+    // implements List
     @Override
     public List<Color> subList(int fromIndex, int toIndex)
     {

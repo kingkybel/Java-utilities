@@ -46,9 +46,9 @@ import org.openide.util.NbBundle;
  */
 public class SpinnerEditor extends DefaultCellEditor
 {
-    
+
     private static final Class CLAZZ = SpinnerEditor.class;
-   private static final String CLASS_NAME = CLAZZ.getName();
+    private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     JSpinner spinner;

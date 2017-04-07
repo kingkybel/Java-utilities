@@ -72,7 +72,7 @@ import javax.swing.table.TableModel;
  * <b>Example:</b>
  * <pre>
  * {@code
- *ice = new IndividualCellEditor(this, new DefaultTableCellRenderer());
+ * ice = new IndividualCellEditor(this, new DefaultTableCellRenderer());
  * Object[] types = new Object[] {  "DropdownValue1",
  *                                  "DropdownValue2",
  *                                  "DropdownValue3"};
@@ -81,7 +81,7 @@ import javax.swing.table.TableModel;
  * ice.insertSpinnerEditor("DoubleValueSpinner", 1.0, -10000.0, 10000.0, 1.0);
  * ice.insertCheckboxEditor("BoolValueCheck");
  *
- * ice.setColumnEditor(0, "DefineCheck");
+ * ice.setColumnEditor(0, "BoolValueCheck");
  * // if the selected Type (in column 2) is "DropdownValue1"
  * ice.setColumnValueDependentColumnEditor(3,
  *                                         "DoubleValueSpinner",
@@ -92,7 +92,7 @@ import javax.swing.table.TableModel;
  */
 public class IndividualCellEditor implements TableCellEditor
 {
-    
+
     private static final Class CLAZZ = IndividualCellEditor.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
@@ -202,6 +202,19 @@ public class IndividualCellEditor implements TableCellEditor
         JCheckBox checkBox = new JCheckBox();
         insertComponent(name, checkBox);
         installedEditors.put(name, new DefaultCellEditor(checkBox));
+    }
+
+    /**
+     * Add a button-editor identified by a (unique) name. Need to create the
+     * CellButton - derived object and pass as parameter.
+     *
+     * @param name       unique name
+     * @param cellButton the button component
+     */
+    public void insertButtonEditor(String name, CellButton cellButton)
+    {
+        insertComponent(name, cellButton);
+        installedEditors.put(name, cellButton);
     }
 
     private void insertComponent(String name, Component component)

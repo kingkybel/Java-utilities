@@ -963,7 +963,12 @@ public class ColorUtils
             color = Color.BLACK;
         }
 
-        float grey = ((colorIntensity(color) / 3) + 128) % 256;
+        // Color intensity adds 3 channels, so need to divide by 3, then add an
+        // offset of 128 to make it sufficiently different in intensity. This
+        // might bring the value above 256 so we use modulo to get it back into
+        // the valid range. Then we normalize to the range 0.0F to 1.0F .
+        float grey = (((colorIntensity(color) / 3) + 128) % 256) /
+                     256.0F;
 
         Color reval = makeColor(grey, grey, grey, alpha);
 
@@ -1760,6 +1765,17 @@ public class ColorUtils
         return (int) (top * ratio_h + bottom * (1.0 - ratio_h));
     }
 
+//    private static int fourSideAverage(int top,
+//                                       int right,
+//                                       int bottom,
+//                                       int left,
+//                                       double ratio_w,
+//                                       double ratio_h)
+//    {
+//        double top = topLeft * ratio_w + topRight * (1.0 - ratio_w);
+//        double bottom = bottomLeft * ratio_w + bottomRight * (1.0 - ratio_w);
+//        return (int) (top * ratio_h + bottom * (1.0 - ratio_h));
+//    }
     /**
      * A 4-colour gradient class.
      */

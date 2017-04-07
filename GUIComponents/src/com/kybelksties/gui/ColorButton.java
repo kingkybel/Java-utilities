@@ -25,7 +25,6 @@ import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import org.openide.util.NbBundle;
 
@@ -33,7 +32,7 @@ import org.openide.util.NbBundle;
  *
  * @author Dieter J Kybelksties
  */
-public class ColorButton extends JButton
+public class ColorButton extends CellButton
 {
 
     private static final Class CLAZZ = ColorButton.class;
@@ -122,6 +121,25 @@ public class ColorButton extends JButton
     {
         this.chosenColor = chosenColor;
         setBackground(chosenColor);
+        setForeground(ColorUtils.contrastColorGrey(chosenColor));
+    }
+
+    @Override
+    public Object getValue()
+    {
+        return getChosenColor();
+    }
+
+    @Override
+    public void setValue(Object o)
+    {
+        setChosenColor((Color) o);
+    }
+
+    @Override
+    void commitEdit()
+    {
+        // Nothing to do
     }
 
 }
