@@ -69,6 +69,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
 //        };
 //        panel.setPreferredSize(new Dimension(50, 50));
 //        add(panel);
+        colorListTable2.setGradientType(GradientType.UNIFORM_2_COLOR);
     }
 
     /**
@@ -94,6 +95,8 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         gradButton = new javax.swing.JButton();
         gradientTypeComboBox1 = new com.kybelksties.gui.GradientTypeComboBox();
         colorButton1 = new com.kybelksties.gui.ColorButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        colorListTable2 = new com.kybelksties.gui.ColorListTable();
         tablePanel = new javax.swing.JPanel();
         tableScrollPane = new javax.swing.JScrollPane();
         colorTable = new javax.swing.JTable();
@@ -173,6 +176,23 @@ public class DebugComponentsFrame extends javax.swing.JFrame
             }
         });
         controlPanel.add(colorButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 280, -1, -1));
+
+        colorListTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][]
+            {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String []
+            {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(colorListTable2);
+
+        controlPanel.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 310, -1, 170));
 
         mainSplitPane.setBottomComponent(controlPanel);
 
@@ -286,6 +306,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.kybelksties.gui.ColorButton colorButton1;
+    private com.kybelksties.gui.ColorListTable colorListTable2;
     private javax.swing.JTable colorTable;
     private javax.swing.JPanel controlPanel;
     private javax.swing.JButton dateButton;
@@ -295,6 +316,7 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     private javax.swing.JButton gradButton;
     private javax.swing.JButton gradientButton;
     private com.kybelksties.gui.GradientTypeComboBox gradientTypeComboBox1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane mainSplitPane;
     private com.kybelksties.gui.OutputPanel outputPanel1;
     private com.kybelksties.gui.OutputPanel outputPanel2;

@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
+import org.openide.util.Exceptions;
 
 /**
  * A list of colors. Derived from List, hence implements the methods of List.
@@ -136,21 +137,32 @@ public final class ColorList
         this.gradientType = gradientType == null ?
                             GradientType.UNIFORM :
                             gradientType;
+
+        if (colors != null)
+        {
+            addAll(Arrays.asList(colors));
+        }
+        setConsistentData();
+        setCycleMethod(CycleMethod.NO_CYCLE);
+    }
+
+    private void setConsistentData()
+    {
         int minNum = gradientType == GradientType.UNIFORM ? 1 :
+                     gradientType == GradientType.UNIFORM_2_COLOR ? 2 :
                      gradientType == GradientType.TOP_TO_BOTTOM ? 2 :
                      gradientType == GradientType.LEFT_TO_RIGHT ? 2 :
                      gradientType ==
                      GradientType.DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM ? 2 :
                      gradientType ==
                      GradientType.DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM ? 2 :
-                     gradientType == GradientType.CIRCULAR ? 2 :
-                     gradientType == GradientType.FOUR_COLOR_RECTANGULAR ? 4 :
-                     gradientType == GradientType.RANDOM_RASTER ? 5 : 1;
-
-        if (colors != null)
-        {
-            addAll(Arrays.asList(colors));
-        }
+                     gradientType == GradientType.CIRCULAR ?
+                     2 :
+                     gradientType ==
+                     GradientType.FOUR_COLOR_RECTANGULAR ? 4 :
+                     gradientType ==
+                     GradientType.RANDOM_RASTER ? 5 :
+                     1;
         if (size() < minNum)
         {
             int start = size();
@@ -159,8 +171,14 @@ public final class ColorList
                 add(ColorUtils.randomColor());
             }
         }
-        setRatios(gradientType);
-        setCycleMethod(CycleMethod.NO_CYCLE);
+        try
+        {
+            setRatios();
+        }
+        catch (Exception ex)
+        {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     /**
@@ -176,13 +194,19 @@ public final class ColorList
                      ArrayList<Color> colors,
                      ArrayList<Float> ratios) throws Exception
     {
-        this(gradientType, null, null, (Color[]) colors.toArray());
-        float[] ratioArray = new float[ratios.size()];
-        for (int i = 0; i < ratios.size(); i++)
+        this(gradientType,
+             null,
+             null,
+             (Color[]) (colors != null ? colors.toArray() : null));
+        if (ratios != null)
         {
-            ratioArray[i] = ratios.get(i);
+            float[] ratioArray = new float[ratios.size()];
+            for (int i = 0; i < ratios.size(); i++)
+            {
+                ratioArray[i] = ratios.get(i);
+            }
+            setRatios(ratioArray);
         }
-        setRatios(gradientType, ratioArray);
     }
 
     @Override
@@ -201,10 +225,8 @@ public final class ColorList
      *                                                 gradientType is not a
      *                                                 gradient
      */
-    final void setRatios(GradientType gradientType, float... ratios)
-            throws Exception
+    final void setRatios(float... ratios) throws Exception
     {
-        setType(gradientType);
         setRatiosByAccumulation(ratios);
     }
 
@@ -265,12 +287,29 @@ public final class ColorList
      */
     public void setType(GradientType type)
     {
-        this.gradientType = (type == null) ? GradientType.UNIFORM : type;
-        if (this.gradientType.equals(GradientType.UNIFORM) ||
-            this.gradientType.equals(GradientType.RANDOM_RASTER))
+        if (type == null)
         {
-            this.ratios = null;
+            return;
         }
+        if (type != gradientType)
+        {
+
+            gradientType = type;
+            if (colors == null)
+            {
+                colors = new ArrayList<>();
+            }
+
+            setConsistentData();
+        }
+        if (gradientType.equals(GradientType.UNIFORM) ||
+            gradientType.equals(GradientType.UNIFORM_2_COLOR) ||
+            gradientType.equals(GradientType.FOUR_COLOR_RECTANGULAR) ||
+            gradientType.equals(GradientType.RANDOM_RASTER))
+        {
+            ratios = null;
+        }
+        setConsistentData();
     }
 
     /**
@@ -512,15 +551,58 @@ public final class ColorList
         {
             return null;
         }
-        return rowIndex == 0 ? colors.get(columnIndex) :
-               ratios[columnIndex];
-
+        switch (gradientType)
+        {
+            case UNIFORM:
+                return colors.get(0);
+            case UNIFORM_2_COLOR:
+                return colors.get(rowIndex);
+            case DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM:
+            case DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM:
+            case TOP_TO_BOTTOM:
+            case LEFT_TO_RIGHT:
+            case CIRCULAR:
+                return columnIndex == 0 ?
+                       colors.get(rowIndex) :
+                       ratios[rowIndex];
+            case FOUR_COLOR_RECTANGULAR:
+                return colors.get(rowIndex * 2 + columnIndex);
+        }
+        return null;
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex)
     {
-        super.setValueAt(aValue, rowIndex, columnIndex);
+        if (rowIndex < 0 ||
+            rowIndex >= getRowCount() ||
+            columnIndex < 0 ||
+            columnIndex >= getColumnCount())
+        {
+            return;
+        }
+        switch (gradientType)
+        {
+            case UNIFORM:
+                colors.set(0, (Color) aValue);
+            case UNIFORM_2_COLOR:
+                colors.set(rowIndex, (Color) aValue);
+            case DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM:
+            case DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM:
+            case TOP_TO_BOTTOM:
+            case LEFT_TO_RIGHT:
+            case CIRCULAR:
+                if (columnIndex == 0)
+                {
+                    colors.set(rowIndex, (Color) aValue);
+                }
+                else
+                {
+                    ratios[rowIndex] = (float) aValue;
+                }
+            case FOUR_COLOR_RECTANGULAR:
+                colors.set(rowIndex * 2 + columnIndex, (Color) aValue);
+        }
         fireTableCellUpdated(rowIndex, columnIndex);
     }
 
@@ -556,20 +638,28 @@ public final class ColorList
     @Override
     public Object[] toArray()
     {
-        return colors.toArray();
+        return colors != null ? colors.toArray() : null;
     }
 
     // implements List
     @Override
     public <T> T[] toArray(T[] a)
     {
-        return colors.toArray(a);
+        return colors != null ? colors.toArray(a) : null;
     }
 
     // implements List
     @Override
     public boolean add(Color e)
     {
+        if (colors == null)
+        {
+            colors = new ArrayList<>();
+        }
+        if (ratios == null)
+        {
+            ratios = new float[0];
+        }
         boolean reval = colors.add(e);
         float[] newRatios = new float[colors.size()];
         System.arraycopy(ratios, 0, newRatios, 0, ratios.length);
