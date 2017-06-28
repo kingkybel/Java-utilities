@@ -362,7 +362,7 @@ public class FileUtilities
         File file = new File(fileName == null ? "" : fileName);
         String parent = file.getParent();
         File path = new File(parent != null ? parent : "");
-        if (force && !path.exists())
+        if (force && !parent.isEmpty() && !path.exists())
         {
             (new File(path.getAbsolutePath())).mkdirs();
         }
@@ -523,13 +523,15 @@ public class FileUtilities
     }
 
     /**
-     * Append a line to file.
+     * Append some text to a file. If the file does not exist then it will be
+     * created if possible.
      *
      * @param fileName path to file as string
-     * @param line     the line to append
-     * @throws IOException
+     * @param text     the text to append
+     * @throws IOException if the file cannot be created, opened, written to or
+     *                     closed
      */
-    static public void appendLine(String fileName, String line)
+    static public void appendText(String fileName, String text)
             throws IOException
     {
         BufferedWriter out = null;
@@ -542,8 +544,8 @@ public class FileUtilities
         }
         try
         {
-            out = new BufferedWriter(new FileWriter(file));
-            out.append(line);
+            out = new BufferedWriter(new FileWriter(file, true));
+            out.append(text);
             out.close();
         }
         catch (IOException ex)

@@ -367,6 +367,43 @@ public class FileUtilitiesTest
     }
 
     /**
+     * Test of appendText method, of class FileUtilities.
+     */
+    @Test
+    public void testAppendLine()
+    {
+        LOGGER.log(Level.INFO, "Append line");
+        String filename = "appended.txt";
+        Object obj = null;
+        try
+        {
+            String fileContents =
+                   "Line 1" + StringUtils.NEWLINE +
+                   "Line 2" + StringUtils.NEWLINE +
+                   "Line 3" + StringUtils.NEWLINE +
+                   "Line 4" + StringUtils.NEWLINE +
+                   "Line 5" + StringUtils.NEWLINE;
+
+            String[] lines = fileContents.split(StringUtils.NEWLINE);
+            FileUtilities.deleteRecursive(filename);
+            for (String line : lines)
+            {
+                FileUtilities.appendText(filename, line + StringUtils.NEWLINE);
+            }
+            String readContents = FileUtilities.readText(filename);
+            assertEquals("check read string equals written one",
+                         fileContents,
+                         readContents);
+
+        }
+        catch (IOException ex)
+        {
+            Exceptions.printStackTrace(ex);
+            fail("Unexpected exception: " + ex.toString());
+        }
+    }
+
+    /**
      * Test of serialize method, of class FileUtilities.
      */
 //    @Test
@@ -401,11 +438,7 @@ public class FileUtilitiesTest
         {
             result = FileUtilities.deserialize(filename);
         }
-        catch (IOException ex)
-        {
-            Exceptions.printStackTrace(ex);
-        }
-        catch (ClassNotFoundException ex)
+        catch (IOException | ClassNotFoundException ex)
         {
             Exceptions.printStackTrace(ex);
         }
@@ -427,11 +460,7 @@ public class FileUtilitiesTest
         {
             FileUtilities.xmlSerialize(filename, obj);
         }
-        catch (JAXBException ex)
-        {
-            Exceptions.printStackTrace(ex);
-        }
-        catch (FileNotFoundException ex)
+        catch (JAXBException | FileNotFoundException ex)
         {
             Exceptions.printStackTrace(ex);
         }
