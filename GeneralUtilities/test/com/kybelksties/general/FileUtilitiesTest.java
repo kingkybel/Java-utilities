@@ -370,11 +370,10 @@ public class FileUtilitiesTest
      * Test of appendText method, of class FileUtilities.
      */
     @Test
-    public void testAppendLine()
+    public void testAppendText()
     {
-        LOGGER.log(Level.INFO, "Append line");
+        LOGGER.log(Level.INFO, "Append text");
         String filename = "appended.txt";
-        Object obj = null;
         try
         {
             String fileContents =
@@ -391,9 +390,10 @@ public class FileUtilitiesTest
                 FileUtilities.appendText(filename, line + StringUtils.NEWLINE);
             }
             String readContents = FileUtilities.readText(filename);
-            assertEquals("check read string equals written one",
-                         fileContents,
-                         readContents);
+            assertEquals(
+                    "check read actually read filecontents equal the intended contents",
+                    fileContents,
+                    readContents);
 
         }
         catch (IOException ex)
