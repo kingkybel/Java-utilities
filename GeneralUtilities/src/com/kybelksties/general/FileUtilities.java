@@ -261,7 +261,7 @@ public class FileUtilities
     /**
      * Scan a directory recursively for filenames matching a list.
      *
-     * @param rootPath configured root path for the TE logs
+     * @param rootPath configured root path for the logs
      * @param names    the list of filenames to find in the directory structure
      * @return list of files that match one of the names
      */
