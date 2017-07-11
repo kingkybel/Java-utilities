@@ -94,7 +94,7 @@ public class EnvironmentVar implements Comparable, Serializable
     /**
      * Construct.
      *
-     * @param podType  plain old type
+     * @param podType  plain old data type
      * @param category a category name - any unique string
      * @param name     name of the variable
      * @param defined  flag to indicate whether the variable is defined or not
