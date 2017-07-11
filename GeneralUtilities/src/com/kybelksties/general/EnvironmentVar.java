@@ -251,7 +251,7 @@ public class EnvironmentVar implements Comparable, Serializable
     }
 
     /**
-     * Set the variable as defined, i.e. is it a placeholder or not.
+     * Set the variable as defined, ie is it a placeholder or not.
      *
      * @param defined true or false (placeholder variable)
      */
