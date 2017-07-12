@@ -232,7 +232,7 @@ public class PodVariant implements Serializable
     /**
      * Retrieve the value of the variant.
      *
-     * @return the value
+     * @return the value as Object
      */
     public Object getValue()
     {
