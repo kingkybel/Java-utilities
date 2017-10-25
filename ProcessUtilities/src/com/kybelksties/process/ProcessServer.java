@@ -22,6 +22,7 @@ package com.kybelksties.process;
 import com.kybelksties.general.LogFormatter;
 import com.kybelksties.general.SystemProperties;
 import com.kybelksties.general.ToString;
+import com.kybelksties.protocol.ProcessMessage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -202,7 +203,7 @@ public class ProcessServer
 
                     ProcessMessage rcvdMsg = (ProcessMessage) readObj;
                     ArrayList objs = rcvdMsg.getObjects();
-                    if (rcvdMsg.isInstruction())
+//                    if (rcvdMsg.isInstruction())
                     {
                         switch (rcvdMsg.getType())
                         {
@@ -237,7 +238,7 @@ public class ProcessServer
                                                getName();
                                         ConcreteProcess ps = sp.start();
                                         msg = ProcessMessage.makeAcknowledge(
-                                        ps.state);
+                                        ps.state, "Server ID=" + ID);
                                         monitoredProcesses.put(ID,
                                                                sp.getProcess());
                                     }

@@ -23,6 +23,7 @@ import com.kybelksties.general.DateUtils;
 import com.kybelksties.general.EnvironmentVarSets;
 import com.kybelksties.general.ToString;
 import com.kybelksties.gui.ColorUtils;
+import com.kybelksties.protocol.ProcessMessage;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Rectangle;
@@ -335,24 +336,25 @@ public class ScheduledProcess implements Serializable
      *
      * @return the background color
      */
-    public String getWindowBackground()
+    public Color getWindowBackground()
     {
-        return windowBackground;
+        return ColorUtils.getXtermColor(windowBackground);
     }
 
     /**
      * Set the background color for this scheduled process.
      *
-     * @param windowBackground the new background color
+     * @param windowBackgroundColor the new background color
      *
      */
-    public void setWindowBackground(String windowBackground)
+    public void setWindowBackground(Color windowBackgroundColor)
     {
-        if (windowBackground == null)
+        if (windowBackgroundColor == null)
         {
-            windowBackground = "black";
+            windowBackgroundColor = Color.BLACK;
         }
-        this.windowBackground = windowBackground;
+        this.windowBackground = ColorUtils.xtermColorString(
+        windowBackgroundColor);
     }
 
     /**
@@ -360,9 +362,9 @@ public class ScheduledProcess implements Serializable
      *
      * @return the foreground color
      */
-    public String getWindowForeground()
+    public Color getWindowForeground()
     {
-        return windowForeground;
+        return ColorUtils.getXtermColor(windowForeground);
     }
 
     /**
@@ -371,13 +373,13 @@ public class ScheduledProcess implements Serializable
      * @param windowForeground the new background color
      *
      */
-    public void setWindowForeground(String windowForeground)
+    public void setWindowForeground(Color windowForeground)
     {
         if (windowForeground == null)
         {
-            windowForeground = "white";
+            windowForeground = Color.WHITE;
         }
-        this.windowForeground = windowForeground;
+        this.windowForeground = ColorUtils.xtermColorString(windowForeground);
     }
 
     /**
@@ -534,10 +536,8 @@ public class ScheduledProcess implements Serializable
             response = client.sendMessage(msg);
             if (response.isAcknowledgement())
             {
-                LOGGER.log(Level.INFO, response.getObjects().get(0).toString());
-                ConcreteProcess.State state =
-                                      (ConcreteProcess.State) response.
-                                      getObjects().get(0);
+                Object ack = response.getObjects().get(0);
+                ConcreteProcess.State state = (ConcreteProcess.State) ack;
                 process.setState(state);
             }
             else
@@ -567,7 +567,9 @@ public class ScheduledProcess implements Serializable
         switch (getWindowMode())
         {
             case XTERM:
-                command = makeXtermCommand(dimensions, windowBackground);
+                command = makeXtermCommand(dimensions,
+                                           ColorUtils.getXtermColor(
+                                                   windowBackground));
                 break;
             case GUIFRAME:
                 Frame parent = new Frame(toString());
@@ -663,15 +665,15 @@ public class ScheduledProcess implements Serializable
     }
 
     private String[] makeXtermCommand(Rectangle dimensions,
-                                      String backColorString)
+                                      Color backColor)
     {
-        Color bgColor = ColorUtils.getXtermColor(backColorString);
+        Color bgColor = backColor;
         Color fgColor = ColorUtils.contrastColorByComplement(bgColor);
         String foreColorString = ColorUtils.xtermColorString(fgColor);
         String[] reval = new String[]
          {
              "/usr/bin/xterm",
-             "-bg", backColorString,
+             "-bg", ColorUtils.xtermColorString(backColor),
              "-fg", foreColorString,
              "+cu", "-j", "-nb", "0", "-s",
              "-title", exeDefinition.toString(),

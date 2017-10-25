@@ -17,9 +17,10 @@
  * @date: 2016-10-05
  * @author: Dieter J Kybelksties
  */
-package com.kybelksties.process;
+package com.kybelksties.protocol;
 
 import com.kybelksties.general.ToString;
+import com.kybelksties.process.ScheduledProcess;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +50,11 @@ public class ProcessMessage<T extends Serializable>
     private static final Class CLAZZ = ProcessMessage.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+
     private static final long serialVersionUID = -8940196742313991701L;
+
+    private final Type type;
+    private ArrayList<T> objs;
 
     @XmlType(name = "ProcessMessageType")
     public static enum Type implements Serializable
@@ -136,19 +141,31 @@ public class ProcessMessage<T extends Serializable>
         this.objs = list;
     }
 
+    public ProcessMessage(Type type, T... objs)
+    {
+        this.type = type;
+        this.objs = new ArrayList<>();
+        this.objs.addAll(Arrays.asList(objs));
+    }
+
     static ProcessMessage makeInvalid()
     {
         return new ProcessMessage(Type.Invalid);
     }
 
-    static ProcessMessage makeInvalid(String str)
+    public static ProcessMessage makeInvalid(String str)
     {
         return new ProcessMessage(Type.Invalid, str);
     }
 
-    static ProcessMessage makeAcknowledge(Object... object)
+    public static ProcessMessage makeAcknowledge(Object... object)
     {
-        return new ProcessMessage(Type.Ack, object);
+        ArrayList objects = new ArrayList();
+        if (object != null)
+        {
+            objects.addAll(Arrays.asList(object));
+        }
+        return new ProcessMessage(Type.Ack, objects);
     }
 
     public static ProcessMessage makeStopServer()
@@ -186,7 +203,7 @@ public class ProcessMessage<T extends Serializable>
         objs = (ArrayList<T>) Arrays.asList(params);
     }
 
-    boolean isInvalid()
+    public boolean isInvalid()
     {
         return type.equals(Type.Invalid);
     }
@@ -205,16 +222,6 @@ public class ProcessMessage<T extends Serializable>
     public String toString()
     {
         return type + " " + ToString.make(objs);
-    }
-
-    private final Type type;
-    private ArrayList<T> objs;
-
-    public ProcessMessage(Type type, T... objs)
-    {
-        this.type = type;
-        this.objs = new ArrayList<>();
-        this.objs.addAll(Arrays.asList(objs));
     }
 
     public boolean isStopCommand()

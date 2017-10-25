@@ -19,6 +19,7 @@
  */
 package com.kybelksties.process;
 
+import com.kybelksties.protocol.ProcessMessage;
 import com.kybelksties.general.SystemProperties;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -54,11 +55,11 @@ public class ProcessClient
     }
 
     /**
-     * Creates new form ProcessClient
+     * Creates new ProcessClient.
      *
-     * @param serverAddress
-     * @param port
-     * @throws java.io.IOException
+     * @param serverAddress TCP-string representation of a server name.
+     * @param port          port number
+     * @throws java.io.IOException when the server address is null or empty
      */
     public ProcessClient(String serverAddress, int port)
             throws IOException

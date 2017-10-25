@@ -259,7 +259,8 @@ public class ExeDefinition implements Serializable, Comparable<Object>
     public AbstractTableModel getFilledParameterModel()
     {
         return (hasPositionalParameters()) ?
-               getPositionalParameterModel() : getLetterParameterModel();
+               getPositionalParameterModel() :
+               getLetterParameterModel();
     }
 
     /**
@@ -272,7 +273,12 @@ public class ExeDefinition implements Serializable, Comparable<Object>
         this.parameters = parameters;
     }
 
-    boolean allParametersDefined()
+    /**
+     * Check whether all mandatory parameters are defined.
+     *
+     * @return true, is so , false otherwise
+     */
+    public boolean allParametersDefined()
     {
         for (AbstractParameter p : parameters)
         {
@@ -286,7 +292,12 @@ public class ExeDefinition implements Serializable, Comparable<Object>
         return true;
     }
 
-    String getMissingParameters()
+    /**
+     * Retrieve a string describing the missing parameters.
+     *
+     * @return the missing parameters as string
+     */
+    public String getMissingParameters()
     {
         String reval = "";
         Integer pos = 0;
@@ -327,7 +338,9 @@ public class ExeDefinition implements Serializable, Comparable<Object>
      */
     public boolean isValid()
     {
-        return name != null && !name.isEmpty() &&
-               executable != null && !executable.isEmpty();
+        return name != null &&
+               !name.isEmpty() &&
+               executable != null &&
+               !executable.isEmpty();
     }
 }

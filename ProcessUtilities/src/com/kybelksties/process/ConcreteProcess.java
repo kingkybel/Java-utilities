@@ -511,6 +511,11 @@ public class ConcreteProcess extends Process implements Serializable
         return builder.directory(dir);
     }
 
+    public State getState()
+    {
+        return state;
+    }
+
     /**
      * An EventObject extension that triggers changes in the running state of
      * the process.
