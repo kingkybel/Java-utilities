@@ -21,6 +21,7 @@ package com.kybelksties.process;
 
 import com.kybelksties.general.DateUtils;
 import com.kybelksties.general.EnvironmentVarSets;
+import com.kybelksties.general.StringUtils;
 import com.kybelksties.general.ToString;
 import com.kybelksties.gui.ColorUtils;
 import com.kybelksties.protocol.ProcessMessage;
@@ -683,6 +684,44 @@ public class ScheduledProcess implements Serializable
              "-e",
              makeCommand()
         };
+        return reval;
+    }
+
+    public String makeBatch()
+    {
+        String reval = "#!/bin/ksh" + StringUtils.NEWLINE + StringUtils.NEWLINE;
+        String[] command = null;
+
+        switch (getWindowMode())
+        {
+            case XTERM:
+                command = makeXtermCommand(dimensions,
+                                           ColorUtils.getXtermColor(
+                                                   windowBackground));
+                break;
+            case GUIFRAME:
+                Frame parent = new Frame(toString());
+                ProcessDialog.makeProcessDialog(parent, this);
+                command = makeStandAloneCommand();
+                break;
+            case BACKGROUND:
+            case BACKGROUND_FILE:
+                command = makeStandAloneCommand();
+                break;
+        }
+        if (command != null)
+        {
+
+            EnvironmentVarSets environment = getProcess().
+                               getCategorisedEnvironment();
+            reval += environment.createExportVariablesString();
+            ToString.setDelimiters(command.getClass(), "", " ", "");
+            ToString.setDontUseLinebreaks(command.getClass());
+
+            String commandString = ToString.make(command);
+            reval += commandString + StringUtils.NEWLINE;
+
+        }
         return reval;
     }
 

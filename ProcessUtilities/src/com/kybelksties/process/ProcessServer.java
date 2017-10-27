@@ -47,7 +47,7 @@ import org.jutils.jprocesses.model.ProcessInfo;
  *
  * @author Dieter J Kybelksties
  */
-public class ProcessServer
+public class ProcessServer implements ConcreteProcess.StateEventListener
 {
 
     private static final Class CLAZZ = ProcessServer.class;
@@ -236,7 +236,10 @@ public class ProcessServer
                                                ":" + clientPort + "-" +
                                                sp.getExeDefinition().
                                                getName();
+
                                         ConcreteProcess ps = sp.start();
+                                        ps.addStateChangeEventListener(
+                                                (ConcreteProcess.StateEventListener) this);
                                         msg = ProcessMessage.makeAcknowledge(
                                         ps.state, "Server ID=" + ID);
                                         monitoredProcesses.put(ID,
@@ -297,6 +300,13 @@ public class ProcessServer
             }
         }
 
+    }
+
+    @Override
+    public void processStateChanged(ConcreteProcess.StateEvent evt)
+    {
+        ConcreteProcess ps = (ConcreteProcess) evt.getSource();
+//        ps.state
     }
 
     /**

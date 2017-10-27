@@ -20,12 +20,12 @@
 package com.kybelksties.process;
 
 import com.kybelksties.general.EnvironmentVar;
-import com.kybelksties.general.EnvironmentVarDialog;
+import com.kybelksties.gui.EnvironmentVarDialog;
 import com.kybelksties.general.EnvironmentVarSets;
 import com.kybelksties.general.EnvironmentVarTableModel;
 import com.kybelksties.gui.ColorUtils;
 import com.kybelksties.gui.EnvironmentVarTable;
-import com.kybelksties.gui.ForegroundBackgroundColorChooser;
+import com.kybelksties.gui.controls.ForegroundBackgroundColorChooser;
 import java.awt.Color;
 import java.io.File;
 import java.util.HashMap;
@@ -496,13 +496,10 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
     {//GEN-HEADEREND:event_addEnvButtonActionPerformed
         int i = 0;
         tablesPane.setSelectedComponent(envVarsPane);
-        EnvironmentVarSets ce =
+        EnvironmentVarSets envVar =
                            theScheduledProcess.getProcess().
                            getCategorisedEnvironment();
-        EnvironmentVarDialog dlg =
-                             new EnvironmentVarDialog(this, true, ce.
-                                                      getCategoryNameSet().
-                                                      toArray());
+        EnvironmentVarDialog dlg = new EnvironmentVarDialog(this, true, envVar);
         EnvironmentVar val = dlg.getNewValue();
         if (val != null)
         {
