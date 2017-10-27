@@ -231,6 +231,34 @@ public class ExtRandomTest
         }
     }
 
+    enum SampleEnum
+    {
+
+        V1, V2, V3, V4, V5, V6
+    }
+
+    /**
+     * Test of nextEnum method, of class ExtRandom.
+     */
+    @Test
+    public void testNextEnum()
+    {
+        ExtRandom instance = new ExtRandom(0);
+        try
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                SampleEnum randVal = instance.nextEnum(SampleEnum.class);
+                System.out.println(randVal);
+            }
+
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+
     class TestExpected<T>
     {
 

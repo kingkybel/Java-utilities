@@ -62,7 +62,7 @@ public class PodVariant implements Serializable
      * Create a PODVariant from a string describing a type.
      *
      * @param typeStr the string describing the POD type
-     * @return the new value
+     * @return the new variant
      */
     public static PodVariant fromString(String typeStr)
     {
@@ -70,16 +70,27 @@ public class PodVariant implements Serializable
     }
 
     /**
-     * Create a PODVariant from a string describing a type and a value as
-     * string.
+     * Create a PODVariant from a string describing a type.
      *
      * @param typeStr the string describing the POD type
-     * @param value   the value as string
-     * @return the new value
+     * @param value   the value to set
+     * @return the new variant
      */
     public static PodVariant fromString(String typeStr, String value)
     {
-        Type type = Type.fromString(typeStr);
+        return fromString(PodVariant.Type.fromString(typeStr), value);
+    }
+
+    /**
+     * Create a PODVariant from a string describing a type and a value as
+     * string.
+     *
+     * @param type  the POD type
+     * @param value the value as string
+     * @return the new variant
+     */
+    public static PodVariant fromString(PodVariant.Type type, String value)
+    {
         PodVariant reval = new PodVariant(type);
 
         if (value != null)
@@ -98,14 +109,12 @@ public class PodVariant implements Serializable
                 case STRING:
                     reval.value = value;
                     break;
-                case PATH:
-                    reval.value = value;
-                    break;
             }
         }
 
         return reval;
     }
+
     private Object value;
     private Type type = Type.UNDEFINED;
 
@@ -280,16 +289,6 @@ public class PodVariant implements Serializable
     }
 
     /**
-     * The plain old data variant is a floating point value.
-     *
-     * @return true if it is and false otherwise
-     */
-    public boolean isPath()
-    {
-        return type == Type.PATH;
-    }
-
-    /**
      * Retrieve the boolean value.
      *
      * @return the boolean value
@@ -394,12 +393,7 @@ public class PodVariant implements Serializable
         /**
          * Double precision floating point values.
          */
-        DOUBLE,
-        /**
-         * Special string variable that can be interpreted a Unix ${PATH}
-         * variables.
-         */
-        PATH;
+        DOUBLE;
 
         private static final Class CLAZZ = PodVariant.Type.class;
         private static final String CLASS_NAME = CLAZZ.getName();
@@ -422,10 +416,6 @@ public class PodVariant implements Serializable
             {
                 type = Type.DOUBLE;
             }
-            else if (Arrays.asList(PATH_SYNONYMS).contains(lowerTypeStr))
-            {
-                type = Type.PATH;
-            }
             else if (Arrays.asList(STRING_SYNONYMS).contains(lowerTypeStr))
             {
                 type = Type.STRING;
@@ -444,8 +434,6 @@ public class PodVariant implements Serializable
                    NbBundle.getMessage(CLAZZ, "PodVariant.Type.integer") :
                    DOUBLE.equals(this) ?
                    NbBundle.getMessage(CLAZZ, "PodVariant.Type.double") :
-                   PATH.equals(this) ?
-                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.path") :
                    NbBundle.getMessage(CLAZZ, "PodVariant.Type.undefined");
 
         }

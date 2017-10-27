@@ -65,28 +65,45 @@ public class ToString
 
     static ToString getToString(Object o)
     {
-        ToString reval = class2ToString.get(Object.class);
-        if (o instanceof List)
+        if (!class2ToString.containsKey(o.getClass()))
         {
-            reval = class2ToString.get(List.class);
+            if (o.getClass().isArray())
+            {
+                class2ToString.put(o.getClass(),
+                                   class2ToString.get(Object[].class));
+            }
+            else if (o.getClass().isEnum())
+            {
+                class2ToString.put(o.getClass(),
+                                   class2ToString.get(Object[].class));
+            }
+            else if (o instanceof Map)
+            {
+                class2ToString.put(o.getClass(),
+                                   class2ToString.get(Map.class));
+            }
+            else if (o instanceof List)
+            {
+                class2ToString.put(o.getClass(),
+                                   class2ToString.get(List.class));
+            }
+            else if (o instanceof Set)
+            {
+                class2ToString.put(o.getClass(),
+                                   class2ToString.get(Set.class));
+            }
+            else if (o instanceof Iterable)
+            {
+                class2ToString.put(o.getClass(),
+                                   class2ToString.get(Iterable.class));
+            }
+            else
+            {
+                class2ToString.put(o.getClass(),
+                                   class2ToString.get(Object.class));
+            }
         }
-        else if (o instanceof Set)
-        {
-            reval = class2ToString.get(Set.class);
-        }
-        else if (o instanceof Map)
-        {
-            reval = class2ToString.get(Map.class);
-        }
-        else if (o instanceof Iterable)
-        {
-            reval = class2ToString.get(Iterable.class);
-        }
-        else if (o instanceof Object[])
-        {
-            reval = class2ToString.get(Object[].class);
-        }
-        return reval;
+        return class2ToString.get(o.getClass());
     }
 
     /**
@@ -106,7 +123,7 @@ public class ToString
         {
             class2ToString.put(clazz, new ToString());
         }
-        class2ToString.get(clazz).setDelimiters(left, left, left);
+        class2ToString.get(clazz).setDelimiters(left, inner, right);
     }
 
     /**
@@ -235,7 +252,9 @@ public class ToString
     static public String make(Object o)
     {
         ToString inst = class2ToString.get(Object.class);
-        return inst.left + (o == null ? "" : o.toString()) + inst.right;
+        return inst.left + (o == null ?
+                            inst.nullString :
+                            o.toString()) + inst.right;
     }
 
     /**

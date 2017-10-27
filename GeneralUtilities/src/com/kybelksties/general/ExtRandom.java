@@ -278,4 +278,13 @@ public class ExtRandom extends java.util.Random
 
     }
 
+    public <T> T nextEnum(Class<T> c)
+    {
+        if (c.isEnum())
+        {
+            T[] values = c.getEnumConstants();
+            return values[nextInt(values.length)];
+        }
+        return null;
+    }
 }

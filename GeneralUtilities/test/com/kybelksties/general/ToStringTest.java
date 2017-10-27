@@ -156,7 +156,8 @@ public class ToStringTest
         ToString.initialize();
 
         // change the delimiters for arrays.
-        ToString.setDelimiters(Object[].class, ToString.BracketType.CHEFRON);
+        ToString.setDelimiters(e.values().getClass(),
+                               ToString.BracketType.CHEFRON);
 
         String expResult = "<\n\tx,\n\ty,\n\tz\n>";
         String result = ToString.make(e.values());
@@ -166,9 +167,17 @@ public class ToStringTest
          {
              "string1", "string 2", "S S S S S", "", "last"
         };
+        ToString.setDelimiters(String[].class,
+                               ToString.BracketType.CHEFRON);
         expResult =
         "<\n\tstring1,\n\t\"string 2\",\n\t\"S S S S S\",\n\t\"\",\n\tlast\n>";
         result = ToString.make(ar);
+        assertEquals(expResult, result);
+
+        ToString.setDelimiters(e.values().getClass(), ToString.BracketType.NONE);
+
+        expResult = "\n\tx \n\ty \n\tz\n";
+        result = ToString.make(e.values());
         assertEquals(expResult, result);
 
         // Change to no linebreaks for lists.

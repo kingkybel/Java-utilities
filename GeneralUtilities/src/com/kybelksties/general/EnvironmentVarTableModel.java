@@ -22,6 +22,7 @@ package com.kybelksties.general;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
@@ -34,7 +35,9 @@ import org.openide.util.NbBundle;
  * as JTable.
  */
 @XmlAccessorType(value = XmlAccessType.FIELD)
-public class EnvironmentVarTableModel extends AbstractTableModel
+public class EnvironmentVarTableModel
+        extends AbstractTableModel
+        implements Iterable<String>
 {
 
     private static final Class CLAZZ = EnvironmentVarTableModel.class;
@@ -272,5 +275,11 @@ public class EnvironmentVarTableModel extends AbstractTableModel
         }
 
         return obj.getClass();
+    }
+
+    @Override
+    public Iterator<String> iterator()
+    {
+        return name2index.keySet().iterator();
     }
 }

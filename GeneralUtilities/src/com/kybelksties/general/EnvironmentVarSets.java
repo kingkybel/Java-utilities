@@ -294,23 +294,6 @@ public final class EnvironmentVarSets implements Serializable
                                                        new PodVariant(theVal)));
                     break;
                 }
-                case PATH:
-                {
-                    String theVal = (String) (definedInSysEnv ?
-                                              systemEnv.get(key) :
-                                              value.getStringValue());
-                    if (theVal.contains("%USER%"))
-                    {
-                        theVal = theVal.replace("%USER%",
-                                                System.getenv("USER"));
-                    }
-                    addToTableModel(new EnvironmentVar(valueType,
-                                                       theCategory,
-                                                       key,
-                                                       definedInSysEnv,
-                                                       new PodVariant(theVal)));
-                    break;
-                }
             }
 
         }
@@ -456,5 +439,36 @@ public final class EnvironmentVarSets implements Serializable
     public Set<String> getCategoryNameSet()
     {
         return theVarTableModels.keySet();
+    }
+
+    /**
+     * Create a String that exports all the defined environment variables.
+     *
+     * @return the string
+     */
+    public String createExportVariablesString()
+    {
+        String reval = "";
+        Set<String> cats = getCategoryNameSet();
+        for (String cat : cats)
+        {
+            reval += "# Catecory: " + cat + StringUtils.NEWLINE;
+            EnvironmentVarTableModel catModel = getTableModel(cat);
+            for (String key : catModel)
+            {
+                EnvironmentVar var = catModel.get(key);
+                if (var.getDefined())
+                {
+                    reval += "export " +
+                             key +
+                             "=\"" +
+                             var.getValue() +
+                             "\"" +
+                             StringUtils.NEWLINE;
+                }
+            }
+        }
+        return reval;
+
     }
 }
