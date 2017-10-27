@@ -249,6 +249,27 @@ public class EnvironmentVar implements Comparable, Serializable
                    PodVariant.Type.UNDEFINED;
 
         }
+
+        public boolean isCompatible(PodVariant podVar)
+        {
+            PodVariant.Type myPodtType = getPodVariantType();
+            if (myPodtType.equals(podVar.getType()))
+            {
+                return true;
+            }
+
+            if (myPodtType.equals(PodVariant.Type.STRING))
+            {
+                return true;
+            }
+
+            if (myPodtType.equals(PodVariant.Type.DOUBLE))
+            {
+                return podVar.isDouble() || podVar.isInteger();
+            }
+
+            return false;
+        }
     }
 
     /**
@@ -537,7 +558,15 @@ public class EnvironmentVar implements Comparable, Serializable
      */
     public void setStereoType(StereoType stereoType)
     {
+        if (stereoType == null)
+        {
+            stereoType = StereoType.GeneralString;
+        }
         this.stereoType = stereoType;
+        if (!this.stereoType.isCompatible(value))
+        {
+            setValue(new PodVariant(stereoType.getPodVariantType()));
+        }
     }
 
 }

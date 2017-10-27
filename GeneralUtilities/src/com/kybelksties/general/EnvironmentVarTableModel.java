@@ -20,6 +20,7 @@
  */
 package com.kybelksties.general;
 
+import com.kybelksties.general.EnvironmentVar.StereoType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -112,14 +113,20 @@ public class EnvironmentVarTableModel
     @Override
     public String toString()
     {
-        String reval = "{\n";
+        String reval = "{" + StringUtils.NEWLINE;
         for (EnvironmentVar envVarInfo : theEnvironmentVarInfos)
         {
-            reval += "\n{ \"" + envVarInfo.getType() + "\",\"" +
-                     envVarInfo.getName() + "\",\"" +
-                     envVarInfo.getValue().toString() + "\" },\n";
+            reval += StringUtils.NEWLINE +
+                     "{ \"" +
+                     envVarInfo.getStereoType() +
+                     "\",\"" +
+                     envVarInfo.getName() +
+                     "\",\"" +
+                     envVarInfo.getValue().toString() +
+                     "\" }," +
+                     StringUtils.NEWLINE;
         }
-        reval += "}\n";
+        reval += "}" + StringUtils.NEWLINE;
         return reval;
     }
 
@@ -192,7 +199,7 @@ public class EnvironmentVarTableModel
         PodVariant rowValue = get(row).getValue();
         return (col == 0) ? get(row).getDefined() :
                (col == 1) ? index2name.get(row) :
-               (col == 2) ? rowValue.getType() :
+               (col == 2) ? get(row).getStereoType() :
                (col == 3) ? rowValue.getValue() :
                null;
     }
@@ -215,8 +222,10 @@ public class EnvironmentVarTableModel
                 currentInfo.setDefined((Boolean) value);
                 break;
             case 2:
-                PodVariant.Type type = (PodVariant.Type) value;
-                currentInfo.setValue(new PodVariant(type));
+                StereoType stereoType = (StereoType) value;
+                //         PodVariant.Type type = stereoType.getPodVariantType();
+                currentInfo.setStereoType(stereoType);
+                //         currentInfo.setValue(new PodVariant(type));
                 break;
             case 3:
                 currentInfo.setValue(new PodVariant(value));
