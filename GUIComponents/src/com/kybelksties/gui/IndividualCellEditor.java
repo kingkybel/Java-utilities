@@ -20,6 +20,8 @@
  */
 package com.kybelksties.gui;
 
+import com.kybelksties.gui.controls.SpinnerEditor;
+import com.kybelksties.gui.controls.CellButton;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;

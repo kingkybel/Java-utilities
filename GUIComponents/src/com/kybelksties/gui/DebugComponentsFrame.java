@@ -20,6 +20,11 @@
  */
 package com.kybelksties.gui;
 
+import com.kybelksties.gui.controls.ForegroundBackgroundColorChooser;
+import com.kybelksties.gui.controls.FontChooser;
+import com.kybelksties.gui.controls.PaintChooser;
+import com.kybelksties.gui.controls.GradientType;
+import com.kybelksties.gui.controls.DateChooser;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Date;
@@ -87,16 +92,16 @@ public class DebugComponentsFrame extends javax.swing.JFrame
         dateButton = new javax.swing.JButton();
         fgBgColorButton = new javax.swing.JButton();
         fontButton = new javax.swing.JButton();
-        datePicker1 = new com.kybelksties.gui.DatePicker();
+        datePicker1 = new com.kybelksties.gui.controls.DatePicker();
         outputPanel1 = new com.kybelksties.gui.OutputPanel();
         outputPanel2 = new com.kybelksties.gui.OutputPanel();
         gradientButton = new javax.swing.JButton();
-        timePicker1 = new com.kybelksties.gui.TimePicker();
+        timePicker1 = new com.kybelksties.gui.controls.TimePicker();
         gradButton = new javax.swing.JButton();
-        gradientTypeComboBox1 = new com.kybelksties.gui.GradientTypeComboBox();
-        colorButton1 = new com.kybelksties.gui.ColorButton();
+        gradientTypeComboBox1 = new com.kybelksties.gui.controls.GradientTypeComboBox();
+        colorButton1 = new com.kybelksties.gui.controls.ColorButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        colorListTable2 = new com.kybelksties.gui.ColorListTable();
+        colorListTable2 = new com.kybelksties.gui.controls.ColorListTable();
         tablePanel = new javax.swing.JPanel();
         tableScrollPane = new javax.swing.JScrollPane();
         colorTable = new javax.swing.JTable();
@@ -305,23 +310,23 @@ public class DebugComponentsFrame extends javax.swing.JFrame
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.kybelksties.gui.ColorButton colorButton1;
-    private com.kybelksties.gui.ColorListTable colorListTable2;
+    private com.kybelksties.gui.controls.ColorButton colorButton1;
+    private com.kybelksties.gui.controls.ColorListTable colorListTable2;
     private javax.swing.JTable colorTable;
     private javax.swing.JPanel controlPanel;
     private javax.swing.JButton dateButton;
-    private com.kybelksties.gui.DatePicker datePicker1;
+    private com.kybelksties.gui.controls.DatePicker datePicker1;
     private javax.swing.JButton fgBgColorButton;
     private javax.swing.JButton fontButton;
     private javax.swing.JButton gradButton;
     private javax.swing.JButton gradientButton;
-    private com.kybelksties.gui.GradientTypeComboBox gradientTypeComboBox1;
+    private com.kybelksties.gui.controls.GradientTypeComboBox gradientTypeComboBox1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane mainSplitPane;
     private com.kybelksties.gui.OutputPanel outputPanel1;
     private com.kybelksties.gui.OutputPanel outputPanel2;
     private javax.swing.JPanel tablePanel;
     private javax.swing.JScrollPane tableScrollPane;
-    private com.kybelksties.gui.TimePicker timePicker1;
+    private com.kybelksties.gui.controls.TimePicker timePicker1;
     // End of variables declaration//GEN-END:variables
 }

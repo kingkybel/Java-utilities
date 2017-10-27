@@ -94,7 +94,7 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="com.kybelksties.gui.DatePicker" name="datePicker1">
+            <Component class="com.kybelksties.gui.controls.DatePicker" name="datePicker1">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                   <AbsoluteConstraints x="211" y="7" width="-1" height="-1"/>
@@ -151,7 +151,7 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="com.kybelksties.gui.TimePicker" name="timePicker1">
+            <Component class="com.kybelksties.gui.controls.TimePicker" name="timePicker1">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                   <AbsoluteConstraints x="230" y="40" width="-1" height="-1"/>
@@ -170,14 +170,14 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="com.kybelksties.gui.GradientTypeComboBox" name="gradientTypeComboBox1">
+            <Component class="com.kybelksties.gui.controls.GradientTypeComboBox" name="gradientTypeComboBox1">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                   <AbsoluteConstraints x="30" y="80" width="260" height="40"/>
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="com.kybelksties.gui.ColorButton" name="colorButton1">
+            <Component class="com.kybelksties.gui.controls.ColorButton" name="colorButton1">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="com/kybelksties/gui/Bundle.properties" key="DebugComponentsFrame.colorButton1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -204,7 +204,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="com.kybelksties.gui.ColorListTable" name="colorListTable2">
+                <Component class="com.kybelksties.gui.controls.ColorListTable" name="colorListTable2">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="4" rowCount="4">
