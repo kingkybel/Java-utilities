@@ -156,7 +156,7 @@ public class GenericPopup extends JPopupMenu
     }
 
     /**
-     * Polymorphous actions.
+     * Polymorph actions.
      */
     public interface Action
     {

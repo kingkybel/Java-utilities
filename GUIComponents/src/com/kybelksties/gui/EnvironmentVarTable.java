@@ -20,6 +20,7 @@
  */
 package com.kybelksties.gui;
 
+import com.kybelksties.general.EnvironmentVar;
 import com.kybelksties.general.EnvironmentVarTableModel;
 import com.kybelksties.general.PodVariant;
 import java.awt.Component;
@@ -96,7 +97,7 @@ public class EnvironmentVarTable extends javax.swing.JTable
     public final void setIndividualCellEditors(EnvironmentVarTableModel etm)
     {
         ice = new IndividualCellEditor(this, new DefaultTableCellRenderer());
-        Object[] types = PodVariant.Type.values();
+        Object[] types = EnvironmentVar.StereoType.values();
         ice.insertCheckboxEditor("DefineCheck");
         ice.insertComboEditor("TypeCombo", types);
         ice.insertSpinnerEditor("IntValueSpinner", 1, -99999, 99999, 1);

@@ -212,7 +212,24 @@ public final class ColorList
     @Override
     public String getColumnName(int column)
     {
-        return super.getColumnName(column);
+        if (gradientType.equals(GradientType.CIRCULAR) ||
+            gradientType.equals(GradientType.DIAGONAL_LEFT_TOP_TO_RIGHT_BOTTOM) ||
+            gradientType.equals(GradientType.DIAGONAL_RIGHT_TOP_TO_LEFT_BOTTOM) ||
+            gradientType.equals(GradientType.LEFT_TO_RIGHT) ||
+            gradientType.equals(GradientType.TOP_TO_BOTTOM))
+        {
+            return column == 0 ? "Color" : "Ratio";
+        }
+        else
+        {
+            return "Color";
+        }
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex)
+    {
+        return true;
     }
 
     /**

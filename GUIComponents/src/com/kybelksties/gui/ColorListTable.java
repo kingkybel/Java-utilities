@@ -19,10 +19,11 @@
  */
 package com.kybelksties.gui;
 
-import java.awt.Color;
+import java.awt.Component;
 import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import org.openide.util.Exceptions;
@@ -40,6 +41,27 @@ public class ColorListTable extends JTable
 
     private IndividualCellEditor ice = null;
 
+    class MyTableCellRenderer extends DefaultTableCellRenderer
+    {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table,
+                                                       Object value,
+                                                       boolean isSelected,
+                                                       boolean hasFocus,
+                                                       int row,
+                                                       int column)
+        {
+//            ColorListTable evt = (ColorListTable) table;
+//            IndividualCellEditor ice =
+//                                 (IndividualCellEditor) evt.getCellEditor();
+            Component c = ice.getEditorComponent(row, column);
+//            c.setBackground(model.getColor());
+//            c.setForeground(model.getContrastColor(row));
+            return c;
+        }
+    }
+
     public ColorListTable()
     {
         initialize(null);
@@ -48,11 +70,7 @@ public class ColorListTable extends JTable
     private void initialize(ColorList colorList)
     {
         ice = new IndividualCellEditor(this);
-//        ice.insertButtonEditor("ColorEditor", new ColorButton());
-        ice.insertComboEditor("ColorEditor", new Color[]
-                      {
-                          Color.BLUE, Color.CYAN
-        });
+        ice.insertButtonEditor("ColorEditor", new ColorButton());
         ice.insertSpinnerEditor("RatioEditor", 1.0, 0.001, 100.0, 1.0);
         try
         {
@@ -61,6 +79,7 @@ public class ColorListTable extends JTable
             setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
 
             setRowHeight(20);
+            setDefaultRenderer(Object.class, new MyTableCellRenderer());
         }
         catch (ColorList.Exception ex)
         {
