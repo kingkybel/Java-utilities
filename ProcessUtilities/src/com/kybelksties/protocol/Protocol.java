@@ -19,44 +19,154 @@
  */
 package com.kybelksties.protocol;
 
-import java.util.TreeMap;
+import static com.kybelksties.protocol.ProtocolException.Type.MessageReceivingActorInvalid;
+import static com.kybelksties.protocol.ProtocolException.Type.MessageTypeInvalid;
+import static com.kybelksties.protocol.ProtocolException.Type.NoSuchRule;
+import static com.kybelksties.protocol.ProtocolException.Type.ResultStateInvalid;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.util.Pair;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * This class formalises static interaction protocols between different actors
+ * of a system sending messages to each other.
  *
  * @author Dieter J Kybelksties
  */
-public class Protocol
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Protocol extends DirectedSparseGraph<Actor, Message>
 {
 
     private static final Class CLAZZ = Protocol.class;
     private static final Log LOGGER = LogFactory.getLog(CLAZZ);
-    TreeMap<Rule, Rule> rules = new TreeMap<>();
 
+    /**
+     * Construction.
+     */
     public Protocol()
     {
+
     }
 
-    public void addRule(Rule rule)
+    /**
+     * Retrieve the resulting state when a message is received.
+     *
+     * @param receivingActor the actor that receives the message
+     * @param messageType    the type of message received
+     * @param sendingActor   optional sending actor
+     * @return the state that the receiving actor would assume if it received
+     *         the type of message
+     * @throws Exception thrown if any of the compulsory parameters is invalid
+     *                   or if there is no rule for the given parameters
+     */
+    public State getResultState(Actor receivingActor,
+                                MessageType messageType,
+                                Actor sendingActor) throws Exception
     {
-        if (rule != null)
+        if (receivingActor == null)
         {
-            rules.put(rule, rule);
+            throw new ProtocolException(MessageReceivingActorInvalid,
+                                        receivingActor);
+        }
+        if (messageType == null)
+        {
+            throw new ProtocolException(MessageTypeInvalid, messageType);
+        }
+        final Message message = new Message(true,
+                                            messageType,
+                                            receivingActor,
+                                            sendingActor);
+        Pair<Actor> resultPair = this.getEndpoints(message);
+
+        if (resultPair == null || resultPair.getSecond() == null)
+        {
+            throw new ProtocolException(NoSuchRule, message);
+        }
+
+        return resultPair.getSecond().getState();
+    }
+
+    /**
+     * Add a rule for a a state-change of a receiving actor.
+     *
+     * @param receivingActor             the actor receiving the message
+     * @param messageType                the type of message sent/received
+     * @param stateAfterReceivingMessage the state that the receiving actor
+     *                                   shall assume after receipt of the
+     *                                   message
+     * @param sendingActor               optional sending actor
+     * @param timeout                    optional timeout. If not null then a
+     *                                   reverse state transition will be added
+     *                                   if the receiver is still in the new
+     *                                   state after so many milliseconds
+     * @param timeoutState               the state to assume if timeout elapsed
+     * @throws Exception thrown when any of the compulsory parts of the rule are
+     *                   invalid
+     */
+    public void addRule(final Actor receivingActor,
+                        final MessageType messageType,
+                        final State stateAfterReceivingMessage,
+                        final Actor sendingActor,
+                        Integer timeout,
+                        final State timeoutState) throws Exception
+    {
+        if (receivingActor == null)
+        {
+            throw new ProtocolException(MessageReceivingActorInvalid,
+                                        receivingActor);
+        }
+        if (messageType == null)
+        {
+            throw new ProtocolException(MessageTypeInvalid, messageType);
+        }
+        if (stateAfterReceivingMessage == null)
+        {
+            throw new ProtocolException(ResultStateInvalid);
+        }
+
+        final Actor receiverBefore = new Actor(receivingActor.getName(),
+                                               receivingActor.getState());
+        final Actor receiverAfter = new Actor(receivingActor.getName(),
+                                              stateAfterReceivingMessage);
+        addVertex(receiverBefore);
+        addVertex(receiverAfter);
+        Message message = new Message(messageType,
+                                      sendingActor,
+                                      receiverBefore);
+        addEdge(message, receiverBefore, receiverAfter);
+        if (timeout != null && timeout > 0 && timeoutState != null)
+        {
+
         }
     }
 
-    public Rule getRule(Actor fromActor,
-                        Actor toActor,
-                        State currentState,
-                        ProcessMessage.Type messageType) throws Exception
+    /**
+     * Add a rule for a a state-change of a receiving actor.
+     *
+     * @param receivingActor             the actor receiving the message
+     * @param messageType                the type of message sent/received
+     * @param stateAfterReceivingMessage the state that the receiving actor
+     *                                   shall assume after receipt of the
+     *                                   message
+     * @param sendingActor               optional sending actor
+     * @throws Exception thrown when any of the compulsory parts of the rule are
+     *                   invalid
+     */
+    public void addRule(final Actor receivingActor,
+                        final MessageType messageType,
+                        final State stateAfterReceivingMessage,
+                        final Actor sendingActor) throws Exception
     {
-        Rule key = new Rule(fromActor,
-                            toActor,
-                            currentState,
-                            messageType,
-                            null);
-        return rules.get(key);
+        addRule(receivingActor,
+                messageType,
+                stateAfterReceivingMessage,
+                sendingActor,
+                -1,
+                null);
     }
-
 }

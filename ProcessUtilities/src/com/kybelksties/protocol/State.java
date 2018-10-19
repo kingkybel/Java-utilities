@@ -19,13 +19,18 @@
  */
 package com.kybelksties.protocol;
 
+import static com.kybelksties.protocol.ProtocolException.Type.StateNameInvalid;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 
 /**
+ * This class is meant as a base class for states of actors in a protocol.
  *
  * @author Dieter J Kybelksties
  */
@@ -38,12 +43,52 @@ public class State implements Serializable, Comparable<Object>
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    private final String name;
-    public static final State UNDEFINED = new State("[[UNDEFINED]]");
+    private static int currentID = -1;
 
-    public State(String name)
+    /**
+     * A special undefined State with id == -1.
+     */
+    public static final State UNDEFINED = setUndefinedName();
+
+    static State setUndefinedName()
     {
+        State reval = null;
+        try
+        {
+            reval = new State(NbBundle.getMessage(CLAZZ, "State.UNDEFINED"));
+        }
+        catch (ProtocolException ex)
+        {
+            Exceptions.printStackTrace(ex);
+        }
+        return reval;
+    }
+    private final String name;
+    private final int id = currentID++;
+
+    /**
+     * Construct by naming the state.
+     *
+     * @param name the name of the newly constructed state
+     * @throws com.kybelksties.protocol.ProtocolException
+     */
+    public State(String name) throws ProtocolException
+    {
+        if (name == null || name.isEmpty())
+        {
+            throw new ProtocolException(StateNameInvalid);
+        }
         this.name = name;
+    }
+
+    /**
+     * Check whether this is the (unique) undefined state.
+     *
+     * @return true if so, false otherwise
+     */
+    public boolean isUndefined()
+    {
+        return id == -1;
     }
 
     @Override
@@ -63,7 +108,7 @@ public class State implements Serializable, Comparable<Object>
     @Override
     public String toString()
     {
-        return "state(" + name + ")";
+        return NbBundle.getMessage(CLAZZ, "State.toString", name);
     }
 
     @Override
@@ -83,7 +128,9 @@ public class State implements Serializable, Comparable<Object>
     @Override
     public int hashCode()
     {
-        return super.hashCode();
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.name);
+        return hash;
     }
 
 }
