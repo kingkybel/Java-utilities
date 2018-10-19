@@ -35,6 +35,10 @@ public class AuthenticationTest
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args)
     {
         System.setProperty("java.security.auth.login.config",

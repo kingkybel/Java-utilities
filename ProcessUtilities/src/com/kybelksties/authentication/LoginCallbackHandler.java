@@ -42,6 +42,11 @@ public class LoginCallbackHandler implements CallbackHandler
     String name;
     String password;
 
+    /**
+     *
+     * @param name
+     * @param password
+     */
     public LoginCallbackHandler(String name, String password)
     {
         System.out.println("Callback Handler - constructor called");

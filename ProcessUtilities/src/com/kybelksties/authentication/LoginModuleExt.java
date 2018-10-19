@@ -50,6 +50,9 @@ public class LoginModuleExt implements LoginModule
 
     private boolean succeeded = false;
 
+    /**
+     *
+     */
     public LoginModuleExt()
     {
         System.out.println("Login Module - constructor called");
