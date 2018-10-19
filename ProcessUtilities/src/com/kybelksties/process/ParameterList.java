@@ -50,9 +50,9 @@ public class ParameterList
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     private static final long serialVersionUID = -8940196742313991701L;
 
-    private ModelMode theModelMode;
+    private ModelMode modelMode;
 
-    private final String[] theColumnNamesPos =
+    private final String[] columnNamesPositional =
     {
         NbBundle.getMessage(CLAZZ, "ParameterList.column.position"),
         NbBundle.getMessage(CLAZZ, "ParameterList.column.mandatory"),
@@ -60,7 +60,7 @@ public class ParameterList
         NbBundle.getMessage(CLAZZ, "ParameterList.column.default")
     };
 
-    private final String[] theColumnNamesLet =
+    private final String[] columnNamesLetter =
     {
         NbBundle.getMessage(CLAZZ, "ParameterList.column.parameter"),
         NbBundle.getMessage(CLAZZ, "ParameterList.column.hasArgument"),
@@ -69,13 +69,13 @@ public class ParameterList
         NbBundle.getMessage(CLAZZ, "ParameterList.column.default")
     };
 
-    private final String[] thePosEvalColumnNames =
+    private final String[] columnNamesEvaluatedPositional =
     {
         NbBundle.getMessage(CLAZZ, "ParameterList.column.useParameter"),
         NbBundle.getMessage(CLAZZ, "ParameterList.column.positionalArgument")
     };
 
-    private final String[] theParamLettEvalColumnNames =
+    private final String[] columnNamesEvaluatedLetter =
     {
         NbBundle.getMessage(CLAZZ, "ParameterList.column.useParameter"),
         NbBundle.getMessage(CLAZZ, "ParameterList.column.parameterLetter"),
@@ -102,7 +102,7 @@ public class ParameterList
      */
     public ParameterList(ParameterList rhs)
     {
-        this.theModelMode = rhs.theModelMode;
+        this.modelMode = rhs.modelMode;
         this.isPositional = rhs.isPositional;
         for (AbstractParameter pc : rhs.parameterArray)
         {
@@ -124,7 +124,7 @@ public class ParameterList
     public ParameterList()
     {
         isPositional = false;
-        theModelMode = ModelMode.EDIT;
+        modelMode = ModelMode.EDIT;
     }
 
     private void updateParam(int row, AbstractParameter newInfo)
@@ -138,7 +138,7 @@ public class ParameterList
 
     void setModelMode(ModelMode modelMode)
     {
-        theModelMode = modelMode;
+        this.modelMode = modelMode;
     }
 
     List<String> getAsStringList()
@@ -224,7 +224,7 @@ public class ParameterList
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex)
     {
-        if (theModelMode == ModelMode.EDIT)
+        if (modelMode == ModelMode.EDIT)
         {
             if (isPositional)
             {
@@ -237,7 +237,7 @@ public class ParameterList
         }
         else
         {
-            if (theModelMode == ModelMode.PARAMLETTER_EVALUATED)
+            if (modelMode == ModelMode.PARAMLETTER_EVALUATED)
             {
                 if (columnIndex == 0)
                 {
@@ -249,7 +249,7 @@ public class ParameterList
                 }
                 return hasArgument(rowIndex);
             }
-            else if (theModelMode == ModelMode.POSITIONAL_EVALUATED)
+            else if (modelMode == ModelMode.POSITIONAL_EVALUATED)
             {
                 if (columnIndex == 0)
                 {
@@ -463,13 +463,13 @@ public class ParameterList
     @Override
     public String getColumnName(int column)
     {
-        return theModelMode == ModelMode.EDIT ? (isPositional ?
-                                                 theColumnNamesPos[column] :
-                                                 theColumnNamesLet[column]) :
-               theModelMode == ModelMode.POSITIONAL_EVALUATED ?
-               thePosEvalColumnNames[column] :
-               theModelMode == ModelMode.PARAMLETTER_EVALUATED ?
-               theParamLettEvalColumnNames[column] :
+        return modelMode == ModelMode.EDIT ? (isPositional ?
+                                              columnNamesPositional[column] :
+                                              columnNamesLetter[column]) :
+               modelMode == ModelMode.POSITIONAL_EVALUATED ?
+               columnNamesEvaluatedPositional[column] :
+               modelMode == ModelMode.PARAMLETTER_EVALUATED ?
+               columnNamesEvaluatedLetter[column] :
                "";
     }
 
@@ -482,13 +482,13 @@ public class ParameterList
     @Override
     public int getColumnCount()
     {
-        return theModelMode == ModelMode.EDIT ? (isPositional ?
-                                                 theColumnNamesPos.length :
-                                                 theColumnNamesLet.length) :
-               theModelMode == ModelMode.POSITIONAL_EVALUATED ?
-               thePosEvalColumnNames.length :
-               theModelMode == ModelMode.PARAMLETTER_EVALUATED ?
-               theParamLettEvalColumnNames.length :
+        return modelMode == ModelMode.EDIT ? (isPositional ?
+                                              columnNamesPositional.length :
+                                              columnNamesLetter.length) :
+               modelMode == ModelMode.POSITIONAL_EVALUATED ?
+               columnNamesEvaluatedPositional.length :
+               modelMode == ModelMode.PARAMLETTER_EVALUATED ?
+               columnNamesEvaluatedLetter.length :
                0;
     }
 
@@ -508,7 +508,7 @@ public class ParameterList
     @Override
     public Object getValueAt(int rowIndex, int columnIndex)
     {
-        if (theModelMode == ModelMode.EDIT)
+        if (modelMode == ModelMode.EDIT)
         {
             if (isPositional)
             {
@@ -533,7 +533,7 @@ public class ParameterList
                        new Object();
             }
         }
-        else if (theModelMode == ModelMode.POSITIONAL_EVALUATED)
+        else if (modelMode == ModelMode.POSITIONAL_EVALUATED)
         {
             PositionalParameter param = (PositionalParameter) parameterArray.
                                 get(
@@ -556,7 +556,7 @@ public class ParameterList
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex)
     {
-        if (theModelMode == ModelMode.EDIT)
+        if (modelMode == ModelMode.EDIT)
         {
             if (isPositional)
             {
@@ -609,7 +609,7 @@ public class ParameterList
                 updateParam(rowIndex, newInfo);
             }
         }
-        else if (theModelMode == ModelMode.POSITIONAL_EVALUATED)
+        else if (modelMode == ModelMode.POSITIONAL_EVALUATED)
         {
             PositionalParameter p = (PositionalParameter) parameterArray.
                                 get(rowIndex);
@@ -623,7 +623,7 @@ public class ParameterList
                     break;
             }
         }
-        else if (theModelMode == ModelMode.PARAMLETTER_EVALUATED)
+        else if (modelMode == ModelMode.PARAMLETTER_EVALUATED)
         {
             LetterParameter p = (LetterParameter) parameterArray.get(rowIndex);
             switch (columnIndex)

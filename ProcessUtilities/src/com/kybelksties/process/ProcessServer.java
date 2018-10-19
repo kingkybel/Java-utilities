@@ -22,7 +22,7 @@ package com.kybelksties.process;
 import com.kybelksties.general.LogFormatter;
 import com.kybelksties.general.SystemProperties;
 import com.kybelksties.general.ToString;
-import com.kybelksties.protocol.ProcessMessage;
+import com.kybelksties.protocol.Actor;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -47,7 +47,9 @@ import org.jutils.jprocesses.model.ProcessInfo;
  *
  * @author Dieter J Kybelksties
  */
-public class ProcessServer implements ConcreteProcess.StateEventListener
+public class ProcessServer
+        extends Actor
+        implements ConcreteProcess.StateEventListener
 {
 
     private static final Class CLAZZ = ProcessServer.class;
@@ -60,6 +62,12 @@ public class ProcessServer implements ConcreteProcess.StateEventListener
     static Map<Integer, ServerLoop> map = new HashMap<>();
     static Map<String, ConcreteProcess> monitoredProcesses = new TreeMap<>();
     static long processNumber = 0;
+
+    public ProcessServer()
+    {
+        super("ProcessServer");
+
+    }
 
     static
     {
@@ -112,12 +120,49 @@ public class ProcessServer implements ConcreteProcess.StateEventListener
         logInfo("Finished Server");
     }
 
+    /**
+     *
+     * @return
+     */
     public static List<ProcessInfo> list()
     {
         List<ProcessInfo> processesList = JProcesses.getProcessList();
 
         logInfo("in list: {0} processes running.", processesList.size());
         return processesList;
+    }
+
+    /**
+     * Logs an info-style simple message.
+     *
+     * @param message message(-format): can have ordinal replacement
+     *                place-holders "{0}, {1},..."
+     * @param objs    possibly empty list of objects used to replace
+     *                place-holders
+     */
+    static void logInfo(String message, Object... objs)
+    {
+        LOGGER.log(Level.INFO, message, objs);
+    }
+
+    /**
+     * Logs an error-style simple message.
+     *
+     * @param message message(-format): can have ordinal replacement
+     *                place-holders "{0}, {1},..."
+     * @param objs    possibly empty list of objects used to replace
+     *                place-holders
+     */
+    static void logError(String message, Object... objs)
+    {
+        LOGGER.log(Level.SEVERE, message, objs);
+    }
+
+    @Override
+    public void processStateChanged(ConcreteProcess.StateEvent evt)
+    {
+        ConcreteProcess ps = (ConcreteProcess) evt.getSource();
+//        ps.state
     }
 
     /**
@@ -134,7 +179,7 @@ public class ProcessServer implements ConcreteProcess.StateEventListener
         private String clientServerAddress = "";
         private int clientPort = 0;
 
-        public ServerLoop(Socket socket, int clientNumber) throws Exception
+        ServerLoop(Socket socket, int clientNumber) throws Exception
         {
             setName("'ServerLoop for client " + clientNumber + "'");
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -187,7 +232,8 @@ public class ProcessServer implements ConcreteProcess.StateEventListener
         {
             try
             {
-                ProcessMessage msg = new ProcessMessage(ProcessMessage.Type.Ack);
+                ProcessMessage msg = new ProcessMessage(
+                               ExeMessageType.acknowledge());
 
                 while (keepRunning)
                 {
@@ -205,68 +251,76 @@ public class ProcessServer implements ConcreteProcess.StateEventListener
                     ArrayList objs = rcvdMsg.getObjects();
 //                    if (rcvdMsg.isInstruction())
                     {
-                        switch (rcvdMsg.getType())
+                        if (rcvdMsg.getType().equals(ExeMessageType.chitChat()))
                         {
-                            case Ack:
-                                break;
-                            case ChitChat:
-                                logInfo(ToString.make(objs));
-                                break;
-                            case StopServer:
-                                logInfo("Bye, bye!");
-                                keepRunning = false;
-                                msg = ProcessMessage.makeAcknowledge();
-                                break;
-                            case Identify:
-                                logInfo("Connected to port {0} on {1}",
-                                        objs.toArray());
-                                break;
-                            case StartProcess:
-                                try
-                                {
-                                    ScheduledProcess sp =
-                                                     (ScheduledProcess) objs.
-                                                     get(0);
+                            logInfo(ToString.make(objs));
+                        }
+                        if (rcvdMsg.getType().equals(ExeMessageType.chitChat()))
+                        {
+                            logInfo("Bye, bye!");
+                            keepRunning = false;
+                            msg = ProcessMessage.makeAcknowledge();
+                        }
+                        if (rcvdMsg.getType().equals(ExeMessageType.identify()))
+                        {
+                            logInfo("Connected to port {0} on {1}",
+                                    objs.toArray());
+                        }
+                        if (rcvdMsg.getType().equals(ExeMessageType.
+                                startProcess()))
+                        {
+                            try
+                            {
+                                ScheduledProcess sp =
+                                                 (ScheduledProcess) objs.
+                                                 get(0);
 
-                                    if (HOSTNAME.equals(sp.getTargetMachine()))
-                                    {
-                                        String ID =
-                                               "(" + processNumber++ + ") " +
-                                               clientServerAddress +
-                                               ":" + clientPort + "-" +
-                                               sp.getExeDefinition().
-                                               getName();
-
-                                        ConcreteProcess ps = sp.start();
-                                        ps.addStateChangeEventListener(
-                                                (ConcreteProcess.StateEventListener) this);
-                                        msg = ProcessMessage.makeAcknowledge(
-                                        ps.state, "Server ID=" + ID);
-                                        monitoredProcesses.put(ID,
-                                                               sp.getProcess());
-                                    }
-                                }
-                                catch (ClassCastException e)
+                                if (HOSTNAME.equals(sp.getTargetMachine()))
                                 {
-                                    msg = ProcessMessage.makeInvalid(
-                                    e.toString());
+                                    String ID =
+                                           "(" + processNumber++ + ") " +
+                                           clientServerAddress +
+                                           ":" + clientPort + "-" +
+                                           sp.getExeDefinition().
+                                           getName();
+
+                                    ConcreteProcess ps = sp.start();
+                                    ps.addStateChangeEventListener(
+                                            (ConcreteProcess.StateEventListener) this);
+                                    msg = ProcessMessage.makeAcknowledge(
+                                    ps.state, "Server ID=" + ID);
+                                    monitoredProcesses.put(ID,
+                                                           sp.getProcess());
                                 }
-                                break;
-                            case ProcessList:
-                                logInfo("ProcessList:");
-                                System.exit(0);
-                                break;
-                            case ListProcesses:
-                                msg = new ProcessMessage(
-                                ProcessMessage.Type.ProcessList,
-                                (ArrayList<ProcessInfo>) list());
-                                break;
-                            case KillProcess:
-                                System.exit(0);
-                                break;
-                            case RestartProcess:
-                                System.exit(0);
-                                break;
+                            }
+                            catch (ClassCastException e)
+                            {
+                                msg = ProcessMessage.makeInvalid(
+                                e.toString());
+                            }
+                        }
+                        if (rcvdMsg.getType().equals(ExeMessageType.
+                                processList()))
+                        {
+                            logInfo("ProcessList:");
+                            System.exit(0);
+                        }
+                        if (rcvdMsg.getType().equals(
+                                ExeMessageType.listProcesses()))
+                        {
+                            msg = new ProcessMessage(
+                            ExeMessageType.processList(),
+                            (ArrayList<ProcessInfo>) list());
+                        }
+                        if (rcvdMsg.getType().equals(
+                                ExeMessageType.killProcess()))
+                        {
+                            System.exit(0);
+                        }
+                        if (rcvdMsg.getType().equals(
+                                ExeMessageType.restartProcess()))
+                        {
+                            System.exit(0);
                         }
                         out.writeObject(msg);
                         out.flush();
@@ -280,6 +334,7 @@ public class ProcessServer implements ConcreteProcess.StateEventListener
                          clientNumber,
                          ToString.make(e.toString()));
             }
+
             finally
             {
                 if (!keepRunning)
@@ -294,45 +349,10 @@ public class ProcessServer implements ConcreteProcess.StateEventListener
                 }
                 catch (IOException e)
                 {
-                    logError("Couldn't close the socket: {0}",
-                             e.toString());
+                    logError("Couldn't close the socket: {0}", e.toString());
                 }
             }
         }
-
-    }
-
-    @Override
-    public void processStateChanged(ConcreteProcess.StateEvent evt)
-    {
-        ConcreteProcess ps = (ConcreteProcess) evt.getSource();
-//        ps.state
-    }
-
-    /**
-     * Logs an info-style simple message.
-     *
-     * @param message message(-format): can have ordinal replacement
-     *                place-holders "{0}, {1},..."
-     * @param objs    possibly empty list of objects used to replace
-     *                place-holders
-     */
-    static void logInfo(String message, Object... objs)
-    {
-        LOGGER.log(Level.INFO, message, objs);
-    }
-
-    /**
-     * Logs an error-style simple message.
-     *
-     * @param message message(-format): can have ordinal replacement
-     *                place-holders "{0}, {1},..."
-     * @param objs    possibly empty list of objects used to replace
-     *                place-holders
-     */
-    static void logError(String message, Object... objs)
-    {
-        LOGGER.log(Level.SEVERE, message, objs);
     }
 
 }

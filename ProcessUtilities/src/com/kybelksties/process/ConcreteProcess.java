@@ -20,8 +20,7 @@
 package com.kybelksties.process;
 
 import com.kybelksties.general.EnvironmentVar;
-import com.kybelksties.general.EnvironmentVarSets;
-import com.kybelksties.general.EnvironmentVarTableModel;
+import com.kybelksties.general.EnvironmentVarModel;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,7 +66,7 @@ public class ConcreteProcess extends Process implements Serializable
 
     State state = null;
     private String[] command = null;
-    private EnvironmentVarSets environmentVarSets = new EnvironmentVarSets();
+    private EnvironmentVarModel environmentVarSets = new EnvironmentVarModel();
 
     /**
      * Default Construct.
@@ -84,7 +83,7 @@ public class ConcreteProcess extends Process implements Serializable
      *
      * @param environmentVarSets set of environment variables
      */
-    public ConcreteProcess(EnvironmentVarSets environmentVarSets)
+    public ConcreteProcess(EnvironmentVarModel environmentVarSets)
     {
         this();
         cloneEnvironment(environmentVarSets);
@@ -96,7 +95,8 @@ public class ConcreteProcess extends Process implements Serializable
      * @param command            command-line as string
      * @param environmentVarSets set of environment variables
      */
-    public ConcreteProcess(String command, EnvironmentVarSets environmentVarSets)
+    public ConcreteProcess(String command,
+                           EnvironmentVarModel environmentVarSets)
     {
         this(environmentVarSets);
         this.command = new String[1];
@@ -112,7 +112,7 @@ public class ConcreteProcess extends Process implements Serializable
      * @param environmentVarSets set of environment variables
      */
     public ConcreteProcess(String[] command,
-                           EnvironmentVarSets environmentVarSets)
+                           EnvironmentVarModel environmentVarSets)
     {
         this(environmentVarSets);
         this.command = command;
@@ -179,10 +179,10 @@ public class ConcreteProcess extends Process implements Serializable
     /**
      * Initialize the environment using a flat file.
      *
-     * @param fileName csv file that contains the environment
-     * @throws IOException
+     * @param fileName csv file that containsVariableName the environment
+     * @throws Exception
      */
-    public void initEnvironment(String fileName) throws IOException
+    public void initEnvironment(String fileName) throws Exception
     {
         environmentVarFile = fileName;
         environmentVarSets.initialiseVarsFromFile(fileName);
@@ -196,9 +196,9 @@ public class ConcreteProcess extends Process implements Serializable
     /**
      * Initialize the environment.
      *
-     * @throws IOException
+     * @throws Exception
      */
-    public void initEnvironment() throws IOException
+    public void initEnvironment() throws Exception
     {
         if (environmentVarFile != null && !environmentVarFile.isEmpty())
         {
@@ -219,13 +219,13 @@ public class ConcreteProcess extends Process implements Serializable
      *
      * @param environmentVarSets the environment to clone
      */
-    public final void cloneEnvironment(EnvironmentVarSets environmentVarSets)
+    public final void cloneEnvironment(EnvironmentVarModel environmentVarSets)
     {
         if (environmentVarSets == null)
         {
             return;
         }
-        this.environmentVarSets = new EnvironmentVarSets(environmentVarSets);
+        this.environmentVarSets = new EnvironmentVarModel(environmentVarSets);
         updateEnvironments();
     }
 
@@ -234,7 +234,7 @@ public class ConcreteProcess extends Process implements Serializable
      *
      * @return the categorized environment object
      */
-    public EnvironmentVarSets getCategorisedEnvironment()
+    public EnvironmentVarModel getCategorisedEnvironment()
     {
         return environmentVarSets;
     }
@@ -289,7 +289,7 @@ public class ConcreteProcess extends Process implements Serializable
      */
     public TableModel getTableModel(String category)
     {
-        return environmentVarSets.getTableModel(category);
+        return environmentVarSets.viewCategory(category);
     }
 
     /**
@@ -299,7 +299,7 @@ public class ConcreteProcess extends Process implements Serializable
      */
     public void defineAll(String category)
     {
-        environmentVarSets.getTableModel(category).defineAll();
+        environmentVarSets.viewCategory(category).defineAll();
     }
 
     /**
@@ -309,7 +309,7 @@ public class ConcreteProcess extends Process implements Serializable
      */
     public void undefineAll(String category)
     {
-        environmentVarSets.getTableModel(category).undefineAll();
+        environmentVarSets.viewCategory(category).undefineAll();
     }
 
     /**
@@ -321,7 +321,7 @@ public class ConcreteProcess extends Process implements Serializable
      */
     public void setAllBooleans(String category, boolean on)
     {
-        environmentVarSets.getTableModel(category).setBooleans(on);
+        environmentVarSets.viewCategory(category).setBooleans(on);
     }
 
     /**
@@ -342,8 +342,7 @@ public class ConcreteProcess extends Process implements Serializable
      */
     public void updateEnvironment(String category)
     {
-        EnvironmentVarTableModel model =
-                                 environmentVarSets.getTableModel(category);
+        EnvironmentVarModel model = environmentVarSets.viewCategory(category);
         for (int row = 0; row < model.getRowCount(); row++)
         {
             EnvironmentVar entry = model.get(row);
@@ -511,6 +510,10 @@ public class ConcreteProcess extends Process implements Serializable
         return builder.directory(dir);
     }
 
+    /**
+     *
+     * @return
+     */
     public State getState()
     {
         return state;

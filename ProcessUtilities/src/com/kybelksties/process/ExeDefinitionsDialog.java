@@ -89,22 +89,6 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
     class TableMenu extends JPopupMenu
     {
 
-        class AugmentedMenuItem extends JMenuItem
-        {
-
-            TableMenuActions action;
-
-            AugmentedMenuItem(TableMenuActions action)
-            {
-                super(action.toString());
-                this.action = action;
-            }
-
-            TableMenuActions getMenuAction()
-            {
-                return action;
-            }
-        }
 
         TableMenu()
         {
@@ -139,6 +123,24 @@ public class ExeDefinitionsDialog extends javax.swing.JDialog
                 AugmentedMenuItem menuItem = new AugmentedMenuItem(nma);
                 menuItem.addActionListener(action);
                 add(menuItem);
+            }
+        }
+
+        class AugmentedMenuItem extends JMenuItem
+        {
+
+            TableMenuActions action;
+
+            AugmentedMenuItem(
+                    TableMenuActions action)
+            {
+                super(action.toString());
+                this.action = action;
+            }
+
+            TableMenuActions getMenuAction()
+            {
+                return action;
             }
         }
     }

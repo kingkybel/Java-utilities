@@ -45,19 +45,80 @@ public class ConnectionInfoList implements Serializable
 
     private final TreeSet<ConnectionInfo> configurations = new TreeSet<>();
 
+    /**
+     *
+     */
     public ConnectionInfoList()
     {
     }
 
+    /**
+     *
+     * @param serverIP
+     * @param port
+     * @param name
+     */
     public void add(String serverIP, int port, String name)
     {
         configurations.add(new ConnectionInfo(serverIP, port, name));
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    static public class ConnectionInfo implements Comparable<Object>,
+    /**
+     *
+     * @return
+     */
+    public ComboBoxModel getComboBoxModel()
+    {
+        return new DefaultComboBoxModel(configurations.toArray());
+    }
+
+    /**
+     *
+     */
+    @XmlAccessorType(value = XmlAccessType.FIELD)
+    public static class ConnectionInfo implements Comparable<Object>,
                                                   Serializable
     {
+
+        private static final Class CLAZZ = ConnectionInfo.class;
+        private static final String CLASS_NAME = CLAZZ.getName();
+        private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+        private static final long serialVersionUID = -8940196742313991701L;
+
+        String serverIP = "localhost";
+        int port = 0;
+        String name = "";
+
+        /**
+         *
+         * @param serverIP
+         * @param port
+         * @param name
+         */
+        public ConnectionInfo(String serverIP, int port, String name)
+        {
+            this.serverIP = serverIP;
+            this.port = port;
+            this.name = name;
+        }
+
+        /**
+         *
+         * @param serverIP
+         * @param port
+         */
+        public ConnectionInfo(String serverIP, int port)
+        {
+            this(serverIP, port, serverIP + ":" + port);
+        }
+
+        /**
+         *
+         */
+        public ConnectionInfo()
+        {
+            this("localhost", 0);
+        }
 
         @Override
         public int hashCode()
@@ -87,37 +148,11 @@ public class ConnectionInfoList implements Serializable
             return this.port == other.port;
         }
 
-        private static final Class CLAZZ = ConnectionInfo.class;
-        private static final String CLASS_NAME = CLAZZ.getName();
-        private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
-        private static final long serialVersionUID = -8940196742313991701L;
-
         @Override
         public String toString()
         {
             return name + " (" + serverIP + ":" + port + ")";
         }
-
-        public ConnectionInfo(String serverIP, int port, String name)
-        {
-            this.serverIP = serverIP;
-            this.port = port;
-            this.name = name;
-        }
-
-        public ConnectionInfo(String serverIP, int port)
-        {
-            this(serverIP, port, serverIP + ":" + port);
-        }
-
-        public ConnectionInfo()
-        {
-            this("localhost", 0);
-        }
-
-        String serverIP = "localhost";
-        int port = 0;
-        String name = "";
 
         @Override
         public int compareTo(Object o)
@@ -138,10 +173,5 @@ public class ConnectionInfoList implements Serializable
             }
             return serverIP.compareToIgnoreCase(other.serverIP);
         }
-    }
-
-    public ComboBoxModel getComboBoxModel()
-    {
-        return new DefaultComboBoxModel(configurations.toArray());
     }
 }

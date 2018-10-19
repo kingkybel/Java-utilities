@@ -19,8 +19,8 @@
  */
 package com.kybelksties.process;
 
-import com.kybelksties.protocol.ProcessMessage;
 import com.kybelksties.general.SystemProperties;
+import com.kybelksties.protocol.Actor;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -33,26 +33,40 @@ import java.util.logging.Logger;
  *
  * @author Dieter J Kybelksties
  */
-public class ProcessClient
+public class ProcessClient extends Actor
 {
 
     private static final Class CLAZZ = ProcessClient.class;
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
-
-    Socket socket;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
     private static final String LOCALHOST = localHostName();
-    String serverAddress = null;
-    int port = 9898;
-    private boolean connected = false;
 
-    static private String localHostName()
+    private static String localHostName()
     {
         String reval = (String) SystemProperties.get("HOSTNAME");
         return reval == null || reval.isEmpty() ? "localhost" : reval;
     }
+
+    static void logInfo(String message, Object... objs)
+    {
+        LOGGER.log(Level.INFO, message, objs);
+    }
+
+    /**
+     * Logs a simple message. In this case we just write the message to the
+     * server applications standard output.
+     */
+    static void logError(String message, Object... objs)
+    {
+        LOGGER.log(Level.SEVERE, message, objs);
+    }
+
+    Socket socket;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
+    String serverAddress = null;
+    int port = 9898;
+    private boolean connected = false;
 
     /**
      * Creates new ProcessClient.
@@ -61,9 +75,9 @@ public class ProcessClient
      * @param port          port number
      * @throws java.io.IOException when the server address is null or empty
      */
-    public ProcessClient(String serverAddress, int port)
-            throws IOException
+    public ProcessClient(String serverAddress, int port) throws IOException
     {
+        super("ProcessClient");
         this.serverAddress = serverAddress;
         this.port = port;
         if (this.serverAddress == null || this.serverAddress.isEmpty())
@@ -86,8 +100,7 @@ public class ProcessClient
      *                                de-serialised
      */
     public ArrayList<ProcessMessage> connectToServer()
-            throws IOException,
-                   ClassNotFoundException
+            throws IOException, ClassNotFoundException
     {
         ArrayList<ProcessMessage> reval = new ArrayList<>();
         // Make connection and initialize streams
@@ -144,20 +157,6 @@ public class ProcessClient
         }
 
         return rcvdMsg;
-    }
-
-    static void logInfo(String message, Object... objs)
-    {
-        LOGGER.log(Level.INFO, message, objs);
-    }
-
-    /**
-     * Logs a simple message. In this case we just write the message to the
-     * server applications standard output.
-     */
-    static void logError(String message, Object... objs)
-    {
-        LOGGER.log(Level.SEVERE, message, objs);
     }
 
 }

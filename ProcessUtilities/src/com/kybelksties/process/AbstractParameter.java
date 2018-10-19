@@ -239,11 +239,19 @@ public abstract class AbstractParameter
         return value == null ? "" : value;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDefault()
     {
         return defaultValue == null ? "" : defaultValue;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDefaultedValue()
     {
         return value != null && !value.isEmpty() ? value :

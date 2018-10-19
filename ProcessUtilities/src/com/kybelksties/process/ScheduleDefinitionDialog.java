@@ -19,10 +19,7 @@
  */
 package com.kybelksties.process;
 
-import com.kybelksties.general.EnvironmentVar;
-import com.kybelksties.gui.EnvironmentVarDialog;
-import com.kybelksties.general.EnvironmentVarSets;
-import com.kybelksties.general.EnvironmentVarTableModel;
+import com.kybelksties.general.EnvironmentVarModel;
 import com.kybelksties.gui.ColorUtils;
 import com.kybelksties.gui.EnvironmentVarTable;
 import com.kybelksties.gui.controls.ForegroundBackgroundColorChooser;
@@ -161,13 +158,13 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
     public final void makeEnvironmentTabs(ConcreteProcess process)
     {
         envVarsTabsPane.removeAll();
-        EnvironmentVarSets ce = process.getCategorisedEnvironment();
+        EnvironmentVarModel ce = process.getCategorisedEnvironment();
         for (String category : ce.getCategoryNameSet())
         {
             JPanel panel = new JPanel();
             JScrollPane scrollPane = new JScrollPane();
             panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-            EnvironmentVarTableModel model = ce.getTableModel(category);
+            EnvironmentVarModel model = ce.viewCategory(category);
             EnvironmentVarTable table = new EnvironmentVarTable(model);
             scrollPane.setViewportView(table);
             panel.add(scrollPane);
@@ -247,7 +244,6 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
         startInButton = new javax.swing.JButton();
         startInDirInput = new javax.swing.JTextField();
         reinitEnvButton = new javax.swing.JButton();
-        addEnvButton = new javax.swing.JButton();
         windowModeComboBox = new javax.swing.JComboBox();
         exePathLbl = new javax.swing.JTextField();
         nameLbl = new javax.swing.JTextField();
@@ -339,16 +335,6 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
             }
         });
         detailsPane.add(reinitEnvButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 260, -1));
-
-        addEnvButton.setText(org.openide.util.NbBundle.getMessage(ScheduleDefinitionDialog.class, "ScheduleDefinitionDialog.addVar")); // NOI18N
-        addEnvButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                addEnvButtonActionPerformed(evt);
-            }
-        });
-        detailsPane.add(addEnvButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, 260, -1));
 
         windowModeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         windowModeComboBox.addActionListener(new java.awt.event.ActionListener()
@@ -492,25 +478,6 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
 
     }//GEN-LAST:event_reinitEnvButtonActionPerformed
 
-    private void addEnvButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_addEnvButtonActionPerformed
-    {//GEN-HEADEREND:event_addEnvButtonActionPerformed
-        int i = 0;
-        tablesPane.setSelectedComponent(envVarsPane);
-        EnvironmentVarSets envVar =
-                           theScheduledProcess.getProcess().
-                           getCategorisedEnvironment();
-        EnvironmentVarDialog dlg = new EnvironmentVarDialog(this, true, envVar);
-        EnvironmentVar val = dlg.getNewValue();
-        if (val != null)
-        {
-            theScheduledProcess.getProcess().getCategorisedEnvironment().
-                    setValue(val.getName(),
-                             val.getCategory(),
-                             val.getValue());
-            makeEnvironmentTabs(theScheduledProcess.getProcess());
-        }
-    }//GEN-LAST:event_addEnvButtonActionPerformed
-
     private void windowModeComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_windowModeComboBoxActionPerformed
     {//GEN-HEADEREND:event_windowModeComboBoxActionPerformed
         theScheduledProcess.setWindowMode(
@@ -535,7 +502,6 @@ public class ScheduleDefinitionDialog extends javax.swing.JDialog
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addEnvButton;
     private javax.swing.JButton cancelBtn;
     private javax.swing.JButton changeColorButton;
     private javax.swing.JPanel detailsPane;

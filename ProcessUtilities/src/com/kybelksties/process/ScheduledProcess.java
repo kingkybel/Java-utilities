@@ -20,15 +20,13 @@
 package com.kybelksties.process;
 
 import com.kybelksties.general.DateUtils;
-import com.kybelksties.general.EnvironmentVarSets;
+import com.kybelksties.general.EnvironmentVarModel;
 import com.kybelksties.general.StringUtils;
 import com.kybelksties.general.ToString;
 import com.kybelksties.gui.ColorUtils;
-import com.kybelksties.protocol.ProcessMessage;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Rectangle;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +50,46 @@ public class ScheduledProcess implements Serializable
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     private static final long serialVersionUID = -8940196742313991701L;
+    private static ArrayList<Rectangle> defaultGeometries =
+    makeDefaultGeometries();
+    private static int defaultGeometryNumber = 0;
 
+    private static ArrayList<Rectangle> makeDefaultGeometries()
+    {
+        ArrayList<Rectangle> reval = new ArrayList<>();
+        reval.add(new Rectangle(0, 0, 60, 22));
+        reval.add(new Rectangle(200, 0, 60, 22));
+        reval.add(new Rectangle(400, 0, 60, 22));
+        reval.add(new Rectangle(600, 0, 60, 22));
+        reval.add(new Rectangle(0, 350, 60, 22));
+        reval.add(new Rectangle(200, 350, 60, 22));
+        reval.add(new Rectangle(400, 350, 60, 22));
+        reval.add(new Rectangle(600, 350, 60, 22));
+        reval.add(new Rectangle(0, 700, 60, 22));
+        reval.add(new Rectangle(200, 700, 60, 22));
+        reval.add(new Rectangle(400, 700, 60, 22));
+        reval.add(new Rectangle(600, 700, 60, 22));
+        
+        return reval;
+    }
+    
+    private static String makeGeometry()
+    {
+        return makeGeometry(defaultGeometries.get(
+                (defaultGeometryNumber++) % defaultGeometries.size()));
+    }
+    
+    private static String makeGeometry(Rectangle dimensions)
+    {
+        return dimensions.width +
+               "x" +
+               dimensions.height +
+               "+" +
+               dimensions.x +
+               "+" +
+               dimensions.y;
+    }
+    
     private ConcreteProcess process = null;
     private ExeDefinition exeDefinition = null;
     private Long noopTime = 0L;
@@ -64,9 +101,6 @@ public class ScheduledProcess implements Serializable
     ConnectionInfoList.ConnectionInfo connectionInfo =
                                       new ConnectionInfoList.ConnectionInfo();
     private Rectangle dimensions = null;
-    private static ArrayList<Rectangle> defaultGeometries =
-                                        makeDefaultGeometries();
-    private static int defaultGeometryNumber = 0;
 
     /**
      * Default construct.
@@ -83,7 +117,7 @@ public class ScheduledProcess implements Serializable
      * @param environment   contains the environment variables
      */
     public ScheduledProcess(ExeDefinition exeDefinition,
-                            EnvironmentVarSets environment)
+                            EnvironmentVarModel environment)
     {
         this();
         this.process = new ConcreteProcess(environment);
@@ -99,7 +133,7 @@ public class ScheduledProcess implements Serializable
      *                         should be started
      */
     public ScheduledProcess(ExeDefinition exeDefinition,
-                            EnvironmentVarSets environment,
+                            EnvironmentVarModel environment,
                             String startInDirectory)
     {
         this(exeDefinition, environment);
@@ -438,7 +472,7 @@ public class ScheduledProcess implements Serializable
         }
     }
 
-    void cloneEnvironment(EnvironmentVarSets environment)
+    void cloneEnvironment(EnvironmentVarModel environment)
     {
         process.cloneEnvironment(environment);
     }
@@ -464,7 +498,7 @@ public class ScheduledProcess implements Serializable
             {
                 getProcess().initEnvironment();
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 LOGGER.log(Level.INFO,
                            NbBundle.getMessage(
@@ -497,7 +531,7 @@ public class ScheduledProcess implements Serializable
             {
                 getProcess().initEnvironment(absolutePath);
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 LOGGER.log(Level.INFO,
                            NbBundle.getMessage(
@@ -526,7 +560,7 @@ public class ScheduledProcess implements Serializable
     public ProcessMessage sendStartInstruction()
     {
         ProcessMessage msg = new ProcessMessage(
-                       ProcessMessage.Type.StartProcess,
+                       ExeMessageType.startProcess(),
                        this);
         ProcessMessage response;
         try
@@ -629,51 +663,14 @@ public class ScheduledProcess implements Serializable
         return reval;
     }
 
-    private static ArrayList<Rectangle> makeDefaultGeometries()
-    {
-        ArrayList<Rectangle> reval = new ArrayList<>();
-        reval.add(new Rectangle(0, 0, 60, 22));
-        reval.add(new Rectangle(200, 0, 60, 22));
-        reval.add(new Rectangle(400, 0, 60, 22));
-        reval.add(new Rectangle(600, 0, 60, 22));
-        reval.add(new Rectangle(0, 350, 60, 22));
-        reval.add(new Rectangle(200, 350, 60, 22));
-        reval.add(new Rectangle(400, 350, 60, 22));
-        reval.add(new Rectangle(600, 350, 60, 22));
-        reval.add(new Rectangle(0, 700, 60, 22));
-        reval.add(new Rectangle(200, 700, 60, 22));
-        reval.add(new Rectangle(400, 700, 60, 22));
-        reval.add(new Rectangle(600, 700, 60, 22));
-
-        return reval;
-    }
-
-    static private String makeGeometry()
-    {
-        return makeGeometry(defaultGeometries.get(
-                (defaultGeometryNumber++) % defaultGeometries.size()));
-    }
-
-    static private String makeGeometry(Rectangle dimensions)
-    {
-        return dimensions.width +
-               "x" +
-               dimensions.height +
-               "+" +
-               dimensions.x +
-               "+" +
-               dimensions.y;
-    }
-
-    private String[] makeXtermCommand(Rectangle dimensions,
-                                      Color backColor)
+    private String[] makeXtermCommand(Rectangle dimensions, Color backColor)
     {
         Color bgColor = backColor;
         Color fgColor = ColorUtils.contrastColorByComplement(bgColor);
         String foreColorString = ColorUtils.xtermColorString(fgColor);
         String[] reval = new String[]
-         {
-             "/usr/bin/xterm",
+        {
+            "/usr/bin/xterm",
              "-bg", ColorUtils.xtermColorString(backColor),
              "-fg", foreColorString,
              "+cu", "-j", "-nb", "0", "-s",
@@ -687,6 +684,10 @@ public class ScheduledProcess implements Serializable
         return reval;
     }
 
+    /**
+     *
+     * @return
+     */
     public String makeBatch()
     {
         String reval = "#!/bin/ksh" + StringUtils.NEWLINE + StringUtils.NEWLINE;
@@ -712,9 +713,9 @@ public class ScheduledProcess implements Serializable
         if (command != null)
         {
 
-            EnvironmentVarSets environment = getProcess().
-                               getCategorisedEnvironment();
-            reval += environment.createExportVariablesString();
+            EnvironmentVarModel environment = getProcess().
+                    getCategorisedEnvironment();
+            reval += environment.createShellVariableString();
             ToString.setDelimiters(command.getClass(), "", " ", "");
             ToString.setDontUseLinebreaks(command.getClass());
 
@@ -725,4 +726,5 @@ public class ScheduledProcess implements Serializable
         return reval;
     }
 
+    
 }
