@@ -20,6 +20,7 @@
  */
 package com.kybelksties.general;
 
+import static java.lang.Math.min;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -46,32 +47,97 @@ public class StringUtils
     public static final String NEWLINE = System.getProperty("line.separator");
 
     /**
-     * The valid string representations of the boolean value true.
+     * The valid default string representations of the boolean value true as a
+     * set (for efficiency).
      */
-    public static final String[] TRUE_VALUES = NbBundle.getMessage(
-                                 CLAZZ,
-                                 "StringUtils.trueValues").split(",");
+    private static Set<String> trueStrings = setBooleanSynonyms(true);
 
     /**
-     * The valid string representations of the boolean value true as a set (for
-     * efficiency).
+     * The valid default string representations of the boolean value false.
      */
-    public static final Set<String> trueStrings = new HashSet<>(
-                                    Arrays.asList(TRUE_VALUES));
+    private static Set<String> falseStrings = setBooleanSynonyms(false);
 
     /**
-     * The valid string representations of the boolean value false as a set (for
-     * efficiency).
+     * Resets the valid string representations of booleans to the default.
      */
-    public static final String[] FALSE_VALUES = NbBundle.getMessage(
-                                 CLAZZ,
-                                 "StringUtils.falseValues").split(",");
+    static public void resetBooleanSynonyms()
+    {
+        trueStrings = setBooleanSynonyms(true);
+        falseStrings = setBooleanSynonyms(false);
+    }
 
     /**
-     * The valid string representations of the boolean value false.
+     * Resets the valid string representations of booleans replacing the system
+     * default.
+     *
+     * @param trueSynonyms  a comma-separated list of strings to be interpreted
+     *                      as "true"
+     * @param falseSynonyms a comma-separated list of strings to be interpreted
+     *                      as "false"
      */
-    public static final Set<String> falseStrings = new HashSet<>(
-                                    Arrays.asList(FALSE_VALUES));
+    static public void resetBooleanSynonyms(String trueSynonyms,
+                                            String falseSynonyms)
+    {
+        String[] SYNONYM_ARRAY = trueSynonyms.split(",");
+        trueStrings = setBooleanSynonyms(true, SYNONYM_ARRAY);
+        SYNONYM_ARRAY = falseSynonyms.split(",");
+        falseStrings = setBooleanSynonyms(false, SYNONYM_ARRAY);
+    }
+
+    /**
+     * Add additional representations for "true" and "false".
+     *
+     * @param trueSynonyms  a comma-separated list of strings to be interpreted
+     *                      as "true"
+     * @param falseSynonyms a comma-separated list of strings to be interpreted
+     *                      as "false"
+     */
+    static public void addBooleanSynonyms(String trueSynonyms,
+                                          String falseSynonyms)
+    {
+        String[] SYNONYM_ARRAY = trueSynonyms.split(",");
+        trueStrings.addAll(Arrays.asList(SYNONYM_ARRAY));
+        SYNONYM_ARRAY = falseSynonyms.split(",");
+        falseStrings.addAll(Arrays.asList(SYNONYM_ARRAY));
+    }
+
+    static private Set<String> setBooleanSynonyms(boolean b)
+    {
+        String[] SYNONYM_ARRAY = NbBundle.getMessage(
+                 CLAZZ,
+                 b ? "StringUtils.trueValues" : "StringUtils.falseValues").
+                 split(",");
+
+        return setBooleanSynonyms(b, SYNONYM_ARRAY);
+    }
+
+    static private Set<String> setBooleanSynonyms(boolean b,
+                                                  String[] SYNONYM_ARRAY)
+    {
+        return new HashSet<>(Arrays.asList(SYNONYM_ARRAY));
+    }
+
+    /**
+     * Retrieve a set of Strings that contains valid representations of the
+     * boolean "true" value.
+     *
+     * @return
+     */
+    public static Set<String> getValidTrueStrings()
+    {
+        return trueStrings;
+    }
+
+    /**
+     * Retrieve a set of Strings that contains valid representations of the
+     * boolean "false" value.
+     *
+     * @return
+     */
+    public static Set<String> getValidFalseStrings()
+    {
+        return falseStrings;
+    }
 
     /**
      * Replace whitespace-sequences within the string by a single space ' ' and
@@ -104,6 +170,7 @@ public class StringUtils
                 firstOccurence = true;
             }
         }
+
         return reval.trim();
     }
 
@@ -155,12 +222,14 @@ public class StringUtils
         {
             return NumberSpecies.NONE;
         }
-        boolean isSigned = (str.charAt(0) == '-' || str.charAt(0) == '+');
-        if (parsesAsInt && !isSigned)
+        // it only makes sense to have a sign if one wants to handle positive
+        // and negative numbers
+        boolean hasSign = (str.charAt(0) == '-' || str.charAt(0) == '+');
+        if (parsesAsInt && !hasSign)
         {
             return NumberSpecies.UINT;
         }
-        if (parsesAsFloat && !isSigned)
+        if (parsesAsFloat && !hasSign)
         {
             return NumberSpecies.UFLOAT;
         }
@@ -172,6 +241,7 @@ public class StringUtils
         {
             return NumberSpecies.FLOAT;
         }
+
         return NumberSpecies.NONE;
     }
 
@@ -210,50 +280,46 @@ public class StringUtils
         {
             String value = valueObj.toString();
             NumberSpecies valueClass = findSpecies(value);
-            // first time round the
             if (reval == null)
             {
                 reval = valueClass; // either NONE or a number class
             }
-            else
+            // NONE is the smallest value, so if we get a bigger value
+            // then we have a number. Set it as reval if we have not already
+            // set to one of the none-number values
+            if (valueClass.ordinal() > reval.ordinal())
             {
-                // NONE is the smallest value, so if we get a bigger value
-                // then we have a number. Set it as reval if we have not already
-                // set to one of the none-number values
-                if (valueClass.ordinal() > reval.ordinal())
-                {
-                    reval = valueClass;
-                }
+                reval = valueClass;
+            }
 
-                if (valueClass == NumberSpecies.INT && reval ==
-                                                       NumberSpecies.UFLOAT)
-                {
-                    reval = NumberSpecies.FLOAT;
-                }
+            if (valueClass == NumberSpecies.INT &&
+                reval == NumberSpecies.UFLOAT)
+            {
+                reval = NumberSpecies.FLOAT;
+            }
 
-                if (valueClass == NumberSpecies.NONE)
+            if (valueClass == NumberSpecies.NONE)
+            {
+                // cannot classify as number, but maybe as boolean or
+                // character.
+                Boolean bool = scanBoolString(value);
+                if (bool != null &&
+                    (reval == NumberSpecies.BOOL ||
+                     reval == NumberSpecies.NONE))
                 {
-                    // cannot classify as number, but maybe as boolean or
-                    // character.
-                    Boolean bool = scanBoolString(value);
-                    if (bool != null &&
-                        (reval == NumberSpecies.BOOL || reval ==
-                                                        NumberSpecies.NONE))
-                    {
-                        reval = NumberSpecies.BOOL;
-                    }
-                    else if (value.length() == 1 && reval !=
-                                                    NumberSpecies.STRING)
-                    {
-                        reval = NumberSpecies.CHAR;
-                    }
-                    else
-                    {
-                        reval = NumberSpecies.STRING;
-                        // here we can actually return as we can no longer have
-                        // any other class for the collection
-                        return reval;
-                    }
+                    reval = NumberSpecies.BOOL;
+                }
+                else if (value.length() == 1 &&
+                         reval != NumberSpecies.STRING)
+                {
+                    reval = NumberSpecies.CHAR;
+                }
+                else
+                {
+                    reval = NumberSpecies.STRING;
+                    // here we can actually return as we can no longer have
+                    // any other class for the collection
+                    return reval;
                 }
             }
         }
@@ -283,6 +349,7 @@ public class StringUtils
         {
             return false;
         }
+
         return null;
     }
 
@@ -402,7 +469,58 @@ public class StringUtils
             buffer.append(tabs.toString());
             buffer.append("}").append(NEWLINE);
         }
+
         return buffer.toString();
+    }
+
+
+    /**
+     * Compute Levenshtein distance.
+     *
+     * @param string1 first string
+     * @param string2 second string
+     * @return the Levenshtein distance between string1 and string2
+     */
+    static public int levenshteinDistance(String string1, String string2)
+    {
+        if (string1 == null || string1.isEmpty())
+        {
+            return string2 == null ? 0 : string2.length();
+        }
+        if (string2 == null || string2.isEmpty())
+        {
+            return string1.length();
+        }
+
+        int len1 = string1.length();
+        int len2 = string2.length();
+        int dist[][] = new int[len1 + 1][len2 + 1];
+
+        for (int i1 = 0; i1 <= len1; i1++)
+        {
+            dist[i1][0] = i1;
+        }
+
+        for (int i2 = 0; i2 <= len2; i2++)
+        {
+            dist[0][i2] = i2;
+        }
+
+        for (int i1 = 1; i1 <= len1; i1++)
+        {
+            char c_i1 = string1.charAt(i1 - 1);
+
+            for (int i2 = 1; i2 <= len2; i2++)
+            {
+                char c_i2 = string2.charAt(i2 - 1);
+
+                dist[i1][i2] = min(min(dist[i1 - 1][i2] + 1,
+                                       dist[i1][i2 - 1] + 1),
+                                   dist[i1 - 1][i2 - 1] + (c_i1 == c_i2 ? 0 : 1));
+            }
+        }
+
+        return dist[len1][len2];
     }
 
     /**
@@ -415,35 +533,27 @@ public class StringUtils
          * Indicates that the value cannot be classified in any of the other
          * classes. This is not a number (it is a free man!)
          */
-        NONE,
-        /**
+        NONE, /**
          * An unsigned integer.
          */
-        UINT,
-        /**
+        UINT, /**
          * A signed integer.
          */
-        INT,
-        /**
+        INT, /**
          * A positive floating point number.
          */
-        UFLOAT,
-        /**
+        UFLOAT, /**
          * A floating point number.
          */
-        FLOAT,
-        /**
+        FLOAT, /**
          * A boolean value. Not a number.
          */
-        BOOL,
-        /**
+        BOOL, /**
          * A single character. Not a number.
          */
-        CHAR,
-        /**
+        CHAR, /**
          * A character string. Not a number.
          */
         STRING
     }
-
 }

@@ -20,10 +20,16 @@
  */
 package com.kybelksties.general;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -38,110 +44,24 @@ public class SystemProperties
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    static private enum Type
-    {
 
-        SystemProperty, EnvironmentVariable
-    }
+    private static TreeMap<PropKey, Object> map = makeMap();
 
-    static private class PropKey implements Comparable<PropKey>
-    {
-
-        @Override
-        public String toString()
-        {
-            return key + " (" + type + ")";
-        }
-
-        public PropKey(String key, Type type)
-        {
-            this.key = key;
-            this.type = type;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            int hash = 7;
-            hash = 79 * hash + Objects.hashCode(this.key);
-            hash = 79 * hash + Objects.hashCode(this.type);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-            if (getClass() != obj.getClass())
-            {
-                return false;
-            }
-            final PropKey other = (PropKey) obj;
-            if (!Objects.equals(this.key, other.key))
-            {
-                return false;
-            }
-            return this.type == other.type;
-        }
-
-        private final String key;
-        private final Type type;
-
-        @Override
-        public int compareTo(PropKey o)
-        {
-            if (o == null)
-            {
-                return 1;
-            }
-            if (key == null && o.key == null)
-            {
-                return type == o.type ? 0 :
-                       type == null ? -1 :
-                       o.type == null ? 1 :
-                       type.compareTo(o.type);
-            }
-            if (key == null)
-            {
-                return -1;
-            }
-            if (o.key == null)
-            {
-                return 1;
-            }
-            if (key.compareToIgnoreCase(o.key) == 0)
-            {
-                return type == o.type ? 0 :
-                       type == null ? -1 :
-                       o.type == null ? 1 :
-                       type.compareTo(o.type);
-            }
-
-            return key.compareToIgnoreCase(o.key);
-        }
-    }
-
-    static private TreeMap<PropKey, Object> makeMap()
+    private static TreeMap<PropKey, Object> makeMap()
     {
         map = new TreeMap<>();
-        Map env = System.getenv();
+        Map<String, String> env = System.getenv();
         HashMap<String, ?> sys = new HashMap(System.getProperties());
         for (String key : sys.keySet())
         {
             map.put(new PropKey(key, Type.SystemProperty), sys.get(key));
         }
-        for (String key : System.getenv().keySet())
+        for (String key : env.keySet())
         {
-            map.put(new PropKey(key, Type.EnvironmentVariable),
-                    System.getenv().get(key));
+            map.put(new PropKey(key, Type.EnvironmentVariable), env.get(key));
         }
         return map;
     }
-
-    private static TreeMap<PropKey, Object> map = makeMap();
 
     /**
      * Retrieve the the property by it's key. First look in the environment
@@ -186,5 +106,110 @@ public class SystemProperties
     public static void main(String[] args)
     {
         print(System.out);
+    }
+
+    /**
+     * Load properties from a file.
+     *
+     * @param fileName the filename to load from
+     * @throws IOException           when file access is prohibited
+     * @throws FileNotFoundException when the file is present
+     */
+    public synchronized void loadFile(String fileName) throws
+            IOException,
+                                                              FileNotFoundException
+    {
+        File file = new File(fileName);
+        DataInputStream inpStream = new DataInputStream(
+                new FileInputStream(file));
+        
+        Properties prop = new Properties();
+        prop.load(inpStream);
+    }
+    
+    private static enum Type
+    {
+        
+        SystemProperty, EnvironmentVariable
+    }
+    
+    private static class PropKey implements Comparable<PropKey>
+    {
+
+        private final String key;
+        private final Type type;
+
+        PropKey(String key, Type type)
+        {
+            this.key = key;
+            this.type = type;
+        }
+
+        @Override
+        public String toString()
+        {
+            return key + " (" + type + ")";
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int hash = 7;
+            hash = 79 * hash + Objects.hashCode(this.key);
+            hash = 79 * hash + Objects.hashCode(this.type);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (getClass() != obj.getClass())
+            {
+                return false;
+            }
+            final PropKey other = (PropKey) obj;
+            if (!Objects.equals(this.key, other.key))
+            {
+                return false;
+            }
+            return this.type == other.type;
+        }
+
+        @Override
+        public int compareTo(PropKey o)
+        {
+            if (o == null)
+            {
+                return 1;
+            }
+            if (key == null && o.key == null)
+            {
+                return type == o.type ? 0 :
+                       type == null ? -1 :
+                       o.type == null ? 1 :
+                       type.compareTo(o.type);
+            }
+            if (key == null)
+            {
+                return -1;
+            }
+            if (o.key == null)
+            {
+                return 1;
+            }
+            if (key.compareToIgnoreCase(o.key) == 0)
+            {
+                return type == o.type ? 0 :
+                       type == null ? -1 :
+                       o.type == null ? 1 :
+                       type.compareTo(o.type);
+            }
+
+            return key.compareToIgnoreCase(o.key);
+        }
     }
 }

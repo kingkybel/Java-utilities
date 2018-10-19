@@ -23,6 +23,7 @@ package com.kybelksties.general;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle;
@@ -42,235 +43,9 @@ public class EnvironmentVar implements Comparable, Serializable
     static final String NULL_CATEGORY = NbBundle.getMessage(
                         CLAZZ,
                         "EnvironmentVar.uncategorized");
-
-    /**
-     * Stereotypes for environment variables. They are introduced to enable
-     * enhanced format checks and diagnostics.
-     */
-    public enum StereoType
-    {
-
-        GeneralString,
-        BooleanFlag,
-        IntegralValue,
-        FloatingPointValue,
-        SearchPath,
-        DirectoryString,
-        FilePath,
-        PortNumber,
-        ServerDescriptionString,
-        UserID,
-        Password,
-        DatabaseServer,
-        Database,
-        DatabaseUser,
-        DatabasePassword;
-
-        static TreeSet<String> synonyms(String bundleID)
-        {
-            TreeSet<String> reval = new TreeSet<>();
-            reval.addAll(
-                    Arrays.asList(
-                            NbBundle.getMessage(CLAZZ, bundleID).split(",")));
-            return reval;
-        }
-        public static final TreeSet<String> GENERAL_STRING_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.GeneralStringSynonyms");
-        public static final TreeSet<String> BOOLEAN_FLAG_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.BooleanFlagSynonyms");
-        public static final TreeSet<String> INTEGRAL_VALUE_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.IntegralValueSynonyms");
-        public static final TreeSet<String> FLOATING_POINT_VALUE_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.FloatingPointValueSynonyms");
-        public static final TreeSet<String> SEARCH_PATH_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.SearchPathSynonyms");
-        public static final TreeSet<String> DIRECTORY_STRING_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.DirectoryStringSynonyms");
-        public static final TreeSet<String> FILE_PATH_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.FilePathSynonyms");
-        public static final TreeSet<String> PORT_NUMBER_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.PortNumberSynonyms");
-        public static final TreeSet<String> SERVER_DESCRIPTION_STRING_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.ServerDescriptionStringSynonyms");
-        public static final TreeSet<String> USER_ID_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.UserIDSynonyms");
-        public static final TreeSet<String> PASSWORD_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.PasswordSynonyms");
-        public static final TreeSet<String> DATABASE_SERVER_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.DatabaseServerSynonyms");
-        public static final TreeSet<String> DATABASE_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.DatabaseSynonyms");
-        public static final TreeSet<String> DATABASE_USER_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.DatabaseUserSynonyms");
-        public static final TreeSet<String> DATABASE_PASSWORD_SYNONYMS =
-                                            synonyms(
-                                                    "EnvironmentVar.Type.DatabasePasswordSynonyms");
-
-        public static StereoType fromString(String typeStr)
-        {
-            StereoType reval = GeneralString;
-            String lowerTypeStr = typeStr == null ?
-                                  "generalstring" :
-                                  typeStr.toLowerCase().trim();
-            if (GENERAL_STRING_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.GeneralString;
-            }
-            else if (BOOLEAN_FLAG_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.BooleanFlag;
-            }
-            else if (INTEGRAL_VALUE_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.IntegralValue;
-            }
-            else if (FLOATING_POINT_VALUE_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.FloatingPointValue;
-            }
-            else if (SEARCH_PATH_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.SearchPath;
-            }
-            else if (DIRECTORY_STRING_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.DirectoryString;
-            }
-            else if (FILE_PATH_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.FilePath;
-            }
-            else if (PORT_NUMBER_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.PortNumber;
-            }
-            else if (SERVER_DESCRIPTION_STRING_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.ServerDescriptionString;
-            }
-            else if (USER_ID_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.UserID;
-            }
-            else if (PASSWORD_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.Password;
-            }
-            else if (DATABASE_SERVER_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.DatabaseServer;
-            }
-            else if (DATABASE_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.Database;
-            }
-            else if (DATABASE_USER_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.DatabaseUser;
-            }
-            else if (DATABASE_PASSWORD_SYNONYMS.contains(lowerTypeStr))
-            {
-                reval = StereoType.DatabasePassword;
-            }
-
-            return reval;
-        }
-
-        static String bundleString(String bundleID)
-        {
-            return NbBundle.getMessage(CLAZZ, bundleID);
-        }
-
-        @Override
-        public String toString()
-        {
-            return this.equals(GeneralString) ?
-                   bundleString("EnvironmentVar.Type.GeneralString") :
-                   this.equals(BooleanFlag) ?
-                   bundleString("EnvironmentVar.Type.BooleanFlag") :
-                   this.equals(IntegralValue) ?
-                   bundleString("EnvironmentVar.Type.IntegralValue") :
-                   this.equals(FloatingPointValue) ?
-                   bundleString("EnvironmentVar.Type.FloatingPointValue") :
-                   this.equals(SearchPath) ?
-                   bundleString("EnvironmentVar.Type.SearchPath") :
-                   this.equals(DirectoryString) ?
-                   bundleString("EnvironmentVar.Type.DirectoryString") :
-                   this.equals(FilePath) ?
-                   bundleString("EnvironmentVar.Type.FilePath") :
-                   this.equals(PortNumber) ?
-                   bundleString("EnvironmentVar.Type.PortNumber") :
-                   this.equals(ServerDescriptionString) ?
-                   bundleString("EnvironmentVar.Type.ServerDescriptionString") :
-                   this.equals(UserID) ?
-                   bundleString("EnvironmentVar.Type.Password") :
-                   this.equals(DatabaseServer) ?
-                   bundleString("EnvironmentVar.Type.DatabaseServer") :
-                   this.equals(Database) ?
-                   bundleString("EnvironmentVar.Type.Database") :
-                   this.equals(DatabaseUser) ?
-                   bundleString("EnvironmentVar.Type.DatabaseUser") :
-                   this.equals(DatabasePassword) ?
-                   bundleString("EnvironmentVar.Type.DatabasePassword") :
-                   bundleString("EnvironmentVar.Type.Unknown");
-        }
-
-        public PodVariant.Type getPodVariantType()
-        {
-            return this == GeneralString ? PodVariant.Type.STRING :
-                   this == BooleanFlag ? PodVariant.Type.BOOLEAN :
-                   this == IntegralValue ? PodVariant.Type.INTEGER :
-                   this == FloatingPointValue ? PodVariant.Type.DOUBLE :
-                   this == SearchPath ? PodVariant.Type.STRING :
-                   this == DirectoryString ? PodVariant.Type.STRING :
-                   this == FilePath ? PodVariant.Type.STRING :
-                   this == PortNumber ? PodVariant.Type.INTEGER :
-                   this == ServerDescriptionString ? PodVariant.Type.STRING :
-                   this == UserID ? PodVariant.Type.STRING :
-                   this == Password ? PodVariant.Type.STRING :
-                   this == DatabaseServer ? PodVariant.Type.STRING :
-                   this == Database ? PodVariant.Type.STRING :
-                   this == DatabaseUser ? PodVariant.Type.STRING :
-                   this == DatabasePassword ? PodVariant.Type.STRING :
-                   PodVariant.Type.UNDEFINED;
-
-        }
-
-        public boolean isCompatible(PodVariant podVar)
-        {
-            PodVariant.Type myPodtType = getPodVariantType();
-            if (myPodtType.equals(podVar.getType()))
-            {
-                return true;
-            }
-
-            if (myPodtType.equals(PodVariant.Type.STRING))
-            {
-                return true;
-            }
-
-            if (myPodtType.equals(PodVariant.Type.DOUBLE))
-            {
-                return podVar.isDouble() || podVar.isInteger();
-            }
-
-            return false;
-        }
-    }
+    static final String ALL_CATEGORIES = NbBundle.getMessage(
+                        CLAZZ,
+                        "EnvironmentVar.allCategories");
 
     /**
      * Create an EnvironentVar from a String.
@@ -281,8 +56,10 @@ public class EnvironmentVar implements Comparable, Serializable
      *                      and including the first appearance of the '#'
      *                      character is ignored as comment
      * @return an EnvironmentVar represented by the String
+     * @throws java.lang.Exception
      */
     public static EnvironmentVar fromString(String definitionStr)
+            throws Exception
     {
         EnvironmentVar reval = new EnvironmentVar();
         definitionStr = definitionStr.replaceAll("\\" + StringUtils.NEWLINE, "");
@@ -331,19 +108,21 @@ public class EnvironmentVar implements Comparable, Serializable
     /**
      * Construct.
      *
-     * @param podType  plain old data type
-     * @param category a category name - any unique string
-     * @param name     name of the variable
-     * @param defined  flag to indicate whether the variable is defined or not
-     * @param val      value of the variable
+     * @param stereoType plain old data type
+     * @param category   a category name - any unique string
+     * @param name       name of the variable
+     * @param defined    flag to indicate whether the variable is defined or not
+     * @param val        value of the variable
+     * @throws java.lang.Exception when new name is empty or contains invalid
+     *                             characters
      */
-    public EnvironmentVar(PodVariant.Type podType,
+    public EnvironmentVar(StereoType stereoType,
                           String category,
                           String name,
                           boolean defined,
-                          PodVariant... val)
+                          PodVariant... val) throws Exception
     {
-        setType(podType);
+        setStereoType(stereoType);
         setCategory(category);
         setName(name);
         setDefined(defined);
@@ -372,16 +151,30 @@ public class EnvironmentVar implements Comparable, Serializable
      * @param name     name of the variable
      * @param category a category name - any unique string
      * @param value    value of the variable
+     * @throws java.lang.Exception when new name is empty or contains invalid
+     *                             characters
      */
     public EnvironmentVar(String name, String category, PodVariant value)
+            throws Exception
     {
-        this(value.getType(), category, name, true, value);
+        this((value == null || value.getType() == PodVariant.Type.STRING) ?
+             StereoType.GeneralString :
+             value.getType() == PodVariant.Type.INTEGER ?
+             StereoType.IntegralValue :
+             value.getType() == PodVariant.Type.DOUBLE ?
+             StereoType.FloatingPointValue :
+             value.getType() == PodVariant.Type.BOOLEAN ? StereoType.BooleanFlag :
+             StereoType.GeneralString,
+             category,
+             name,
+             true,
+             value);
     }
 
     @Override
     public String toString()
     {
-        String reval = getType() +
+        String reval = getStereoType().name() +
                        "," + getCategory() +
                        "," + getName() +
                        "," + getDefined();
@@ -435,25 +228,6 @@ public class EnvironmentVar implements Comparable, Serializable
     }
 
     /**
-     * Retrieve the POD type of the variable.
-     *
-     * @return the type
-     */
-    public PodVariant.Type getType()
-    {
-        return value.getType();
-    }
-
-    private void setType(PodVariant.Type podType)
-    {
-        if (podType == null)
-        {
-            podType = PodVariant.Type.UNDEFINED;
-        }
-        value = new PodVariant(podType);
-    }
-
-    /**
      * Retrieve the name.
      *
      * @return the name
@@ -467,12 +241,23 @@ public class EnvironmentVar implements Comparable, Serializable
      * Set the name of the variable.
      *
      * @param name the name to set
+     * @throws java.lang.Exception when new name is empty or contains invalid
+     *                             characters
      */
-    public final void setName(String name)
+    public final void setName(String name) throws Exception
     {
         if (name == null)
         {
             name = "";
+        }
+        String regex = "^[a-zA-Z_]+[a-zA-Z_0-9]*$";
+        if (!name.matches(regex))
+        {
+            throw new Exception(
+                    NbBundle.getMessage(
+                            CLAZZ,
+                            "EnvironmenVar.nameFormatException",
+                            name));
         }
         this.name = name;
     }
@@ -556,7 +341,7 @@ public class EnvironmentVar implements Comparable, Serializable
      *
      * @param stereoType the new stereotype
      */
-    public void setStereoType(StereoType stereoType)
+    public final void setStereoType(StereoType stereoType)
     {
         if (stereoType == null)
         {
@@ -566,6 +351,203 @@ public class EnvironmentVar implements Comparable, Serializable
         if (!this.stereoType.isCompatible(value))
         {
             setValue(new PodVariant(stereoType.getPodVariantType()));
+        }
+    }
+
+    /**
+     * Stereotypes for environment variables. They are introduced to enable
+     * enhanced format checks and diagnostics.
+     */
+    public enum StereoType
+    {
+
+        /**
+         * General string value.
+         */
+        GeneralString,
+        /**
+         * The environment variable can assume only boolean values.
+         */
+        BooleanFlag,
+        /**
+         * The environment variable can assume only integral values.
+         */
+        IntegralValue,
+        /**
+         * The environment variable can assume only floating point values.
+         */
+        FloatingPointValue,
+        /**
+         * The environment variable can assume only search-path string values.
+         */
+        SearchPath,
+        /**
+         * The environment variable can assume only strings describing
+         * directories.
+         */
+        DirectoryString,
+        /**
+         * The environment variable can assume only strings describing
+         * filenames.
+         */
+        FilePath,
+        /**
+         * The environment variable can assume only strings describing
+         * port-numbers.
+         */
+        PortNumber,
+        /**
+         * The environment variable can assume only strings describing
+         * server-names/descriptions.
+         */
+        ServerDescriptionString,
+        /**
+         * The environment variable can assume only strings describing user-IDs.
+         */
+        UserID,
+        /**
+         * The environment variable can assume only strings describing
+         * passwords.
+         */
+        Password,
+        /**
+         * The environment variable can assume only strings describing
+         * database-servers.
+         */
+        DatabaseServer,
+        /**
+         * The environment variable can assume only strings describing
+         * databases.
+         */
+        Database,
+        /**
+         * The environment variable can assume only strings describing
+         * database-users.
+         */
+        DatabaseUser,
+        /**
+         * The environment variable can assume only strings describing
+         * database-passwords.
+         */
+        DatabasePassword;
+
+        static TreeSet<String> synonyms(String bundleID)
+        {
+            TreeSet<String> reval = new TreeSet<>();
+            reval.addAll(
+                    Arrays.asList(
+                            NbBundle.getMessage(CLAZZ, bundleID).split(",")));
+            return reval;
+        }
+        static TreeMap<StereoType, TreeSet<String>> SYNONYMS = init();
+
+        static TreeMap<StereoType, TreeSet<String>> init()
+        {
+            TreeMap<StereoType, TreeSet<String>> reval = new TreeMap<>();
+            for (StereoType stereoType : values())
+            {
+                String clsName = stereoType.getClass().getCanonicalName();
+                String pkgName = stereoType.getClass().getPackage().getName() +
+                                 ".";
+                String bundleID = (clsName + "." + stereoType.name()).
+                       replaceFirst(pkgName, "") + "Synonyms";
+                reval.put(stereoType, synonyms(bundleID));
+
+            }
+            return reval;
+        }
+
+        /**
+         * Create a StereoType from the given string.
+         *
+         * @param typeStr the string describing the Stereotype
+         * @return the StereoType - enum-value, GeneralString if parsing fails
+         */
+        public static StereoType fromString(String typeStr)
+        {
+            StereoType reval = GeneralString;
+            String lowerTypeStr = typeStr == null ?
+                                  "generalstring" :
+                                  typeStr.toLowerCase().trim();
+            for (StereoType stereoType : values())
+            {
+                if (SYNONYMS.get(stereoType).contains(lowerTypeStr))
+                {
+                    return stereoType;
+                }
+            }
+            return reval;
+        }
+
+        static String bundleString(String bundleID)
+        {
+            return NbBundle.getMessage(CLAZZ, bundleID);
+        }
+
+        @Override
+        public String toString()
+        {
+            String bundleID = (getClass().getCanonicalName() +
+                               "." +
+                               this.name()).replaceFirst(
+                   getClass().getPackage().getName() + ".", "");
+            return NbBundle.getMessage(CLAZZ, bundleID);
+        }
+
+        /**
+         * Maps the SteroType to the PodVariant-type needed to represent it.
+         *
+         * @return the PodVarian -type
+         */
+        public PodVariant.Type getPodVariantType()
+        {
+            return this == GeneralString ? PodVariant.Type.STRING :
+                   this == BooleanFlag ? PodVariant.Type.BOOLEAN :
+                   this == IntegralValue ? PodVariant.Type.INTEGER :
+                   this == FloatingPointValue ? PodVariant.Type.DOUBLE :
+                   this == SearchPath ? PodVariant.Type.STRING :
+                   this == DirectoryString ? PodVariant.Type.STRING :
+                   this == FilePath ? PodVariant.Type.STRING :
+                   this == PortNumber ? PodVariant.Type.INTEGER :
+                   this == ServerDescriptionString ? PodVariant.Type.STRING :
+                   this == UserID ? PodVariant.Type.STRING :
+                   this == Password ? PodVariant.Type.STRING :
+                   this == DatabaseServer ? PodVariant.Type.STRING :
+                   this == Database ? PodVariant.Type.STRING :
+                   this == DatabaseUser ? PodVariant.Type.STRING :
+                   this == DatabasePassword ? PodVariant.Type.STRING :
+                   PodVariant.Type.UNDEFINED;
+        }
+
+        /**
+         * Check whether two types are compatible
+         *
+         * @param podVar the other pod-variant
+         * @return true if so, false otherwise
+         */
+        public boolean isCompatible(PodVariant podVar)
+        {
+            if (podVar == null)
+            {
+                return true;
+            }
+            PodVariant.Type myPodtType = getPodVariantType();
+            if (myPodtType.equals(podVar.getType()))
+            {
+                return true;
+            }
+
+            if (myPodtType.equals(PodVariant.Type.STRING))
+            {
+                return true;
+            }
+
+            if (myPodtType.equals(PodVariant.Type.DOUBLE))
+            {
+                return podVar.isDouble() || podVar.isInteger();
+            }
+
+            return false;
         }
     }
 

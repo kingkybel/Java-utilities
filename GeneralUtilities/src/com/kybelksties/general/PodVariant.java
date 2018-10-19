@@ -22,6 +22,8 @@ package com.kybelksties.general;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -41,22 +43,6 @@ public class PodVariant implements Serializable
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
     private static final long serialVersionUID = -8940196742313991701L;
-
-    public static final String[] BOOLEAN_SYNONYMS = NbBundle.getMessage(
-                                 CLAZZ,
-                                 "PodVariant.booleanSynonyms").split(",");
-    public static final String[] STRING_SYNONYMS = NbBundle.getMessage(
-                                 CLAZZ,
-                                 "PodVariant.stringSynonyms").split(",");
-    public static final String[] FLOAT_SYNONYMS = NbBundle.getMessage(
-                                 CLAZZ,
-                                 "PodVariant.floatSynonyms").split(",");
-    public static final String[] PATH_SYNONYMS = NbBundle.getMessage(
-                                 CLAZZ,
-                                 "PodVariant.pathSynonyms").split(",");
-    public static final String[] INT_SYNONYMS = NbBundle.getMessage(
-                                 CLAZZ,
-                                 "PodVariant.intSynonyms").split(",");
 
     /**
      * Create a PODVariant from a string describing a type.
@@ -217,14 +203,10 @@ public class PodVariant implements Serializable
     @Override
     public String toString()
     {
-        if (value == null)
-        {
-            System.out.println("Value=null type=" + type);
-        }
-        return type == Type.BOOLEAN ? ((Boolean) value ? "1" : "0") :
-               type == Type.STRING ? value.toString() :
-               type == Type.INTEGER ? ((Integer) value).toString() :
-               type == Type.DOUBLE ? ((Double) value).toString() :
+        return isBoolean() ? ((Boolean) value ? "1" : "0") :
+               isString() ? value.toString() :
+               isInteger() ? ((Integer) value).toString() :
+               isDouble() ? ((Double) value).toString() :
                "";
     }
 
@@ -295,7 +277,7 @@ public class PodVariant implements Serializable
      */
     public Boolean getBooleanValue()
     {
-        return type == Type.BOOLEAN ? (Boolean) value : null;
+        return isBoolean() ? (Boolean) value : null;
     }
 
     /**
@@ -315,7 +297,7 @@ public class PodVariant implements Serializable
      */
     public String getStringValue()
     {
-        return type == Type.STRING ? (String) value : null;
+        return isString() ? (String) value : null;
     }
 
     /**
@@ -335,7 +317,7 @@ public class PodVariant implements Serializable
      */
     public Integer getIntegerValue()
     {
-        return type == Type.INTEGER ? (Integer) value : null;
+        return isInteger() ? (Integer) value : null;
     }
 
     /**
@@ -355,7 +337,7 @@ public class PodVariant implements Serializable
      */
     public Double getDoubleValue()
     {
-        return type == Type.DOUBLE ? (Double) value : null;
+        return isDouble() ? (Double) value : null;
     }
 
     /**
@@ -400,42 +382,56 @@ public class PodVariant implements Serializable
         private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
         private static final long serialVersionUID = -8940196742313991701L;
 
+        static TreeSet<String> synonyms(String bundleID)
+        {
+            TreeSet<String> reval = new TreeSet<>();
+            reval.addAll(
+                    Arrays.asList(
+                            NbBundle.getMessage(CLAZZ, bundleID).split(",")));
+            return reval;
+        }
+        static TreeMap<Type, TreeSet<String>> SYNONYMS = init();
+
+        static TreeMap<Type, TreeSet<String>> init()
+        {
+            TreeMap<Type, TreeSet<String>> reval = new TreeMap<>();
+            for (Type stereoType : values())
+            {
+                String clsName = stereoType.getClass().getCanonicalName();
+                String pkgName = stereoType.getClass().getPackage().getName() +
+                                 ".";
+                String bundleID = (clsName + "." + stereoType.name()).
+                       replaceFirst(pkgName, "") + "Synonyms";
+                reval.put(stereoType, synonyms(bundleID));
+
+            }
+            return reval;
+        }
+
         static Type fromString(String typeStr)
         {
-            Type type = Type.UNDEFINED;
-            String lowerTypeStr = typeStr.toLowerCase().trim();
-            if (Arrays.asList(BOOLEAN_SYNONYMS).contains(lowerTypeStr))
+            Type reval = UNDEFINED;
+            String lowerTypeStr = typeStr == null ?
+                                  "<undefined>" :
+                                  typeStr.toLowerCase().trim();
+            for (Type type : values())
             {
-                type = Type.BOOLEAN;
+                if (SYNONYMS.get(type).contains(lowerTypeStr))
+                {
+                    return type;
+                }
             }
-            else if (Arrays.asList(INT_SYNONYMS).contains(lowerTypeStr))
-            {
-                type = Type.INTEGER;
-            }
-            else if (Arrays.asList(FLOAT_SYNONYMS).contains(lowerTypeStr))
-            {
-                type = Type.DOUBLE;
-            }
-            else if (Arrays.asList(STRING_SYNONYMS).contains(lowerTypeStr))
-            {
-                type = Type.STRING;
-            }
-            return type;
+            return reval;
         }
 
         @Override
         public String toString()
         {
-            return BOOLEAN.equals(this) ?
-                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.boolean") :
-                   STRING.equals(this) ?
-                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.string") :
-                   INTEGER.equals(this) ?
-                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.integer") :
-                   DOUBLE.equals(this) ?
-                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.double") :
-                   NbBundle.getMessage(CLAZZ, "PodVariant.Type.undefined");
-
+            String bundleID = (getClass().getCanonicalName() +
+                               "." +
+                               this.name()).replaceFirst(
+                   getClass().getPackage().getName() + ".", "");
+            return NbBundle.getMessage(CLAZZ, bundleID);
         }
 
     }

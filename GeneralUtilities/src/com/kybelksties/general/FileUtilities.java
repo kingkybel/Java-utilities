@@ -56,8 +56,14 @@ public class FileUtilities
     private static final String CLASS_NAME = CLAZZ.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
+    /**
+     * The system specific file-separator.
+     */
     public static final String FILE_SEPARATOR = System.getProperty(
                                "file.separator");
+    /**
+     * The system specific directory-separator.
+     */
     public static final String PATH_SEPARATOR = System.getProperty(
                                "path.separator");
 
@@ -361,7 +367,11 @@ public class FileUtilities
         BufferedWriter out = null;
         File file = new File(fileName == null ? "" : fileName);
         String parent = file.getParent();
-        File path = new File(parent != null ? parent : "");
+        if (parent == null)
+        {
+            parent = "";
+        }
+        File path = new File(parent);
         if (force && !parent.isEmpty() && !path.exists())
         {
             (new File(path.getAbsolutePath())).mkdirs();
@@ -381,7 +391,7 @@ public class FileUtilities
             if (!path.exists())
             {
                 String msg = NbBundle.getMessage(CLAZZ,
-                                                 "EnvironmentVarTableModel.noSuchDirectory",
+                                                 "FileUtilities.noSuchDirectory",
                                                  path.getParent(),
                                                  ex.getMessage());
                 throw new IOException(msg);
