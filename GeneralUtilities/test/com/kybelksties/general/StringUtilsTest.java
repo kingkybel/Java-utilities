@@ -84,7 +84,7 @@ public class StringUtilsTest
      * Test of findSpecies method, of class StringUtils.
      */
     @Test
-    public void testStripWhitesopace()
+    public void testStripWhitespace()
     {
         LOGGER.log(Level.INFO, "replace multiple whitspace chars in string");
         class X
@@ -187,11 +187,11 @@ public class StringUtilsTest
         assertEquals("number class of empty list",
                      StringUtils.NumberSpecies.NONE,
                      nc);
-        nc = StringUtils.commonSpecies(StringUtils.FALSE_VALUES);
+        nc = StringUtils.commonSpecies(StringUtils.getValidFalseStrings());
         assertEquals("number class of false-values",
                      StringUtils.NumberSpecies.BOOL,
                      nc);
-        nc = StringUtils.commonSpecies(StringUtils.TRUE_VALUES);
+        nc = StringUtils.commonSpecies(StringUtils.getValidTrueStrings());
         assertEquals("number class of true-values",
                      StringUtils.NumberSpecies.BOOL,
                      nc);
@@ -317,10 +317,80 @@ public class StringUtilsTest
                          parsedValue);
 
         }
+
+        StringUtils.resetBooleanSynonyms("ja,da,evet,oui",
+                                         "nein,nyet,hayir,non");
+        for (X test : tests)
+        {
+            Boolean parsedValue = StringUtils.scanBoolString(test.s);
+            String msg = "string \"" + test.s + "\" was parsed unsuccessfully" +
+                         " but should be null but was " + parsedValue + ".";
+            assertEquals(msg, null, parsedValue);
+
+        }
+
+        tests =
+        new X[]
+        {
+            new X("JA", true),
+            new X("EvEt", true),
+            new X("dA", true),
+            new X("Ja...", null),
+            new X("nEin", false),
+            new X("NYET", false),
+            new X("HaYiR", false),
+            new X("non", false)
+        };
+        for (X test : tests)
+        {
+            Boolean parsedValue = StringUtils.scanBoolString(test.s);
+            String msg = "string \"" + test.s + "\" was parsed " +
+                         (parsedValue != null ? "successfully" :
+                          "unsuccessfully") +
+                         " but should have " + (parsedValue != null ?
+                                                "failed" :
+                                                "succeeded") + ".";
+            assertEquals(msg, test.reval, parsedValue);
+            assertEquals("scan of \"" + test.s + "\" failed",
+                         test.reval,
+                         parsedValue);
+
+        }
+        StringUtils.addBooleanSynonyms("yep,wahr", "nope,falsch");
+        tests =
+        new X[]
+        {
+            new X("JA", true),
+            new X("EvEt", true),
+            new X("dA", true),
+            new X("Ja...", null),
+            new X("nEin", false),
+            new X("NYET", false),
+            new X("HaYiR", false),
+            new X("yeP", true),
+            new X("Wahr", true),
+            new X("nope", false),
+            new X("fAlSCH", false)
+        };
+        for (X test : tests)
+        {
+            Boolean parsedValue = StringUtils.scanBoolString(test.s);
+            String msg = "string \"" + test.s + "\" was parsed " +
+                         (parsedValue != null ? "successfully" :
+                          "unsuccessfully") +
+                         " but should have " + (parsedValue != null ?
+                                                "failed" :
+                                                "succeeded") + ".";
+            assertEquals(msg, test.reval, parsedValue);
+            assertEquals("scan of \"" + test.s + "\" failed",
+                         test.reval,
+                         parsedValue);
+
+        }
     }
 
     /**
-     *
+     * Test the dump function.
      */
     @Test
     public void testDump()
@@ -329,4 +399,46 @@ public class StringUtilsTest
 //        System.out.println(StringUtils.dump(LOGGER));
 
     }
+
+    /**
+     * Test the Levenshtein distance.
+     */
+    @Test
+    public void testLevenshteinDistance()
+    {
+        LOGGER.log(Level.INFO,
+                   "calculate the Levenshtein distance between strings");
+        int ld;
+        ld = StringUtils.levenshteinDistance(null, null);
+        assertEquals("Levenshtein between empty strings", ld, 0);
+
+        ld = StringUtils.levenshteinDistance("", "");
+        assertEquals("Levenshtein between empty strings", ld, 0);
+
+        ld = StringUtils.levenshteinDistance("a", "");
+        assertEquals("Levenshtein between one empty one 1-char-string", 1, ld);
+
+        ld = StringUtils.levenshteinDistance("a", "b");
+        assertEquals("Levenshtein between two diffwerent 1-char-strings", 1, ld);
+
+        ld = StringUtils.levenshteinDistance("ac", "b");
+        assertEquals("Levenshtein between two diffwerent short 1-char-strings",
+                     2, ld);
+
+        ld = StringUtils.levenshteinDistance("abcdef", "abcdef");
+        assertEquals("Levenshtein between two identical strings", 0, ld);
+
+        ld = StringUtils.levenshteinDistance("abc def ", "abcdef_");
+        assertEquals("Levenshtein between similar strings", 2, ld);
+
+        ld = StringUtils.levenshteinDistance("abc ", "lmnopqrstuvwxyz");
+        assertEquals("Levenshtein between completely different strings", 15, ld);
+
+        ld = StringUtils.levenshteinDistance("abc ", "nopqrsatuvwbxyz");
+        assertEquals(
+                "Levenshtein between completely different strings with puctual matches",
+                13, ld);
+
+    }
+
 }
